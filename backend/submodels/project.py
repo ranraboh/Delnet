@@ -1,0 +1,44 @@
+from django.db import models
+from .user import User
+from .dataset import Dataset
+
+# represent a project in system, contains infromation about the project such as 
+# project name, description, code files, user who created it so on.
+class Project(models.Model):
+    project_name = models.TextField(default='unamed project')
+    description = models.TextField(default='none description')
+    result = models.FloatField(default=50)
+    user = models.ForeignKey(User, default=None, on_delete=models.CASCADE)
+    project_date = models.DateField(auto_now_add=True)
+    dataset = models.ForeignKey(Dataset, default=None, on_delete=models.CASCADE, blank=True, null=True)
+
+    def __str__(self):
+        return self.project_name + ": " + self.description + " " + str(self.result)
+
+# used to store the team which take part in each project.
+# contains role, presmmisions, join-date and more data for each user in team.
+class ProjectTeam(models.Model):
+    user = models.ForeignKey(User, default=None, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, default=None, on_delete=models.CASCADE)
+    role = models.TextField(default='unknown role')
+    presmissions = models.IntegerField(default=1)
+    join_date = models.DateField(auto_now_add=True) 
+
+    def __str__(self):
+        return self.project.project_name + ": " + self.user.username
+
+def nameFile(instance, filename):
+    return '/'.join(['projects', str(instance.project.id) , filename])
+
+class ProjectFiles(models.Model):
+    project = models.ForeignKey(Project,default=None, on_delete=models.CASCADE)
+    name = models.TextField(default='unamed')
+    type = models.TextField(default='untyped')
+    file = models.FileField(upload_to=nameFile, max_length=254, blank=True, null=True)
+    insert_by = models.ForeignKey(User, default=None, on_delete=models.CASCADE)
+    insertion_date = models.DateField(auto_now_add=True)
+    main = models.BooleanField(default=False)
+
+    def __str__(self):
+        return str(self.file.name)
+

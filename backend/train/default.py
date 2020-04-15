@@ -1,0 +1,10 @@
+epochs = 10
+loss_function = 'Cross Entropy'
+sactivation_function = 'Tanh'
+compute_accuracy_per = 500
+dropout_constant = 0.5
+batch_size = 1
+weight_decay = 0.99
+learning_rate = 0.1
+image_width = 375
+image_height = 500

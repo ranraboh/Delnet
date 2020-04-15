@@ -1,0 +1,1478 @@
+body {
+    background-color: #E5E7E9;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.small-spacing {
+    margin: 5px;
+}
+.btn-round {
+    border-radius: 70px;
+    margin-right: 5px;
+    font-family: "Agency FB";
+}
+.link {
+    font-family: "Agency FB";
+}
+.link:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+.section-in-main {
+    width: 100%;
+    background-color: white;
+    padding-bottom: 20px;
+    -webkit-box-shadow: 2px 2px 2px 2px white;
+    -moz-box-shadow: 2px 2px 2px 2px white;
+    box-shadow: 2px 2px 2px 2px white;
+    border-radius: 4px;
+    border: 1px groove gray;
+    margin-bottom: 30px;
+}
+.multi-bar {
+    height: 1000px;
+}
+
+/* section headers */
+.header-section-v1 {
+    width: 60%;
+    height: 70px;
+    border-radius: 4px;
+    position: relative;
+    top: -15px;
+    left: 5%;
+}
+.header-v1-orange {background: #FF6600;}
+.header-v1-red    {background: #fa5a5a;}
+.header-v1-yellow {background: #f0d264;}
+.header-v1-green  {background: #82c8a0;}
+.header-v1-cyan   {background: #7fccde;}
+.header-v1-blue   {background: #6698cb;}
+.header-v1-purple {background: #cb99c5;}
+.header-v1-spring-green {background-color: mediumspringgreen;}
+
+.header-v1-title {
+    font-family: "Agency FB";
+    font-size: 20px;
+    color: black;
+    position: relative;
+    left: 5px;
+}
+.header-v1-intro {
+    font-family: "Agency FB";
+    font-size: 15px;
+    color: black;
+    position: relative;
+    left: 5px;
+    width: 80%;
+}
+
+.header-section-v2 {
+    height: 40px;
+    background-color: #f8f9fc;
+    color: #cb99c5;
+    font-size: 20pt;
+    margin-bottom: 25px;
+    border-bottom: 1px double lightskyblue;
+}
+.header-v2-green {
+    border-bottom: 1px double #82c8a0;
+}
+#profile-icon-section {
+    width:290px;
+    height:250px;
+    position: relative;
+    top: -10px;
+}
+.card-sea {
+    background-image:
+    linear-gradient(0deg, #ffffc4, rgba(255,200,0,0.2)),
+    url("https://bitcoinist.com/wp-content/uploads/2018/08/Header_artificial-intelligence.png");
+    background-position-x: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    box-shadow: 1px 1px 1px black;
+    margin-bottom: 25px;
+}
+.card-sea:hover {
+    background-image:
+    linear-gradient(0deg, #9affdb, rgba(255,200,0,0.2)),
+    url("https://bitcoinist.com/wp-content/uploads/2018/08/Header_artificial-intelligence.png");
+}
+.card-sea:active {
+    background-image:
+    linear-gradient(0deg, #cb99c5 , rgba(255,200,0,0.2)),
+    url("https://bitcoinist.com/wp-content/uploads/2018/08/Header_artificial-intelligence.png");
+}
+@keyframes project-profile-animation {
+    0% {
+        opacity: 0.2;
+        background-image:
+        linear-gradient(0deg, #ffffc4, rgba(255,200,0,0.2)),
+        url("https://bitcoinist.com/wp-content/uploads/2018/08/Header_artificial-intelligence.png");
+    }
+    15% {
+        opacity: 0.3;
+        background-image:
+        linear-gradient(0deg,  #82c8a0, rgba(255,200,0,0.2)),
+        url("https://bitcoinist.com/wp-content/uploads/2018/08/Header_artificial-intelligence.png");
+    }
+    30% {
+        opacity: 0.4;
+        background-image:
+        linear-gradient(0deg, #7fccde, rgba(255,200,0,0.2)),
+        url("https://bitcoinist.com/wp-content/uploads/2018/08/Header_artificial-intelligence.png");
+    }
+    45% {
+        opacity: 0.5;
+        background-image:
+        linear-gradient(0deg, #9affdb, rgba(255,200,0,0.2)),
+        url("https://bitcoinist.com/wp-content/uploads/2018/08/Header_artificial-intelligence.png");
+    }
+    60% {
+        opacity: 0.6;
+        background-image:
+        linear-gradient(0deg, #ffdb9a, rgba(255,200,0,0.2)),
+        url("https://bitcoinist.com/wp-content/uploads/2018/08/Header_artificial-intelligence.png");
+    }
+    75% {
+        opacity: 0.7;
+        background-image:
+        linear-gradient(0deg,#ff7676 , rgba(255,200,0,0.2)),
+        url("https://bitcoinist.com/wp-content/uploads/2018/08/Header_artificial-intelligence.png");
+    }
+    90% {
+        opacity: 0.8;
+        background-image:
+        linear-gradient(0deg, #cb99c5 , rgba(255,200,0,0.2)),
+        url("https://bitcoinist.com/wp-content/uploads/2018/08/Header_artificial-intelligence.png");
+    }
+}
+#project-information-section {
+    float: right;
+    width: 100%;
+    margin-bottom: 20px;
+    padding-bottom: 0px;
+    position: relative;
+    right: 20px;
+}
+
+/* Table */
+.table-text {
+    font-family: "Agency FB";
+    font-size: 17px;
+}
+.table-borderless {
+    border: none;
+}
+.table-button {
+    width: 60px;
+    height: 40px;
+    font-weight: bold;
+    font-family: "Agency FB";
+    border-radius: 70px;
+    position: relative;
+    left: 10px;
+}
+.table-main-field {
+    font-weight: bold;
+}
+.table-hover:hover {
+    background-color: lightsteelblue;
+}
+.table-header-purple {
+    background: #FC5C7D;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #6A82FB, #FC5C7D);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #6A82FB, #FC5C7D); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+.table-header-blue {
+    background: #74ebd5;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #ACB6E5, #74ebd5);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #ACB6E5, #74ebd5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+.table-header-pink {
+    background: #ddd6f3;
+    background: -webkit-linear-gradient(to right, #faaca8, #ddd6f3);
+    background: linear-gradient(to right, #faaca8, #ddd6f3); 
+    animation-name: header-animation;
+    animation-duration: 20s;
+    animation-iteration-count: infinite;
+    opacity: 0.8;
+}
+.table-header-sea-fixed, .table-header-sea:hover {
+    background: #1CD8D2;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #93EDC7, #1CD8D2);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #93EDC7, #1CD8D2); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+.table-header-neon {
+    background: #B3FFAB;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #12FFF7, #B3FFAB);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #12FFF7, #B3FFAB); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+.table-header-red {
+    background: #D31027;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #EA384D, #D31027);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #EA384D, #D31027); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+@keyframes header-animation {
+    0% {
+        opacity: 0.3;
+    }
+    20%, 100% {
+        opacity: 0.8;
+    }
+}
+.table-row-odd {
+    background-color: #f8f9fc;
+}
+.icon-container {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    border-radius: 70px;
+}
+.icon-container p  {
+    position: relative;
+    left: 18px;
+    top: 5px;
+    font-size: 18pt;
+}
+.icon-container p:hover {
+    color: white;
+}
+.icon-container-blue {
+    border: 2px groove dodgerblue;
+}
+.icon-container-blue p {
+    color: dodgerblue;
+}
+.icon-container-blue:hover {
+    background-color: dodgerblue
+}
+.icon-container-red {
+    border: 2px groove red;
+}
+.icon-container-red p {
+    color: red;
+}
+.icon-container-red:hover {
+    background-color: red
+}
+.icon-container-green {
+    border: 2px groove #2ECC71;
+}
+.icon-container-green p {
+    color: #2ECC71;
+}
+.icon-container-green:hover {
+    background-color: #2ECC71;
+}
+
+.icon-container-pink {
+    border: 2px groove #EC51DE;
+}
+.icon-container-pink p {
+    color: #EC51DE;
+}
+.icon-container-pink:hover {
+    background-color: #EC51DE;
+}
+.icon-container-purple {
+    border: 2px groove #6A82FB;
+}
+.icon-container-purple p {
+    color: #6A82FB;
+}
+.icon-container-purple:hover {
+    background-color: #6A82FB;
+}
+.icon-container-yellow {
+    border: 2px groove #f0d264;
+}
+.icon-container-yellow p {
+    color: #f0d264;
+}
+.icon-container-yellow:hover {
+    background-color: #f0d264;
+}
+.icon-container-orange {
+    border: 2px groove #FF6600;
+}
+.icon-container-orange p {
+    color: #FF6600;
+}
+.icon-container-orange:hover {
+    background-color: #FF6600;
+}
+.icon-container-aqua {
+    border: 2px groove #10C1F7;
+}
+.icon-container-aqua p {
+    color:#10C1F7;
+}
+.icon-container-aqua:hover {
+    background-color: #10C1F7;
+}
+
+/* nav */
+.nav-buttons {
+    margin-left: 10px;
+    position: relative;
+    top: -50px;
+    font-weight: 600;
+    width: 145px;
+}
+
+/* headers for sections */
+.header-section {
+    width: 60%;
+    height: 70px;
+    background-color: mediumspringgreen;
+    border-radius: 4px;
+    position: relative;
+    top: -15px;
+    left: 5%;
+}
+
+
+/***************************************************
+Profile
+***************************************************/
+
+/* Personal Details */
+#personal-details {
+    width: 100%;
+    background-color: white;
+    padding-bottom: 20px;
+    -webkit-box-shadow: 2px 2px 2px 2px white;
+    -moz-box-shadow: 2px 2px 2px 2px white;
+    box-shadow: 2px 2px 2px 2px white;
+    border-radius: 4px;
+    border: 1px groove gray;
+}
+#inner-personal-details {
+    position: relative;
+    top: 10px;
+    left: 10px;
+}
+.intro-personal-details > h6 {
+    position: relative;
+    display: block;
+    font-family: "Agency FB";
+    font-size: 19px;
+    color: black;
+    text-align: left;
+}
+.label-form {
+    font-family: "Agency FB";
+    text-align: left;
+}
+.text-field {
+    font-family: "Agency FB";
+    width: 400px;
+}
+#gender-label {
+    font-family: "Agency FB";
+    font-size: 18px;
+    color: black;
+    position: relative;
+    top: -3px;
+}
+.static-personal-data {
+    font-family: "Agency FB";
+    font-size: 15px;
+    color: black;
+}
+.personal-image {
+	width: 150px;
+	height: 150px;
+}
+
+/* Change Password */
+.change-password-section {
+    width: 100%;
+    background-color: white;
+    padding-bottom: 20px;
+    -webkit-box-shadow: 2px 2px 2px 2px white;
+    -moz-box-shadow: 2px 2px 2px 2px white;
+    box-shadow: 2px 2px 2px 2px white;
+    border-radius: 4px;
+    border: 1px groove gray;
+}
+#inner-change-password {
+    position: relative;
+    top: 10px;
+    left: 10px;
+}
+.intro-change-password > h6 {
+    font-family: "Agency FB";
+    font-size: 17px;
+    color: black;
+    text-align: left;
+}
+
+/* Active/Nonactive */
+.active-link:hover {
+    cursor: pointer;
+    text-decoration: underline;
+    color: #2196f3;
+}
+
+/* Change Image */
+#change-image-type-selection {
+    position: relative;
+    top: 10px;
+    left: 10px;
+}
+#url-section, #upload-section {
+    position: relative;
+    top: 10px;
+    left: 10px;
+    margin-bottom: 40px;
+}
+
+/**********************************************
+Projects
+***********************************************/
+
+.main-projects {
+    position: relative;
+    float: right;
+    top: 44px;
+    right: 2%;
+    width: 80%;
+    height: 1000px;
+}
+#management-section {
+    width: 87%;
+    background-color: white;
+    -webkit-box-shadow: 2px 2px 2px 2px white;
+    -moz-box-shadow: 2px 2px 2px 2px white;
+    box-shadow: 2px 2px 2px 2px white;
+    border-radius: 4px;
+    border: 1px groove gray;
+    position: relative;
+    top: 40px;
+    left: 40px;
+    padding-bottom: 20px;
+}
+#projects-header {
+    width: 60%;
+    height: 70px;
+    background-color: mediumspringgreen;
+    border-radius: 4px;
+    position: relative;
+    top: -15px;
+    left: 5%;
+}
+#projects-icon {
+    font-weight: 100;
+    font-family: "computer_icons";
+}
+.main-field {
+    font-weight: bold;
+}
+
+#projects-title {
+    font-family: "Agency FB";
+    font-size: 20px;
+    color: black;
+    position: relative;
+    left: 5px;
+}
+#projects-intro {
+    font-family: "Agency FB";
+    font-size: 15px;
+    color: black;
+    position: relative;
+    left: 5px;
+    width: 80%;
+}
+#features-header {
+    height: 30px;
+    background: #f6504d;
+}
+#operations-header {
+    height: 30px;
+    background: #4ac18e;
+}
+
+/* Create Project */
+.btn-new-project {
+    position: relative;
+    left: 20px;
+}
+.project-form-field {
+    font-family: "Agency FB";
+    font-size: 17px;
+}
+#projects-create {
+    position: relative;
+    left: 40px;
+    top: 25px;
+    padding-bottom: 80px;
+}
+.create-button {
+    width: 115px;
+    height: 30px;
+    font-weight: bold;
+    font-family: "Agency FB";
+    background: #36D1DC;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #5B86E5, #36D1DC);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #5B86E5, #36D1DC); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */    
+    color: white;
+    position: relative;
+    top: 15px;
+    left: 10px;
+}
+.create-button:hover {
+    background: transparent;
+    color: blue;
+    border: 1px groove blue;
+}
+.input-projects {
+    width: 100%;
+    background-color: #FAFAFA;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+}
+.input-projects:focus {
+    background-color: #F0F8FF;
+    border: none;
+}
+.row-form {
+    margin-bottom: 5px;
+}
+
+/* Files */
+#button-upload {
+    position: relative;
+    top: 10px;
+    left: 50px;
+}
+.files-table-button {
+    border-radius: 70px;
+}
+#change-image-type-selection {
+    position: relative;
+    top: 20px;
+    left: 80px;
+    margin-bottom: 50px;
+}
+#file-image {
+    background-image: url("https://preview.redd.it/pljxaxmkio021.jpg?width=1440&format=pjpg&auto=webp&s=0bfd67f2bf3e9f5801651fdb8a5c1da774ea13e0");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    left: 30px;
+    animation-name: fade-in;
+    animation-duration: 3s;
+}
+#file-image:hover {
+    animation-name: hue-rotate;
+    animation-duration: 10s;
+}
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 100;
+    }
+}
+@keyframes hue-rotate {
+    from {
+        filter: hue-rotate(0deg);
+    }
+    to {
+        filter: hue-rotate(-90deg);
+    }
+}
+#file-information {
+    position: relative;
+    left: 30px;
+    font-family: "Agency FB";
+    font-size: 16pt;
+    animation-name: fade-in;
+    animation-duration: 1s;
+}
+.files-table-column {
+    position: relative;
+    top: 8px;
+}
+
+/* Graph Section */
+#projects-graph-section {
+    width: 60%;
+    position: relative;
+    left: 40px;
+    top: 100px;
+    background-color: white;
+    -webkit-box-shadow: 2px 2px 2px 2px white;
+    -moz-box-shadow: 2px 2px 2px 2px white;
+    box-shadow: 2px 2px 2px 2px white;
+    border: 1px groove gray;
+    border-radius: 4px;
+    float: left;
+    padding-bottom: 30px;
+}
+#graph-header {
+    width: 60%;
+    height: 70px;
+    background-color: #FF6600;
+    border-radius: 4px;
+    position: relative;
+    top: -15px;
+    left: 5%;
+}
+
+/*************************************************
+Project Section
+*************************************************/
+
+.main-project {
+    position: relative;
+    float: right;
+    top: 44px;
+    right: 2%;
+    width: 55%;
+    height: 1000px;
+}
+#project-details-header {
+    width: 60%;
+    height: 70px;
+    background-color: #A0CFEC;
+    border-radius: 4px;
+    position: relative;
+    top: -15px;
+    left: 5%;
+}
+#project-form-internal {
+    position: relative;
+    left: 40px;
+    top: 5px;   
+}
+/* Project Team */
+#project-team-header {
+    width: 60%;
+    height: 70px;
+    background-color: #FFFCDE;
+    border-radius: 4px;
+    position: relative;
+    top: -15px;
+    left: 5%;
+}
+.team-user-image {
+    width: 70px;
+    height: 70px;
+    border-radius: 20px;
+    border: 1px double black;
+    opacity: 0.6;
+}
+.team-user-image:hover {
+    opacity: 1;
+}
+.team-table-column {
+    position: relative;
+    top: 20px;
+}
+.input-validate-success {
+    border: 1px groove green;
+    background-color: #D4F5D6;
+}
+.input-validate-danger {
+    border: 1px groove red;
+    background-color: #FCB8C4;
+}
+#profile-icon-body {
+    position: relative;
+    top: 140px;
+    right: 10px;
+}
+#project-description {
+    color:gray;
+    font-size: 11pt;
+    font-family: "Agency FB";
+}
+#project-name {
+    font-family: "Agency FB";
+}
+
+/* runs */
+#run-model-inner {
+    position: relative;
+    left: 10px;
+}
+
+#runs-results-analyze {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 80%;
+    animation-name: moving-toward;
+    animation-duration: 3s;
+}
+@keyframes moving-toward {
+    0% {
+        opacity: 0;
+    }
+    20% {
+      opacity: 1;
+      right: 50px;
+    }
+    90% {
+      right: 10px;
+    }
+    100% {
+      right: 30px;
+    }
+  }
+#run-features-section {
+    width: 50%;
+    float: right;
+    position: relative;
+    left: 3%;
+    height: 400px;
+    bottom: 40px;
+}
+#run-charts-section {
+    width: 80%;
+    float: right;
+    position: absolute;
+    left: 4%;
+    bottom: 40px;
+    margin-right: 7px;
+    height: 400px;
+    margin-bottom: 70px;
+}
+#run-charts-header {
+    position: relative;
+    top: -35px;
+}
+.run-chart {
+    position: relative;
+    top: -60px;
+    margin-bottom: 20px;
+}
+/* The Modal (background) */
+.modal {
+    display: block; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    left: 0%;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: scroll; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    z-index: 1000;
+  }
+  
+  /* Modal Content/Box */
+.modal-section {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+    animation-name: fade-in;
+    animation-duration: 1s;
+}
+#runs-results {
+    position: fixed;
+    top: -170px;
+    left: 10%;
+    height: 300px;
+}
+#runs-charts {
+    position: fixed;
+    top: 170px;
+    left: 10%;
+    height: 240px;
+}
+
+  /* The Close Button */
+  .close {
+    color: blue;
+    float: right;
+    font-size: 40px;
+    font-weight: bold;
+    position: absolute;
+    top: 2px;
+    left: 85%;
+  }
+  .btn-close {
+    font-family: "Agency FB";
+    font-size: 17px;
+    cursor: pointer;
+    border-radius: 10px;
+    color: white;
+    background: #2193b0;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #0072ff, #00c6ff);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #0072ff, #00c6ff); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    padding-left: 20px;
+    padding-right: 20px;
+    position: absolute;
+    top: 2px;
+    left: 85%;
+    border: none;
+}
+.btn-close:hover {
+    background: #00c6ff;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #00c6ff,  #0072ff);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #00c6ff , #0072ff); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    
+}
+  
+  .close:hover,
+  .close:focus {
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+
+.runs-set {
+    background-color: #fff;
+    padding-bottom: 20px;
+    position: relative;
+    font-family: "Poppins", sans-serif;
+}
+
+.runs-set .run-item {
+    border-radius: 7px;
+    box-shadow: 10px -10px 10px -6px #FC5C7D,
+                -10px 10px 6px 0px #63D1F4;
+    margin: 25px 5px 0;
+    padding: 30px 25px;
+    position: relative;
+    font-family: "Poppins", sans-serif;
+    background: #ffffff;
+}
+.runs-set .run-item:hover .regular-text {
+    display: none;
+}
+.runs-set .run-item:hover .hover-text {
+    display: block;
+}
+.hover-text {
+    display: none;
+    animation-name: fade-in;
+    animation-duration: 1s;
+}
+.runs-set .run-item .text-frame {
+    position: absolute;
+    text-align: center;
+    width: 200px;
+    height: 30px;
+    top: 2px;
+    left: 4px;
+    border-radius: 10px;
+    background-color: #74ebd5;
+    font-family: "Poppins", sans-serif;
+}
+.text-frame:hover {
+    width: 200px;
+    background-color: blue;
+}
+.run-identification {
+    position: relative;
+    top: 10px;
+    font-size: 20px;
+    color: blue;
+}
+.runs-set .single-run h6 {
+    border-radius: 60px;
+    position: relative;
+    width: 100%;
+    font-size: 15pt;
+    text-align: left;
+    font-family: "Poppins", sans-serif;
+    font-weight: 900;
+}
+
+.runs-set .single-run h6::before {
+    background: #000 none repeat scroll 0 0;
+    bottom: -5px;
+    content: "";
+    height: 2px;
+    left: 20%;
+    position: absolute;
+    width: 60%;
+}
+
+/* confusion matrix */
+.cell-explanation {
+    color:black;
+}
+
+.our_activity {
+    margin-bottom: 140px;
+    background-color: #fff;
+    padding-bottom: 20px;
+    border: 1px groove gray;
+    border-radius: 4px;
+}
+#outcomes-intro {
+    text-align: left;
+    position: relative;
+    left: 5px;
+    font-size: 12pt;
+    font-weight: 100;
+    color: #3c354e;
+    font-family: "Roboto", sans-serif;
+}
+.our_activity .single-Promo {
+    border-radius: 7px;
+    box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.1);
+    margin: 100px 10px 0;
+    padding: 30px 25px;
+    position: relative;
+    background-color:#E5E7E9;
+}
+.our_activity .single-Promo .promo-icon {
+    left: 0;
+    position: absolute;
+    text-align: center;
+    top: -30px;
+    width: 100%;
+    color : #10C1F7
+    
+}
+.our_activity .single-Promo h2 {
+    border-radius: 60px;
+    position: relative;
+    width: 100%;
+    font-family: "Agency FB";
+    font-size: 15pt;
+    text-align: left;
+}
+.our_activity .single-Promo h2::before {
+    background: #000 none repeat scroll 0 0;
+    bottom: -5px;
+    content: "";
+    height: 2px;
+    left: 20%;
+    position: absolute;
+    width: 60%;
+}
+.our_activity .single-Promo p {
+    color: #3c354e;
+    font-family: "Roboto", sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 26px;
+    text-align: center;
+}
+.our_activity .single-Promo i {
+    border: 0 solid #000;
+    box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.2);
+    font-size: 20px;
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-bottom: 25px;
+    padding-top: 25px;
+    border-radius: 70%;
+    text-align: center;
+    background: #5DADE2;
+}
+.our_activity .single>h2 a {
+    color: #fa5a5a;
+}
+.our_activity .single>.promo-icon i {
+    background: #fa5a5a;
+    color: black;
+    font-weight: 900;
+}
+.our_activity .single>h2::before {
+    background: #fa5a5a;
+    color: black;
+    font-weight: 900;
+}
+.our_activity .single-Promo:hover>h2 a {
+    color: #fa5a5a;
+}
+.our_activity .single-Promo:hover>.promo-icon i {
+    background: #fa5a5a;
+    color: black;
+    font-weight: 900;
+}
+.our_activity .single-Promo:hover>h2::before {
+    background: #fa5a5a;
+    color: black;
+    font-weight: 900;
+}
+#run-features {
+    position: relative;
+    top: 20px;
+    left: 15px;
+}
+#run-features h6 {
+    font-family: "Poppins", sans-serif;
+    text-align: left;
+    margin-bottom: 5px;
+}
+#train-table, #dev-table {
+    position: relative;
+    top: 30px;
+}
+#running-internal {
+    position: relative;
+    left: 10px;
+}
+#running-section {
+    float: right;
+    width: 100%;
+    margin-bottom: 20px;
+    padding-bottom: 0px;
+    position: relative;
+    right: 20px;
+    width: 100%;
+    border-radius: 4px;
+    border: 1px groove gray;
+    margin-bottom: 20px;
+}
+
+/******************************************
+Data Sets
+*******************************************/
+
+.main-datasets {
+    position: relative;
+    float: right;
+    top: 44px;
+    width: 80%;
+    height: 1000px;
+    left: 50px;
+}
+#dataset-users {
+    padding-bottom: 120px;
+    width: 90%;
+}
+.btn-datasets {
+    border-radius: 70px;
+    position: relative;
+    left: 5px;
+    margin-right: 5px;
+    top: 100px;
+}
+#datasets-create {
+    padding-bottom: 40px;
+    width: 80%;
+
+}
+#datasets-create-internal {
+    position: relative;
+    left: 10px;
+    top: 10px;
+}
+.main-dataset {
+    position: relative;
+    float: right;
+    top: 44px;
+    right: 2%;
+    width: 55%;
+    height: 1000px;
+}
+#dataset-information-section {
+    float: right;
+    width: 100%;
+    margin-bottom: 20px;
+    padding-bottom: 0px;
+    position: relative;
+    right: 20px;
+}
+#information-header {
+    height: 30px;
+    background: #67a8e4;
+} 
+#edit-header {
+    height: 30px;
+    background: #f6504d;
+}
+#statics-header {
+    height: 30px;
+    background: #4ac18e;
+}
+.dataset-links-title {
+    color: white;
+    font-family: "Agency FB";
+    font-size: 18pt;
+    text-align: center;
+}
+.dataset-links {
+    font-family: "Agency FB";
+    font-size: 14pt;
+}
+.dataset-links:hover {
+    color: #36D1DC;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.btn-information {
+    position: relative;
+    top: -30px;
+    border-radius: 70px;
+}
+.button-dataset-menu {
+    font-size: 10pt;
+}
+#dataset-form-internal {
+    position: relative;
+    left: 40px;
+    top: 5px;   
+}
+.dataset-description-link {
+    font-family: "Agency FB";
+    font-size: 10pt;
+    color: gray;
+    display: block;
+}
+.dataset-header-title {
+    font-family: "Agency FB";
+    font-size: 22px;
+    color: black;
+    position: relative;
+    left: 25px;
+    top: 5px;
+    font-size: bold;
+}
+.dataset-header-orange {color: #FF6600;}
+.dataset-header-red    {color: #fa5a5a;}
+.dataset-header-yellow {color: #f0d264;}
+.dataset-header-green  {color: #82c8a0;}
+.dataset-header-cyan   {color: #7fccde;}
+.dataset-header-blue   {color: #6698cb;}
+.dataset-header-purple {color: #cb99c5;}
+.dataset-header-spring-green {color: mediumspringgreen;}
+
+#dataset-details-operations {
+    position: relative;
+    left: 50px;
+    top: 15px;
+}
+#labels-quantity-text {
+    position: relative;
+    font-family: "Agency FB";
+    color: black;
+    left: 20px;
+    font-size: 15pt;
+}
+.image-dataitems {
+    width: 100px;
+    height: 100px;
+}
+.pagination {
+    position: relative;
+    left: 20px;
+    top: 5px;
+}
+.pagination span {
+    background-color: cornflowerblue;
+    border-radius: 120px;
+    color: black;
+}
+.pagination a {
+    background-color:#00c6ff;
+    margin: 0 4px;
+}
+.label-selection-area {
+    position: relative;
+    top: 20px;
+}
+#items-graph-section {
+    position: relative;
+    top: 20px;
+    width: 500px;
+    height: 350px;
+}
+/* items */
+#labels-colors-list {
+    position: relative;
+    left: 30px;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 10px;
+}
+.table-label {
+    border-radius: 180px;
+    text-align: center;
+    display: inline-block;
+    width: 70px;
+    position: relative;
+    margin-right: 10px;
+    font-size: 12pt;
+    color: white;
+    font-family: "Agency FB";
+    height: 20px;
+    cursor: pointer;
+}
+.table-label-orange {background-color: #FF6600;}
+.table-label-red    {background-color: #fa5a5a;}
+.table-label-yellow {background-color: #f0d264;}
+.table-label-green  {background-color: #82c8a0;}
+.table-label-cyan   {background-color: #7fccde;}
+.table-label-blue   {background-color: #6698cb;}
+.table-label-purple {background-color: #cb99c5;}
+.table-label-spring-green {background-color: mediumspringgreen;}
+
+.glow-label-red {
+    text-shadow: 1px 2px 3px #fa5a5a;
+}
+.glow-label-orange {
+    text-shadow: 1px 2px 3px #FF6600;
+}
+.glow-label-yellow {
+    text-shadow: 1px 2px 3px #f0d264;
+}
+.glow-label-green {
+    text-shadow: 1px 2px 3px #82c8a0;
+}
+.glow-label-cyan {
+    text-shadow: 1px 2px 3px #7fccde;
+}
+.glow-label-blue {
+    text-shadow: 1px 2px 3px #6698cb;
+}
+.glow-label-purple {
+    text-shadow: 1px 2px 3px #cb99c5;
+}
+.items-set {
+    margin-bottom: 140px;
+    background-color: #fff;
+    padding-bottom: 20px;
+    position: relative;
+    top: 100px;
+}
+.items-set .single-item {
+    border-radius: 7px;
+    box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.1);
+    margin: 100px 10px 0;
+    padding: 30px 25px;
+    position: relative;
+    background-color:#E5E7E9;
+    margin-bottom: 100px;
+}
+.items-set .single-item .photo-frame {
+    left: 0;
+    position: absolute;
+    text-align: center;
+    top: -190px;
+    width: 100%;
+    border-bottom: 50%;
+    opacity: 0.8;
+}
+.items-set .single-item .photo-frame:hover {
+    opacity: 1;
+}
+.items-set .single-item .item-photo {
+    border: 0 solid #000;
+    box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.2);
+    font-size: 20px;
+    height: 180px;
+    width: 200px;
+    text-align: center;
+    border-bottom: 100px;
+}
+.items-set .single-item h2 {
+    border-radius: 60px;
+    position: relative;
+    width: 100%;
+    font-family: "Agency FB";
+    font-size: 15pt;
+    text-align: left;
+    left: 15%;
+}
+
+.items-set .single-item h2::before {
+    background: #000 none repeat scroll 0 0;
+    bottom: -5px;
+    content: "";
+    height: 2px;
+    left: 20%;
+    position: absolute;
+    width: 60%;
+}
+
+.items-set .single-item p {
+    color: #3c354e;
+    font-family: "Roboto", sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 26px;
+    text-align: center;
+}
+#items-buttons {
+    position: relative;
+    left: 40px;
+}
+#add-item-options {
+    position: relative;
+    left: 50px;
+}
+
+
+/***********************************************
+Automated Model Builder
+***********************************************/
+
+#main-automated-model {
+    position: relative;
+    float: right;
+    top: 44px;
+    right: 7%;
+    width: 75%;
+    height: 1000px;
+}
+#amb-details-internal {
+    position: relative;
+    left: 10px;
+}
+#amb-select-internal {
+    position: relative;
+    left: 10px;
+}
+#select-section {
+    width: 49%;
+    float: right;
+    position: relative;
+    left: 4%;
+    height: 800px;
+}
+#model-generator-section {
+    width: 50%;
+    float: right;
+    position: relative;
+    left: 3%;
+    height: 800px;
+}
+.model-row-align {
+    position: relative;
+    top: 8px;
+}
+#layers-operations {
+    position: relative;
+    left: 10px;
+}
+.edit-primary {
+    margin-right: 3px;
+}
+.edit-primary:hover {
+    color: #7fccde;
+}
+.delete-danger:hover {
+    color: #fa5a5a;
+}
+.btn-select {
+    padding: 20px;
+    font-size: 18pt;
+    font-family: "Agency FB";
+}
+#model-architecture {
+    position: relative;
+    left: 45px;
+    height: 500px;
+    float: right;
+    top: -30px;
+}
+.neuron-shape {
+    border-radius: 70px;
+    border: 2px double darkblue;
+    width: 40px;
+    height: 40px;
+    margin-bottom: 10px;
+}
+.dots {
+    border-radius: 70px;
+    background-color: black;
+    width: 2px;
+    height: 2px;
+    margin-bottom: 5px;
+    position: relative;
+    left: 15px;
+}
+.twod-shape {
+    position: relative;
+    top: 10px;
+    border: 2px double darkblue;
+    width: 50px;
+    height: 300px;
+    margin-right: 20px;
+}
+.convolution-shape-wrapper {
+    position: relative;
+    top: 10px;
+    left: -10px;
+}
+.convolution-twod-shape {
+    width: 50px;
+    height: 300px;
+    position: absolute;
+}
+.convolution-twod-shape-1 {
+    border: 2px double blue;
+    top: 5px;
+    left: 5px;
+}
+.convolution-twod-shape-2 {
+    border: 2px double #7fccde;
+    top: 10px;
+    left: 10px;
+}
+.convolution-twod-shape-3 {
+    border: 2px double #82c8a0;
+    top: 15px;
+    left: 15px;
+}
+.convolution-twod-shape-4 {
+    border: 2px double red;
+    top: 20px;
+    left: 20px;
+}
+.convolution-twod-shape-5 {
+    border: 2px double #FCB8C4;
+    top: 25px;
+    left: 25px;
+}
+.convolution-twod-shape-6 {
+    border: 2px double yellow;
+    top: 30px;
+    left: 30px;
+}
+.architecture-chart {
+    position: relative;
+    top: 40px;
+    left: 5%;
+}
+.architecture-arrow {
+    background-image: url('http://localhost:8000/static/images/arrow.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 120px;
+    height: 100px;
+    position: relative;
+    top: 70px;
+}
+.linear-text {
+    position: relative;
+    top: 60px;
+    left: 5px;
+}
+.linear-section {
+    margin-left: 20px;
+}
+.vector-section {
+    position: relative;
+    align-self: center;
+}
+#layers-quantity-statement {
+    position: relative;
+    left: 15px;
+}
+
+
