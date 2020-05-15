@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Menu from '../home/menu.js';
-import Upper from '../home/upper/header.js';
-import { homepage } from '../../appconf.js';
-import DatasetMain from './main.js';
-import DataSetSidebar from './sidebar.js';
+import Menu from '../home/menu';
+import Upper from '../home/upper/header';
+import { homepage } from '../../appconf';
+import DatasetMain from './main';
+import DataSetSidebar from './sidebar/sidebar';
 
 class DataSetPage extends Component {
     constructor(props) {

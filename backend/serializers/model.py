@@ -37,3 +37,13 @@ class LossTypesSerializer(serializers.ModelSerializer):
     class Meta:
         model = LossTypes
         fields = '__all__'
+
+class KnownModelsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = KnownModels
+        fields = '__all__'
+
+class ProjectKnownModelsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectKnownModel
+        fields = '__all__'

@@ -41,7 +41,6 @@ class RegisterForm extends Component {
         this.setState({
             user
         })
-        console.log(this.state)
     }
 
     female_button_change = (e) => {
@@ -50,7 +49,6 @@ class RegisterForm extends Component {
         this.setState({
             user
         })
-        console.log(this.state)
     }
 
     register_action(e) {

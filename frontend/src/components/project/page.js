@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Menu from '../home/menu.js';
-import Upper from '../home/upper/header.js';
-import MainProject from './main-content.js';
-import ProjectSideBar from './sidebar.js';
-import { homepage } from '../../appconf.js';
+import Menu from '../home/menu';
+import Upper from '../home/upper/header';
+import MainProject from './main-content';
+import ProjectSideBar from './sidebar/sidebar';
+import { homepage } from '../../appconf';
  
 class ProjectPage extends Component {
     constructor(props) {

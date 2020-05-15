@@ -7,13 +7,13 @@ function Vector(props) {
         neurons.push(i);
     }
     return (
-        <div className="col-md-1 col-xs-4 vector-section">
+        <div className="row">
             {
                 neurons.map((neuron) =>
-                    <div className="neuron-shape"></div>
+                    <span className="neuron-shape"></span>
                 )
             }
-            <h6 className="text">Size: { props.size }</h6>
+            {/*<h6 className="text">Size: { props.size }</h6> */}
         </div>
     );
 }

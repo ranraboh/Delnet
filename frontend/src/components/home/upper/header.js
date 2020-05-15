@@ -10,11 +10,6 @@ class Upper extends Component {
         }
         this.handleScroll = this.handleScroll.bind(this);
     }
-    componentWillMount() { 
-        $('.carousel').carousel({
-            interval: false
-        }); 
-    }
 
     componentWillUnmount() {
         window.removeEventListener('scroll', this.handleScroll);

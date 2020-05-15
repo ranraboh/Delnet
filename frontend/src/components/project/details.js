@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import ProjectDetailsForm from './details-form.js'
+import ProjectDetailsForm from './details-form'
 
 class ProjectGeneralDetails extends Component {
     constructor(props) {

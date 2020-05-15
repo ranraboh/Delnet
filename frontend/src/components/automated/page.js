@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import Menu from '../home/menu.js';
 import Upper from '../home/upper/header.js';
 import AutomatedModelMain from './main.js';
+import IntroModelBuilder from './intro.js';
 import { homepage } from '../../appconf.js';
 
 class AutomatedModelPage extends Component {

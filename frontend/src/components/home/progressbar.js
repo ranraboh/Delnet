@@ -37,7 +37,7 @@ class ProgressBar extends Component {
                 <div class={"progress-text progress-bar-striped " + this.state.type } role="progressbar" 
                     aria-valuenow={ this.state.value } aria-valuemin="0" aria-valuemax="100"
                     style={{width: this.state.value + "%"}}>
-                        { this.state.value + "%" }
+                        { (this.props.show != false)? this.state.value + "%": '' }
                     </div>
             </div>
         )

@@ -1,15 +1,22 @@
 
 from backend.submodels.dataset import *
 from backend.submodels.project import Project
+from backend.actions.general import create_dirs_along_path
+from django.db.models import Avg, Max, Min, Sum, Count
 from django.conf import settings
 import matplotlib.image as mpimg
 from PIL import Image as pil
 import matplotlib.pyplot as plt
 from django.core.files.images import get_image_dimensions
 import urllib.request
+from enum import Enum
 import torch.nn
 import numpy as np
 import os
+
+# returns dataset object by its identification number
+def dataset_by_id(dataset_id):
+    return Dataset.objects.filter(id=dataset_id)[0]
 
 # upload the project dataset into memory 
 def load_dataset(dataitems, labels):
@@ -21,6 +28,15 @@ def load_dataset(dataitems, labels):
         image_data = torch.as_tensor(np.asarray(image), dtype=torch.float).permute(2, 1, 0).cuda()
         dataset.append((image_data, labels[item.label.name]))
     return dataset
+
+# convert from image into model input sample format
+def image_to_sample(image):
+    image = pil.open(image)
+    image = image.resize((64, 64))
+    plt.imshow(image)
+    image_data = torch.as_tensor(np.asarray(image), dtype=torch.float).permute(2, 1, 0).cuda()    
+    return image_data.view(1, 3, 64, 64)
+
 
 # load labels records of project dataset
 def labels_dictionary(dataset_id):
@@ -43,6 +59,7 @@ def upload_items_list(label, insert_by, dataset, items_quantity, items_list):
     user = User.objects.filter(username=insert_by)[0]
     dataset = Dataset.objects.filter(id=dataset)[0]
     save_to = settings.MEDIA_ROOT + '/datasets/' + str(dataset.id) + '/' + str(label.id) + '/'
+    create_dirs_along_path(path=save_to)
     for i in range(items_quantity):
         item = items_list[str(i)]
         item_path = save_to + item.name
@@ -60,15 +77,6 @@ def add_item(label, insert_by, dataset, image_url):
     create_dirs_along_path(path=save_to)
     urllib.request.urlretrieve(image_url, name)
     DataItem.objects.create(label=label, insert_by=user, dataset=dataset, item=name)
-
-# in case there are unexisted directories along path create them 
-def create_dirs_along_path(path):
-    if not os.path.exists(os.path.dirname(path)):
-        try:
-            os.makedirs(os.path.dirname(path))
-        except OSError as exc: 
-            if exc.errno != errno.EEXIST:
-                raise
 
 # load datasets records of praticular user
 def user_datasets(username):
@@ -99,7 +107,7 @@ def labels_expand_data(dataset_id):
     colors_amount = len(colors)
     for index, label in enumerate(labels):
         records.append({ 'id': label.id, 'name': label.name, 'description': label.description , 'insert_by': label.insert_by.username, 
-            'insertion_date': label.insertion_date, 'count': label.dataitem__count, 'color' : colors[index % colors_amount] })
+            'insertion_date': label.insertion_date, 'count': label.items_quantity, 'color' : colors[index % colors_amount] })
     return records
 
 # computes quantity of labels of praticular dataset
@@ -109,9 +117,37 @@ def compute_labels_quantity(dataset_id):
 # computes quantity of items per label for praticular dataset
 def items_per_label(dataset_id):
     labels_dataset = DataLabel.objects.filter(dataset_id=dataset_id)
-    datalabels = labels_dataset.annotate(models.Count('dataitem'))
+    datalabels = labels_dataset.annotate(items_quantity=models.Count('dataitem'))
     return datalabels
-    
+
+# user contributions items uploading of praticular dataset
+def items_per_user(dataset_id):
+    users = []
+    dataset_items = DataItem.objects.filter(dataset=dataset_id)
+    user_grouped = dataset_items.values('insert_by').annotate(items_quantity=Count('insert_by'))
+    for record in user_grouped:
+        users.append({ 'user': record['insert_by'], 'items_quantity': record['items_quantity']  })
+    return users
+
+# computes quantity of items per date for praticular dataset
+def items_per_date(dataset_id):
+    dates = []
+    dataset_items = DataItem.objects.filter(dataset=dataset_id)
+    date_grouped = dataset_items.values('insert_date').annotate(items_quantity=Count('insert_date'))
+    for record in date_grouped:
+        dates.append({ 'date': record['insert_date'], 'items_quantity': record['items_quantity']  })
+    return dates
+
+def models_results(dataset_id):
+    project_results = []
+    projects = Project.objects.filter(dataset=dataset_id)
+    for project in projects:
+        project_results.append({ 'id': project.id, 'name': project.project_name, 'result': project.result })
+    return project_results
+
+def models_count(dataset_id):
+    return models_results(dataset_id).count()
+
 # get dataset identification of given project
 def get_project_dataset(project_id):
     project = Project.objects.filter(id=project_id)[0]

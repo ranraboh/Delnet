@@ -1,4 +1,4 @@
-import { ADD_RUN_RECORD, RUN_MODEL, GET_LOSS_TYPES, GET_OPTIMIZER_TYPES, GET_RUN_RESULT_TRAIN, GET_RUN_RESULT_DEV, SELECT_RUN, GET_PROJECT_RUNS, CLEAR_RUN, GET_UNFINISHED_RUNS, GET_LABELS_METRICS, GET_F1_RESULT } from '../actions/types.js'
+import { ADD_RUN_RECORD, RUN_MODEL, GET_LOSS_TYPES, GET_OPTIMIZER_TYPES, GET_RUN_RESULT_TRAIN, GET_RUN_RESULT_DEV, SELECT_RUN, GET_PROJECT_RUNS, CLEAR_RUN, GET_UNFINISHED_RUNS, GET_LABELS_METRICS, GET_F1_RESULT, DEPLOY_MODEL } from '../actions/types.js'
 import { GET_CONFUSION_MATRIX, GET_RECALL_RESULT, GET_PRECISION_RESULT } from '../actions/types.js';
 
 const initialState = {
@@ -19,7 +19,8 @@ const initialState = {
     project_runs: null,
     unfinished_runs: null,
     runs_quantity: 0,
-    unfinished_runs_quantity: 0
+    unfinished_runs_quantity: 0,
+    deploy_results: []
 }
 
 export function modelReducer(state = initialState, action) {
@@ -165,6 +166,11 @@ export function modelReducer(state = initialState, action) {
                         confusion_matrix: action.payload
                     }
                 }
+            }
+        case DEPLOY_MODEL:
+            return {
+                ...state,
+                deploy_results: action.payload
             }
         default:
             return state;

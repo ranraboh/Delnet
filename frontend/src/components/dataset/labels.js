@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { getDatasetLabels, getLabelsCount } from '../../actions/datasets.js';
+import { getDatasetLabels, getLabelsCount } from '../../actions/dataset/get';
 
 class LabelsSection extends Component {
     constructor(props) {
@@ -28,10 +28,6 @@ class LabelsSection extends Component {
         this.setState({
             dataset: nextProps.dataset_data
         })
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        return true;
     }
 
     render() {

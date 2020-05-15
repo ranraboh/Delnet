@@ -1,4 +1,4 @@
-import { GET_FILE_CONTENT, UPDATE_PROJECT, GET_PROJECT_FILES ,GET_USER_PROJECTS, CREATE_PROJECT, DELETE_PROJECT, SELECT_PROJECT, GET_PROJECT_TEAM, ADD_MEMBER_TEAM, DELETE_MEMBER_TEAM, SELECT_FILE } from '../actions/types.js'
+import { GET_FILE_CONTENT, UPDATE_PROJECT, GET_PROJECT_FILES ,GET_USER_PROJECTS, CREATE_PROJECT, DELETE_PROJECT, SELECT_PROJECT, GET_PROJECT_TEAM, ADD_MEMBER_TEAM, DELETE_MEMBER_TEAM, SELECT_FILE, GET_PROJECT_STATICS } from '../actions/types.js'
 
 const initialState = {
     user_projects: null,
@@ -10,8 +10,11 @@ const initialState = {
       description: window.localStorage.getItem('description'),
       result: window.localStorage.getItem('result'),
       dataset: window.localStorage.getItem('dataset'),
+      model_type: window.localStorage.getItem('model_type'),
+      type_description: window.localStorage.getItem('type_description'),
       files: [],
       files_quantity: -1,
+      statics: null
     },
     file_selected: {
       id: -1,
@@ -46,7 +49,8 @@ export function projectReducer(state = initialState, action) {
           project_name: action.payload.project_name,
           description: action.payload.description,
           result: action.payload.result,
-          dataset: action.payload.dataset
+          dataset: action.payload.dataset,
+          model_type: action.payload.model_type
         }
       }
     case UPDATE_PROJECT:
@@ -109,6 +113,14 @@ export function projectReducer(state = initialState, action) {
             ...state,
             member_deleted: action.payload
         }
+        case GET_PROJECT_STATICS:
+          return {
+            ...state,
+            project_selected: {
+              ...state.project_selected,
+              statics: action.payload
+            }
+          }
     default:
       return state
   }

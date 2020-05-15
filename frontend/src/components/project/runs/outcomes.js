@@ -71,7 +71,7 @@ class RunOutcomes extends Component {
             return (<h2>No Runs</h2>)
         let selected_run_data = this.display_run_data()
         return (
-        <section class="our_activity">
+        <section className="section-in-main">
             <div className="header-section-v1 header-v1-purple">
                 <h1 id="projects-title">
                     Run Outcomes

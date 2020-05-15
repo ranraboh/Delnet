@@ -5,9 +5,10 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.pagination import PageNumberPagination
-from ..submodels.dataset import *
-from ..serializers.dataset import *
-from ..actions.dataset import *
+from backend.submodels.dataset import *
+from backend.serializers.dataset import *
+from backend.actions.dataset import *
+from backend.analyze.dataset import *
 import urllib.request
 from django.conf import settings
 import os
@@ -34,6 +35,23 @@ class DatasetViewSet(viewsets.ModelViewSet):
         username = kwargs['username']
         dataset_quantity = user_datasets_quantity(username)
         return Response({ "username":username, "quantity":dataset_quantity })
+
+    # action which returns dataset analysis details
+    # url: /api/dataset/[id]/analyze 
+    @action(detail=False)
+    def dataset_analyze(self, request, *args, **kwargs):
+        dataset_id = kwargs['id']
+        analyzer = DatasetAnalyzer(dataset_id)
+        return Response(analyzer.analyze())
+
+    # action which returns the number of datasets of each user
+    # url: /api/dataset/[id]/projects 
+    @action(detail=False)
+    def dataset_projects_results(self, request, *args, **kwargs):
+        dataset_id = kwargs['id']
+        models = models_results(dataset_id)
+        return Response(models)
+
 
 class DataLabelViewSet(viewsets.ModelViewSet):
     queryset = DataLabel.objects.all()
@@ -121,7 +139,21 @@ class DataItemViewSet(viewsets.ModelViewSet):
         upload_items_list(label=label, insert_by=user, dataset=dataset, items_quantity=items_quantity, items_list=request.data)
         return Response({ 'status': 'item added successfully' })
 
-        
+    # action which returns the number of datasets of each user
+    # url: /api/dataset/[id]/team/contributions 
+    @action(detail=False)
+    def user_contributions(self, request, *args, **kwargs):
+        dataset_id = kwargs['id']
+        models = items_per_user(dataset_id)
+        return Response(models)
+
+    # action which returns the number of datasets of each user
+    # url: /api/dataset/[id]/date
+    @action(detail=False)
+    def date_distribution(self, request, *args, **kwargs):
+        dataset_id = kwargs['id']
+        models = items_per_date(dataset_id)
+        return Response(models)
     
 
 class DatasetCollectorsViewSet(viewsets.ModelViewSet):

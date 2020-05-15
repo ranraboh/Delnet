@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { ADD_RUN_RECORD, RUN_MODEL } from '../types.js';
+import { ADD_RUN_RECORD, RUN_MODEL, DEPLOY_MODEL } from '../types.js';
 import { GET_OPTIMIZER_TYPES, GET_LOSS_TYPES, GET_UNFINISHED_RUNS, GET_CONFUSION_MATRIX, GET_RECALL_RESULT, GET_PRECISION_RESULT, GET_F1_RESULT } from '../types.js';
 import { GET_PROJECT_RUNS, GET_RUN_RESULT_TRAIN, GET_RUN_RESULT_DEV, SELECT_RUN, CLEAR_RUN } from '../types.js';
 
@@ -18,6 +18,28 @@ export const runModel = (run_request, callback_function) => dispatch => {
             payload: result.data
         })
     }).then(callback_function).catch(err => console.log(err));
+}
+
+/**
+ * deploy and use your own model, send an image and get its prediction
+ * @param {*} request details about deploy run request
+ */
+export const deployModel = (request) => dispatch => {
+    console.log(request)
+    let formData = new FormData();
+    formData.append('project', request.project);
+    formData.append('state', request.state);
+    formData.append('images_quantity', request.images_quantity);
+    for (var i = 0; i < request.images_quantity; i++) {
+        formData.append(i , request.images[i]);
+    }
+    axios.post('/api/deploy/model', formData).then(response => {
+        console.log(response);
+        return dispatch({
+            type: DEPLOY_MODEL,
+            payload: response.data
+        })
+    }).catch(err => console.log(err))
 }
 
 /**
