@@ -15,7 +15,7 @@ class StandardSize(Enum):
     RADICAL = 1.5
     EXTREMLY_RADICAL = 2
 
-class AccruacyClass(Enum):
+class AccuracyClass(Enum):
     EXCELLENT = 0.95
     GREAT = 0.9
     GOOD = 0.85

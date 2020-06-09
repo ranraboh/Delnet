@@ -3,20 +3,24 @@ from backend.actions.dataset import *
 from backend.actions.runs import *
 from backend.actions.model import *
 from backend.actions.amb import *
+from backend.actions.general import float_precision
 from backend.analyze.enums import ParameterModify
 from backend.analyze.text import *
 import math
 
 class RunAnalysis():
-    def __init__(self, run_record, run_results):
+    def __init__(self, run_record, run_results, optimizers, loss_types, items_quantity):
         # load run information
         self.run_record = run_record
         self.train_results = run_results['t']
         self.dev_results = run_results['d']
+        self.optimizers = optimizers
+        self.loss_types = loss_types
         
         # evaluate overfitting and underfitting state which used in other tests
         self.overfitting = compute_overfitting(self.train_results, self.dev_results)
         self.underfitting = not self.overfitting and compute_underfitting(self.train_results)
+        self.items_quantity = items_quantity
         self.earlystopping()
 
     def analyze(self):
@@ -143,35 +147,53 @@ class RunAnalysis():
                 'difference': difference
             },
             'should_early_stop': stop,
-            'factor': factor
+            'factor': factor,
         }
         return stop
     
     def batch_size(self):
         batch_size = self.run_record.batch_size
+        status = ParameterModify.KEEP_VALUE
+        if self.underfitting:
+            if batch_size > self.items_quantity / 10:
+               status = ParameterModify.DECREASE_VALUE_HR 
+            elif batch_size > self.items_quantity / 20:
+                status = ParameterModify.DECREASE_VALUE
+        elif self.overfitting and batch_size < 10:
+                status = ParameterModify.INCREASE_VALUE
         return {
             'value': batch_size,
-            'status': ParameterModify.KEEP_VALUE,
+            'status': status,
             'factor': BatchSizeFactor.REASONABLE_VALUE,
             'text': BatchSizeFactor.REASONABLE_VALUE
         }
     
     def optimizer(self):
+        optimizer = self.run_record.optimizer
+        status = ParameterModify.KEEP_VALUE
+        factor = OptimizerFactor.REASONABLE_VALUE
+        if optimizer != 1 and self.underfitting:
+            status = ParameterModify.CHANGE_VALUE
+            factor = OptimizerFactor.ADAM
         analysis =  {
-            'value': self.run_record.optimizer.id,
-            'status': ParameterModify.KEEP_VALUE,
-            'factor': OptimizerFactor.REASONABLE_VALUE
+            'value': self.optimizers[self.run_record.optimizer.id],
+            'status': status,
+            'factor': factor
         }
         if self.underfitting:
             analysis['status'] = ParameterModify.CHANGE_VALUE
         return analysis
     
     def loss_type(self):
+        loss_type = self.run_record.loss_type
+        status = ParameterModify.KEEP_VALUE
+        factor = LossTypeFactor.REASONABLE_VALUE
+        if self.underfitting and loss_type != 1:
+            status = ParameterModify.CHANGE_VALUE
+            factor = LossTypeFactor.CROSS_ENTROPY
         analysis =  {
-            'value': self.run_record.loss_type.id,
-            'status': ParameterModify.KEEP_VALUE,
-            'factor': LossTypeFactor.REASONABLE_VALUE
+            'value': self.loss_types[self.run_record.loss_type.id],
+            'status': status,
+            'factor': factor
         }
-        if self.underfitting:
-            analysis['status'] = ParameterModify.CHANGE_VALUE
         return analysis

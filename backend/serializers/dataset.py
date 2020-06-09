@@ -8,6 +8,13 @@ class DataSetSerializer(serializers.ModelSerializer):
         model = Dataset
         fields = '__all__'
 
+class DataSetFollowSerializer(serializers.ModelSerializer):
+    follow = serializers.BooleanField()
+    follow_id = serializers.IntegerField()
+    class Meta:
+        model = Dataset
+        fields = '__all__'
+
 class DataItemSerializerDepth(serializers.ModelSerializer):
     class Meta:
         model = DataItem
@@ -27,4 +34,14 @@ class DataLabelSerializer(serializers.ModelSerializer):
 class DatasetCollectorsSerializer(serializers.ModelSerializer):
     class Meta:
         model = DatasetCollectors
+        fields = '__all__'
+
+class DatasetFollowerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DatasetFollowers
+        fields = '__all__'
+
+class UnlabeledSamplesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UnlabeledSamples
         fields = '__all__'

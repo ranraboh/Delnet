@@ -1,7 +1,8 @@
 import React, { Component, useReducer } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { getUserDatasets, selectDataset, getDatasetTeam } from '../../actions/datasets';
+import { getUserDatasets, getDatasetTeam } from '../../actions/dataset/get';
+import { selectDataset } from '../../actions/dataset/manipulation'
 import { homepage } from '../../appconf.js';
 
 class DataSetsUser extends Component {
@@ -45,7 +46,7 @@ class DataSetsUser extends Component {
                                         <td>
                                             <button className="btn btn-outline-primary table-button" 
                                                 onClick={ () => this.select_dataset(dataset.id) } >
-                                                go into
+                                                view
                                             </button> 
                                             &nbsp;
                                             <button className="btn btn-outline-danger table-button" >

@@ -1,11 +1,16 @@
+from backend.submodels.model import Optimizer, LossTypes
 def dropout_exists(layers):
     exist = 0
+    avg_constants = 0.0
     constants = []
     for layer in layers:
         if layer['type'] == 'Dropout':
             exist = exist + 1
-            constant.append(layer['parameters']['dropout_constant'])
-    return { 'exist': exist, 'dropout_constant': constants  }
+            constants.append(layer['dropout_constant'])
+            avg_constants = avg_constants + float(layer['dropout_constant'])
+    if exist != 0:
+        avg_constants = avg_constants / exist
+    return { 'exist': exist, 'dropout_constant': constants, 'average_constant': avg_constants  }
 
 def batchnormn_exists(layers):
     exist = 0
@@ -75,7 +80,7 @@ def parameters_quantity(layers):
             kernel_size = layer['kernel_size']
             out_channels = int(layer['out_channels'])
             in_channels = layer['in_channels']
-            parameters +=  (in_channels * out_channels * int(kernel_size[0]) * int(kernel_size[1])) + out_channels
+            parameters +=  (int(in_channels) * int(out_channels) * int(kernel_size[0]) * int(kernel_size[1])) + int(out_channels)
     return parameters
 
 def use_rate_activation(activations):
@@ -107,3 +112,17 @@ def get_activation_value(activation, activations):
     if activation not in activations:
         return 0
     return activations[activation]
+
+def optimizers_dictionary():
+    optimizers = Optimizer.objects.all()
+    dictionary = {}
+    for optimizer in optimizers:
+        dictionary[optimizer.id] = optimizer.optimizer
+    return dictionary
+
+def loss_dictionary():
+    loss_types = LossTypes.objects.all()
+    dictionary = {}
+    for loss_type in loss_types:
+        dictionary[loss_type.id] = loss_type.loss_type
+    return dictionary

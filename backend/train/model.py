@@ -32,11 +32,8 @@ class Model(tnn.Module,):
     def forward(self, *input):
         cur_input = input[0]
         for module in self.layers_modules:
+            print (cur_input.shape)
+            print (module)
             cur_input = module(cur_input)
         return cur_input
-    
-    def save_parameters(self, path):
-       torch.save(self.state_dict(), path)
-    
-    def load_parameters(self, path):
-        self.load_state_dict(torch.load(path))
+

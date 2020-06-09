@@ -55,7 +55,6 @@ class RegisterForm extends Component {
         e.preventDefault();
         console.log('register')
         this.props.createUser(this.state.user, () => {
-            console.log('callback..')
             alert('the user added successfully, you are able to log in');
             window.location = homepage + '/login';
         })
@@ -148,11 +147,10 @@ const mapStateToProps = state => {
     return {}
 }
 
-const mapDispatchToProps = disaptch => {
+const mapDispatchToProps = dispatch => {
     return {
         createUser: (user, callback) => {
-            console.log(callback)
-            createUser(user, callback);
+            dispatch(createUser(user, callback));
         }
     }
 }

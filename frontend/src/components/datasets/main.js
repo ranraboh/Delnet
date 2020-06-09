@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import DataSetsUser from './usersets.js';
-import BuildDataset from './create.js';
-import DatasetsItemsGraph from './items-graph.js';
+import DataSetsUser from './usersets';
+import BuildDataset from './create';
+import DatasetsItemsGraph from './items-graph';
+import ViewDatasets from './view'
 
 class DataSetsMain extends Component {
     constructor(props) {
@@ -15,6 +16,7 @@ class DataSetsMain extends Component {
         this.get_section_toggle = this.get_section_toggle.bind(this);
         this.toggle_table = this.toggle_table.bind(this);
         this.toggle_create = this.toggle_create.bind(this);
+        this.toggle_search = this.toggle_search.bind(this);
     }
 
     get_section_toggle() {
@@ -24,6 +26,8 @@ class DataSetsMain extends Component {
             return (<DataSetsUser />);
         else if (this.state.show_toggle == 'Build Dataset')
             return (<BuildDataset />)
+        else if (this.state.show_toggle == 'Search Datasets')    
+            return (<ViewDatasets />)
         else
             return '';
     }
@@ -41,6 +45,15 @@ class DataSetsMain extends Component {
             ...this.state,
             show_toggle: 'Build Dataset',
             description: 'you can build a new dataset, fill in the premilinary information about your new dataset'
+        })
+    }
+
+    toggle_search() {
+        console.log('toggle seach')
+        this.setState({
+            ...this.state,
+            show_toggle: 'Search Datasets',
+            description: 'search for datasets eigther to use or enrich your own'
         })
     }
 
@@ -64,7 +77,7 @@ class DataSetsMain extends Component {
                     <button className="btn btn-outline-success btn-datasets" onClick={ this.toggle_create } >
                         <i className="fa fa-plus"></i> Build Dataset
                     </button>
-                    <button className="btn btn-outline-dark btn-datasets" >
+                    <button className="btn btn-outline-dark btn-datasets" onClick= { this.toggle_search } >
                         <i className="fa fa-search"></i> Search Datasets
                     </button>
                 </div>

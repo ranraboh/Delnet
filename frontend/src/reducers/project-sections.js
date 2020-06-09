@@ -11,7 +11,7 @@ import { PROJECT_TEAM_ACTIVE, PROJECT_TEAM_NONACTIVE } from '../actions/types.js
 import { MODEL_FILES_ACTIVE, MODEL_FILES_NONACTIVE } from '../actions/types.js'
 import { PROJECT_DIAGRAMS_ACTIVE, PROJECT_DIAGRAMS_NONACTIVE } from '../actions/types.js'
 import { PROJECT_STACTICS_ACTIVE, PROJECT_STACTICS_NONACTIVE } from '../actions/types.js'
-import { PROJECT_RECOMMENDATIONS_ACTIVE, PROJECT_RECOMMENDATIONS_NONACTIVE } from '../actions/types.js'
+import { PROJECT_ANALYSIS_ACTIVE, PROJECT_ANALYSIS_NONACTIVE } from '../actions/types.js'
 import { PROJECT_TESTS_ACTIVE, PROJECT_TESTS_NONACTIVE } from '../actions/types.js'
 
 const initialState = {
@@ -19,14 +19,14 @@ const initialState = {
     project_team_active: false,
     model_files_active: false,
     run_outcomes_active: false,
-    recommendations_active: false,
+    analysis_active: true,
     tests_active: false,
     diagrams_active: false,
     statics_active: true,
     check_list_active: false,
     access_dataset_active: false,
     run_model_active: false,
-    deploy_model_active: true,
+    deploy_model_active: false,
     layers_active: false,
     architecture_active: false
 }
@@ -62,15 +62,15 @@ export function projectSectionsReducer(state = initialState, action) {
             ...state,
             run_outcomes_active: false
         };
-    case PROJECT_RECOMMENDATIONS_ACTIVE:
+    case PROJECT_ANALYSIS_ACTIVE:
         return {
             ...state,
-            recommendations_active: true
+            analysis_active: true
         };
-    case PROJECT_RECOMMENDATIONS_NONACTIVE:
+    case PROJECT_ANALYSIS_NONACTIVE:
         return {
             ...state,
-            recommendations_active: false
+            analysis_active: false
         };
     case PROJECT_TESTS_ACTIVE:
         return {

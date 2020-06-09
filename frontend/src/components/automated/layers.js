@@ -17,7 +17,8 @@ class ModelLayers extends Component {
                 add: { id:'btn-add', icon: 'fa fa-plus-square-o' , text: 'Add Layer', hover:false },
                 save: { id:'btn-save', icon: 'fa fa-floppy-o', text: 'Save', hover:false }
             },
-            error: ''
+            error: '',
+            layer_error: -1
         }
 
         /* bind internal methods */
@@ -45,7 +46,8 @@ class ModelLayers extends Component {
         if (error != '') {
             this.setState({
                 ...this.state,
-                error: error
+                error: error.error,
+                layer_error: error.layer
             })
         }
     }
@@ -132,7 +134,7 @@ class ModelLayers extends Component {
                 <div className="container">
                         {
                             this.state.layers.map((layer) => 
-                                <LayerItem id={ layer.id } layer={ layer } type={ layer.type } input={ display_size(layer.input) } on_select={ this.props.selectLayer } on_delete={ this.delete_click }
+                                <LayerItem id={ layer.id } error={ this.state.layer_error == layer.id } layer={ layer } type={ layer.type } input={ display_size(layer.input) } on_select={ this.props.selectLayer } on_delete={ this.delete_click }
                                     output={ display_size(layer.output) } activation={ layer.activation } params={ layer.params_form } />
                             ) 
                         }
@@ -148,6 +150,7 @@ class ModelLayers extends Component {
                         { (this.state.buttons.save.hover)? ' ' + this.state.buttons.save.text: '' }
                     </button>
                 </div>
+                <p/><p/><p/><p/>
                 <ErrorBox strong={ 'Error!' } message={ this.state.error } color="danger" />
             </div>
         );

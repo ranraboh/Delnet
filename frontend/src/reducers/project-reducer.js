@@ -1,4 +1,4 @@
-import { GET_FILE_CONTENT, UPDATE_PROJECT, GET_PROJECT_FILES ,GET_USER_PROJECTS, CREATE_PROJECT, DELETE_PROJECT, SELECT_PROJECT, GET_PROJECT_TEAM, ADD_MEMBER_TEAM, DELETE_MEMBER_TEAM, SELECT_FILE, GET_PROJECT_STATICS } from '../actions/types.js'
+import { GET_FILE_CONTENT, UPDATE_PROJECT, GET_PROJECT_FILES ,GET_USER_PROJECTS, CREATE_PROJECT, DELETE_PROJECT, SELECT_PROJECT, GET_PROJECT_TEAM, ADD_MEMBER_TEAM, DELETE_MEMBER_TEAM, SELECT_FILE, GET_PROJECT_STATICS, GET_PROJECT_ANALYSIS, GET_ACCURACY_RANGE, GET_SEARCH_DATASETS, GET_DATASETS_PUBLIC, GET_DATASET_OFFERS, GET_UNLABLED_SMAPLES } from '../actions/types.js'
 
 const initialState = {
     user_projects: null,
@@ -14,8 +14,14 @@ const initialState = {
       type_description: window.localStorage.getItem('type_description'),
       files: [],
       files_quantity: -1,
-      statics: null
+      statics: null,
+      analysis: null,
+      accuracy_range: null,
+      offers: null,
+      unlabled: null
     },
+    public_datasets: null,
+    search_datasets: null,
     file_selected: {
       id: -1,
       name: null,
@@ -119,6 +125,22 @@ export function projectReducer(state = initialState, action) {
             project_selected: {
               ...state.project_selected,
               statics: action.payload
+            }
+          }
+        case GET_PROJECT_ANALYSIS:
+          return {
+            ...state,
+            project_selected: {
+              ...state.project_selected,
+              analysis: action.payload
+            }
+          }
+        case GET_ACCURACY_RANGE:
+          return {
+            ...state,
+            project_selected: {
+              ...state.project_selected,
+              accuracy_range: action.payload
             }
           }
     default:

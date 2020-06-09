@@ -121,9 +121,12 @@ class DataItemViewSet(viewsets.ModelViewSet):
         user = request.data['insert_by']
         dataset = request.data['dataset']
         item = request.data['item']
-
+        print(label)
         # upload item to server and add item records into database
-        add_item(label=label, insert_by=user, dataset=dataset, image_url=item)
+        if label == -1 or label == '-1':
+            add_unlabeled(insert_by=user, dataset=dataset, image_url=item)
+        else:
+            add_item(label=label, insert_by=user, dataset=dataset, image_url=item)
         return Response({ 'status': 'item added successfully' })
 
     @action(detail=True, methods=['post'], name='upload items')
@@ -136,7 +139,10 @@ class DataItemViewSet(viewsets.ModelViewSet):
         items_quantity = int(request.data['items_quantity'])
 
         # upload item to server and add item records into database
-        upload_items_list(label=label, insert_by=user, dataset=dataset, items_quantity=items_quantity, items_list=request.data)
+        if label == -1 or label == '-1':
+            upload_unlabeled_list(insert_by=user, dataset=dataset, items_quantity=items_quantity, items_list=request.data)
+        else:
+            upload_items_list(label=label, insert_by=user, dataset=dataset, items_quantity=items_quantity, items_list=request.data)
         return Response({ 'status': 'item added successfully' })
 
     # action which returns the number of datasets of each user
@@ -155,7 +161,6 @@ class DataItemViewSet(viewsets.ModelViewSet):
         models = items_per_date(dataset_id)
         return Response(models)
     
-
 class DatasetCollectorsViewSet(viewsets.ModelViewSet):
     queryset = DatasetCollectors.objects.all()
     permission_classes = {
@@ -176,3 +181,18 @@ class DataItemsListView(generics.ListAPIView):
         dataset_id = self.kwargs['id']
         items = items_records(dataset_id)
         return items
+
+class DatasetFollowersViewSet(viewsets.ModelViewSet):
+    queryset = DatasetFollowers.objects.all()
+    permission_classes = {
+        permissions.AllowAny
+    }
+    serializer_class = DatasetFollowerSerializer
+
+class UnlabeledSamplesViewSet(viewsets.ModelViewSet):
+    queryset = UnlabeledSamples.objects.all()
+    permission_classes = {
+        permissions.AllowAny
+    }
+    serializer_class = UnlabeledSamplesSerializer
+    

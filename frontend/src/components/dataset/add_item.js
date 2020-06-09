@@ -193,6 +193,11 @@ class AddItem extends Component {
                                         </p>
                                     )
                                 }
+                                <p>
+                                    <input type="radio" name="labels-group" className={ "radio-button-v1 radio-button-v1-" + this.state.colors[this.state.dataset.labels.length] }
+                                        checked={ this.state.item.label === -1 } />
+                                    <label className="radio-button-v1-label" for={ 'unlabeled' } onClick={ () => this.label_selection_handler(-1) }>unlabeled</label>
+                                </p>
                             </div>
                         </div>
                     </div>

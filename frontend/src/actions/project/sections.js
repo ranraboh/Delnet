@@ -11,7 +11,7 @@ import { PROJECT_TEAM_ACTIVE, PROJECT_TEAM_NONACTIVE } from '../types.js'
 import { MODEL_FILES_ACTIVE, MODEL_FILES_NONACTIVE } from '../types.js'
 import { PROJECT_DIAGRAMS_ACTIVE, PROJECT_DIAGRAMS_NONACTIVE } from '../types.js'
 import { PROJECT_STACTICS_ACTIVE, PROJECT_STACTICS_NONACTIVE } from '../types.js'
-import { PROJECT_RECOMMENDATIONS_ACTIVE, PROJECT_RECOMMENDATIONS_NONACTIVE } from '../types.js'
+import { PROJECT_ANALYSIS_ACTIVE, PROJECT_ANALYSIS_NONACTIVE } from '../types.js'
 import { PROJECT_TESTS_ACTIVE, PROJECT_TESTS_NONACTIVE } from '../types.js'
 
 export const activateSection = (section) => dispatch => {
@@ -39,8 +39,8 @@ export const activate_map_actiontype = (section) => {
             return PROJECT_NOTIFICATIONS_ACTIVE;
         case 'Runs Outcomes':
             return RUNS_OUTCOMES_ACTIVE;
-        case 'Recommendations':
-            return PROJECT_RECOMMENDATIONS_ACTIVE;
+        case 'Project Analysis':
+            return PROJECT_ANALYSIS_ACTIVE;
         case 'Tests':
             return PROJECT_TESTS_ACTIVE
         case 'Statics':
@@ -78,8 +78,8 @@ export const hide_map_actiontype = (section) => {
             return PROJECT_NOTIFICATIONS_NONACTIVE;
         case 'Runs Outcomes':
             return RUNS_OUTCOMES_NONACTIVE;
-        case 'Recommendations':
-            return PROJECT_RECOMMENDATIONS_NONACTIVE;
+        case 'Project Analysis':
+            return PROJECT_ANALYSIS_NONACTIVE;
         case 'Tests':
             return PROJECT_TESTS_NONACTIVE
         case 'Statics':

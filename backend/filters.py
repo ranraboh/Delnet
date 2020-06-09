@@ -12,6 +12,7 @@ from .serializers.dataset import *
 from .serializers.model import *
 from django.core.paginator import Paginator
 from .actions.model import *
+from backend.actions.dataset import *
 
 
 class ProjectsByUserFilter(generics.ListAPIView):
@@ -155,8 +156,35 @@ class RunRecordFilter(generics.ListAPIView):
         run_id = self.kwargs['id']
         return ProjectRuns.objects.filter(id=run_id)
 
+class UnlabeledDatasetFilter(generics.ListAPIView):
+    serializer_class = UnlabeledSamplesSerializer
 
+    def get_queryset(self):
+        dataset_id = self.kwargs['id']
+        return get_unlabeled_items(dataset_id)
 
+class PublicDataSetFilter(generics.ListAPIView):
+    serializer_class = DataSetFollowSerializer
+
+    def get_queryset(self):
+        user = self.kwargs['username']
+        public = public_dataset()
+        return follow_record(public, user)
+
+class DatasetNameFilter(generics.ListAPIView):
+    serializer_class = DataSetFollowSerializer
+
+    def get_queryset(self):
+        user = self.kwargs['username']
+        dataset_name = self.kwargs['name']
+        return follow_record(dataset_by_name(dataset_name), user)
+
+class DatasetOffersFilter(generics.ListAPIView):
+    serializer_class = DataItemSerializer
+
+    def get_queryset(self):
+        dataset_id = self.kwargs['id']
+        return dataset_labels_offers(dataset_id)    
 
 
 

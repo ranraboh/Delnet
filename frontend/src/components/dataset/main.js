@@ -8,11 +8,13 @@ import ItemsSection from "./items";
 import AddLabel from './add_label';
 import AddItem from './add_item';
 import Stats from './stats';
-import AnalysisDataset from "./analysis";
+import AnalysisDatasetWrapper from "./analysis-wrapper";
 import UserContribution from './graphs/contributions';
 import DateDistributionGraph from './graphs/date';
 import DatasetProjectsGraph from './graphs/projects';
 import LabelsDistribution from './graphs/labels';
+import TagSamples from './tag'
+import OfferSamples from './offer'
 
 class DataSetMain extends Component {
     constructor(props) {
@@ -38,11 +40,13 @@ class DataSetMain extends Component {
         let items_section = this.section(<ItemsSection/>, this.props.dataset_display.items_section)
         let add_label = this.section(<AddLabel/>, this.props.dataset_display.add_label)
         let add_item = this.section(<AddItem/>, this.props.dataset_display.add_item)
-        let analysis_section = this.section(<AnalysisDataset />, this.props.dataset_display.analyze)
+        let analysis_section = this.section(<AnalysisDatasetWrapper />, this.props.dataset_display.analyze)
         let user_contributions = this.section(<UserContribution/>, this.props.dataset_display.user_contributions)
         let date_distribution = this.section(<DateDistributionGraph/>, this.props.dataset_display.date_distribution)
         let projects_dataset = this.section(<DatasetProjectsGraph/>, this.props.dataset_display.dataset_projects)
         let labels_distribution = this.section(<LabelsDistribution/>, this.props.dataset_display.label_distribution)
+        let tag_samples = this.section(<TagSamples/>, this.props.dataset_display.tag_samples)
+        let offer_samples = this.section(<OfferSamples/>, this.props.dataset_display.offer_items)
         return (
             <div className="main-dataset">
                 <Stats />
@@ -57,6 +61,8 @@ class DataSetMain extends Component {
                 { user_contributions }
                 { date_distribution }
                 { projects_dataset }
+                { tag_samples }
+                { offer_samples }
             </div>
         );
     }

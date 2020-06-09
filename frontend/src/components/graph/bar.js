@@ -33,12 +33,12 @@ class BarChart extends Component {
 
     componentWillMount() {
         let colors = [ 'rgba(255, 99, 132, 0.6)', 'rgba(54, 162, 235, 0.6)', 'rgba(255, 206, 86, 0.6)',
-        'rgba(75, 192, 192, 0.6)', 'rgba(153, 102, 255, 0.6)', 'rgba(255, 159, 64, 0.6)', 'rgba(255, 99, 132, 0.6)' ]
+        'rgba(75, 192, 192, 0.6)', 'rgba(153, 102, 255, 0.6)', 'rgba(255, 159, 64, 0.6)' ]
         this.props.data.map((project, index) => {
             let chart_data = this.state.chart_data;
             chart_data.labels = [ ...chart_data.labels, project[this.state.category_display] ];
             chart_data.datasets[0].data = [ ...chart_data.datasets[0].data, project[this.state.value] ];
-            chart_data.datasets[0].backgroundColor = [ ...chart_data.datasets[0].backgroundColor, colors[index] ];
+            chart_data.datasets[0].backgroundColor = [ ...chart_data.datasets[0].backgroundColor, colors[index % colors.length] ];
             this.setState({
                 chart_data: chart_data
             }) 

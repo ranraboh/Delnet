@@ -36,6 +36,18 @@ class ProjectStatics extends Component {
                         <StaticsItem color="cyan" type="most-favorite" id="insertion_date" category="Date" value={ this.props.statics.files.most_file_uploads }  />
                     </div>
                     <p/>
+                    <div id="model-statics">
+                        <StaticsItem color="purple" category="Parameters quantity" value={ this.props.statics.model.parameters }  />
+                        <StaticsItem color="purple" category="Layers quantity" value={ this.props.statics.model.layers }  />
+                        <StaticsItem color="purple" category="Modules Usage" value={ '' }  />
+                        <StaticsItem color="purple" category="Dropout" value={  this.props.statics.model.dropout + " modules" }  />
+                        <StaticsItem color="purple" category="BatchNorm" value={  this.props.statics.model.batchnorm + " modules" }  />
+                        <StaticsItem color="purple" category="Convolution" value={  this.props.statics.model.convolution + " modules" }  />
+                        <StaticsItem color="purple" category="Activaions" value={  this.props.statics.model.activations.quantity + " modules" }  />
+                        <StaticsItem color="purple" category="Max Used Activation" value={  this.props.statics.model.activations.max_used + " ( rate " + this.props.statics.model.activations.value + " ) " }  />
+
+                    </div>
+                    <p/>
                     <div id="team-statics">
                         <StaticsItem color="green" category="Team members quantity" value={ this.props.statics.team.team_size }  />
                         <StaticsItem color="green" category="Project managers quantity" value={ this.props.statics.team.managers }  />
@@ -51,6 +63,10 @@ class ProjectStatics extends Component {
                         <StaticsItem color="red" category="Average loss value" value={ this.props.statics.runs.loss_average }  />
                         <StaticsItem color="red" category="Maximum loss value" value={ this.props.statics.runs.loss_max }  />
                         <StaticsItem color="red" category="Minimum loss value" value={ this.props.statics.runs.loss_min }  />
+                        <StaticsItem color="red" category="Underfitting Runs" value={ this.props.statics.runs.underfitting.quantity }  />
+                        <StaticsItem color="red" category="Underfitting Rate" value={ this.props.statics.runs.underfitting.rate }  />
+                        <StaticsItem color="red" category="Overfitting Runs" value={ this.props.statics.runs.overfitting.quantity }  />
+                        <StaticsItem color="red" category="Overfitting Rate" value={ this.props.statics.runs.overfitting.rate }  />
                         <StaticsItem color="red" category="Favorite Hyper Parameters" value={ '' }  />
                         <StaticsItem color="red" type="most-favorite" id="epochs" category="Epochs" value={ this.props.statics.runs.favorite_params.epochs }  />
                         <StaticsItem color="red" type="most-favorite" id="batch_size" category="Batch Size" value={ this.props.statics.runs.favorite_params.batch_size }  />

@@ -24,6 +24,9 @@ class ProjectInfo extends Component {
                         button_type="info" icon="fa-users" activate={ this.props.activateSection } hide={ this.props.hideSection } />
                 <DatasetMenuItem name="Model Files" description="manage and upload your model files" state={ this.props.sections_status.model_files_active } 
                         button_type="danger" icon="fa-file" activate={ this.props.activateSection } hide={ this.props.hideSection } />
+                    
+                    
+                    
                     <tr className="dataset-menu-row">
                         <td>
                             <button type="button" class="btn btn-outline-warning button-dataset-menu">

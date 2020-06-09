@@ -20,7 +20,6 @@ import torch
 def run_model(request):
     print (request)
     project = Project.objects.filter(id=request['project'])[0]
-    model = create_model_instance(project)
 
     # load dataset into memory
     dataset_id = get_project_dataset(request['project'])
@@ -28,6 +27,7 @@ def run_model(request):
     labels = labels_dictionary(dataset_id) 
     dataset = load_dataset(items, labels)
     train_set, dev_set, test_set = divide_dataset(dataset)
+    model = create_model_instance(project, len(labels))
 
     # create train object and use it to train user model
     train_obj = train.ModelTrain(model=model, train_set=train_set, dev_set=dev_set, test_set=test_set, 
@@ -42,10 +42,9 @@ def run_model(request):
     save_model_parameters(model=model, project_id=project.id, state='latest')
     if total_results['accuracy'] == project.best_model_saved:
         save_model_parameters(model=model, project_id=project.id, state='best')
-    print('saving..')
+    print('saving..')  
 
-def create_model_instance(project):
-    print (project)
+def create_model_instance(project, labels_quantity):
     if project.model_type == 'u':
         import_model = __import__('media.projects.' + str(project.id), fromlist=['model'])
         model = import_model.model
@@ -55,13 +54,17 @@ def create_model_instance(project):
         layers = read_layers(layers_file)['layers']
         return Model(layers)
     else:
-        labels_quantity = len(labels_records(project['dataset']))
-        model = ObtainKnownModel(project['known'], labels_quantity)
-        return model()
+        known_model = ProjectKnownModel.objects.filter(project=project.id)[0].known_model.name
+        model = ObtainKnownModel(known_model, labels_quantity)
+        return model
 
 
 
 def save_epoch(epoch, train_results, dev_results, num_of_epochs, run_id):
+    # for tests
+    if run_id == -1:
+        return
+    
     # save results in runresult model
     run = ProjectRuns.objects.filter(id=run_id)[0]
     RunResult.objects.create(run=run, epoch=epoch, accuracy_rate=train_results['accuracy'], loss=train_results['loss'],set='t')
@@ -88,7 +91,7 @@ def save_total(results, run_code, labels):
 
 def save_model_parameters(model, project_id, state):
     model_file = get_run_file(project_id, state)
-    model.save_parameters(model_file)
+    save_parameters(model, model_file)
 
 def project_best_result(project, run_accuracy):
     current_result = float_precision(run_accuracy, 4) * 100
@@ -109,10 +112,10 @@ def divide_dataset(dataset):
 
 def deploy_model(project, state, images, images_quantity):
     # load the model and crucial data for model deployement
-    model = create_model_instance(project)
     labels = DataLabel.objects.filter(dataset_id=project.dataset)
+    model = create_model_instance(project, len(labels))
     path = get_run_file(project.id, state)
-    model.load_parameters(path)
+    load_parameters(model, path)
 
     # predict each sample
     results = []
@@ -128,3 +131,9 @@ def deploy_model(project, state, images, images_quantity):
         }
         results.append(current_prediction)
     return results
+
+def save_parameters(model, path):
+    torch.save(model.state_dict(), path)
+
+def load_parameters(model, path):
+    model.load_state_dict(torch.load(path))

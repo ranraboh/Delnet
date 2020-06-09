@@ -42,7 +42,7 @@ class RunningSection extends Component {
             <div id="running-internal">
                 <p/>
                 {
-                    this.state.runs.map((recored) =>
+                    this.state.runs.slice(0, 1).map((recored) =>
                         <div>
                             <h2 className="text-agency text-small text-bold">Run Code: { recored.id }</h2>
                             <h2 className="text-agency text-small"><span className="underline">Date:</span> { recored.date + " " + recored.time }</h2>

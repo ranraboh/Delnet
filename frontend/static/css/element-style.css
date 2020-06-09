@@ -75,6 +75,12 @@ Text
 Buttons
 *************************************************/
 
+.btn-pink {
+  background: #faaca8;
+  border: 1px double #10C1F7;
+  color: black;
+}
+
 /* button v1 */
 .button-v1 {
 	color: white;	
@@ -113,6 +119,7 @@ Buttons
 .button-v1-cyan   {background: #7fccde;}
 .button-v1-blue   {background: #6698cb;}
 .button-v1-purple {background: #cb99c5;}
+.button-v1-pink {background: #faaca8;}
 
 /* button-v2: button with arrow */
 .button-v2 {

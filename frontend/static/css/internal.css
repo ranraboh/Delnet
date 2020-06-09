@@ -1332,7 +1332,76 @@ Data Sets
     font-family: "Poppins", sans-serif;
     font-size: 18px;    
 }
-
+.unlabeled-image {
+    width: 300px;
+    height: 250px;
+    position: relative;
+    margin-top: 40px;
+    margin-left: 150px;
+    border-radius: 5px;
+    animation-name: fade-in;
+    animation-duration: 2s;
+    opacity: 0.8;
+}
+.append-button {
+    width: 110px;
+    height: 60px;
+    font-weight: bold;
+    font-family: "Agency FB";
+    background: #36D1DC;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #5B86E5, #36D1DC);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #5B86E5, #36D1DC); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */    
+    color: white;
+    position: relative;
+    right: 10px;
+}
+.append-button:hover {
+    background: transparent;
+    color: blue;
+    border: 1px groove blue;
+}
+.purple-append-button {
+    width: 400px;
+    height: 40px;
+    font-weight: bold;
+    font-size: 15px;
+    background: #3494E6;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #EC6EAD, #3494E6);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #EC6EAD, #3494E6); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */         
+    color: white;
+    position: relative;
+    right: 150px;
+}
+.purple-append-button:hover {
+    background: transparent;
+    color: purple;
+    border: 1px groove purple;
+}
+.label-options {
+    margin-top: 15px;
+    margin-left: 220px;
+    font-size: 22px;
+}
+.unlabeled-image:hover {
+    opacity: 1;
+}
+.dataset-arrows-right {
+    width: 120px;
+    height: 80px;
+    margin-top: 200px;
+}
+.dataset-arrows-left {
+    width: 120px;
+    height: 80px;
+    margin-top: 200px;
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+}
+.dataset-arrows-right:hover, .dataset-arrows-left:hover {
+    border-radius: 70px;;
+    border: 1px double #00c6ff;
+    cursor: pointer;
+}
 
 /***********************************************
 Automated Model Builder
@@ -1699,6 +1768,11 @@ Automated Model Builder
     height: 40px;
     position: relative;
 }
+.pool-shape-3d {
+    width: 350px;
+    height: 100px;
+    position: relative;
+}
 .shape-3d-1 {
     border: 2px double blue;
     top: 4px;
@@ -1749,6 +1823,11 @@ Automated Model Builder
     left: 5px;
 }
 
+.error-layer {
+    border-top: 1px double red;
+    padding-top: 15px;
+}
+
 /* statics */
 .statics-text {
     font-family: "Poppins", sans-serif;
@@ -1774,6 +1853,12 @@ Automated Model Builder
 .tab-indent {
     position: relative;
     left: 20px;
+}
+.known-selected-text {
+    color: #0072ff;
+    font-size: 22px;
+    text-align: center;
+    font-family: "Poppins", sans-serif;
 }
 
 /* deploy */
@@ -1804,4 +1889,26 @@ Automated Model Builder
 }
 .deploy-results-record {
     margin-bottom: 10px;
+}
+.project-analysis-text {
+    position: relative;
+    left: 15px;
+    margin-right: 50px;
+    font-family: "Poppins", sans-serif;
+    font-size: 18px;
+    color: black;
+}
+.model-section-analysis {
+    font-weight: 600;
+    color: #0072ff;
+}
+.model-section-analysis:hover {
+    color: #ea80fc;
+    cursor: pointer;
+}
+#best-results-analysis {
+    margin-top: 40px;
+}
+#analysis-parameters-th {
+    font-size: 12px;
 }

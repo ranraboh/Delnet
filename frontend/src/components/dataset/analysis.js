@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { getDatasetAnalysis } from '../../actions/dataset/get';
+import { getDatasetAnalysis, getDatasetProjects } from '../../actions/dataset/get';
+import BarChart from '../graph/bar.js';
 import ProgressBar from '../home/progressbar';
 
 class AnalysisDataset extends Component {
@@ -10,6 +11,7 @@ class AnalysisDataset extends Component {
     
         /* get dataset analysis data from backend */
         this.props.getDatasetAnalysis(this.props.dataset_data.id)
+        this.props.getDatasetProjects(this.props.dataset_data.id)
     }
 
     render() {
@@ -17,12 +19,7 @@ class AnalysisDataset extends Component {
             return ''
         }
         return (
-            <div className="section-in-main">
-                <div className="header-section-v2">
-                    <h1 className="dataset-header-title dataset-header-blue">
-                        Dataset Analysis
-                    </h1>
-                </div>
+            <div className="dataset-analysis">
                 <h4 className="dataset-analysis-text">
                     <span className="text-bold">Size Analysis</span><br/>
                     Dataset Size: { this.props.analysis.size.size } <br/>
@@ -66,6 +63,26 @@ class AnalysisDataset extends Component {
                     } 
                     </tbody>
                     </table>
+                    <p/>
+                    <h4 className="dataset-analysis-text">
+                    <span className="text-bold">Projects Accuracy:</span><br/>
+                        a good way to evaluate the dataset quality is to check the performence of the project that are using this dataset.
+                        currently, there are { this.props.projects.length } projects. <br/>
+                        the distirubution over the runs accuracy rate ranges shown in the following chart: <br/>
+                        <BarChart height="240px" data={ this.props.projects } category="Projects Accuracy" display="name" value="result" />
+                        <p/>
+                        
+                        Max accuracy rate: { this.props.analysis.projects.max } <br/>
+                        <span className="underline">evaluation: </span>
+                        { this.props.analysis.projects.text }
+                        <p/>
+                        <span className="text-bold">Evaluation By Generic Model:</span><br/>
+                        we have evaluated the dataset by its size, distribution and the accuracy and performence of the models that used this dataset.
+                        it may give you a good sign of your dataset quaility.
+                        however, what if the models that are using this dataset are not well-designed and fit to the classification problem
+                        or the dataset is not widely used. <br/>
+                        a further feature to investigate your dataset performence is to run it on a familiar model renowned for its strength and good predictive performence.    
+                    </h4>   
             </div>
         );
     }
@@ -75,6 +92,7 @@ const mapStateToProps = state => {
     return {
         dataset_data: state.datasetsReducer.dataset_selected,
         analysis: state.datasetsReducer.analysis,
+        projects: state.datasetsReducer.dataset_projects,
     }
 }
 
@@ -83,7 +101,10 @@ const mapDispatchToProps = dispatch => {
     return {
         getDatasetAnalysis: (dataset_id) => {
             dispatch(getDatasetAnalysis(dataset_id))
-        }      
+        },
+        getDatasetProjects: (dataset_id) => {
+            dispatch(getDatasetProjects(dataset_id))
+        }
     }
 }
 

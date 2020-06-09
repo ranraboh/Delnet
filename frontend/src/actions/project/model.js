@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { ADD_RUN_RECORD, RUN_MODEL, DEPLOY_MODEL } from '../types.js';
-import { GET_OPTIMIZER_TYPES, GET_LOSS_TYPES, GET_UNFINISHED_RUNS, GET_CONFUSION_MATRIX, GET_RECALL_RESULT, GET_PRECISION_RESULT, GET_F1_RESULT } from '../types.js';
+import { ADD_RUN_RECORD, RUN_MODEL, DEPLOY_MODEL, GET_ACCURACY_RANGE, TEST_MODEL, GET_KNOWN_MODELS } from '../types.js';
+import { GET_PROJECT_ANALYSIS, GET_OPTIMIZER_TYPES, GET_LOSS_TYPES, GET_UNFINISHED_RUNS, GET_CONFUSION_MATRIX, GET_RECALL_RESULT, GET_PRECISION_RESULT, GET_F1_RESULT } from '../types.js';
 import { GET_PROJECT_RUNS, GET_RUN_RESULT_TRAIN, GET_RUN_RESULT_DEV, SELECT_RUN, CLEAR_RUN } from '../types.js';
 
 /**
@@ -8,11 +8,7 @@ import { GET_PROJECT_RUNS, GET_RUN_RESULT_TRAIN, GET_RUN_RESULT_DEV, SELECT_RUN,
  * @param {*} run_request object hold the featues of run request
  */
 export const runModel = (run_request, callback_function) => dispatch => {
-    console.log('run model action')
-    console.log(run_request)
     axios.post('/api/run/model', run_request).then(result => {
-        console.log('result from server')
-        console.log(result.data)
         dispatch({
             type: RUN_MODEL,
             payload: result.data
@@ -188,7 +184,23 @@ export const getF1Scores = (run_code) => dispatch => {
         })
     }).catch(err => console.log(err));
 }
+export const getProjectAnalysis = (project_id) => dispatch => {
+    axios.get('/api/project/' + project_id + '/recommendations').then(result => {
+        dispatch({
+            type: GET_PROJECT_ANALYSIS,
+            payload: result.data
+        })
+    }).catch(err => console.log(err));
+}
 
+export const getAccuracyRange = (project_id) => dispatch => {
+    axios.get('/api/project/' + project_id + "/accuracy/range").then(result => {
+        dispatch({ 
+            type: GET_ACCURACY_RANGE,
+            payload: result.data
+        })
+    }).catch(err => console.log(err));
+}
 
 /**
  * get labels matrics results of selected run
@@ -198,6 +210,18 @@ export const getConfusionMatrix = (run_code) => dispatch => {
         dispatch({
             type: GET_CONFUSION_MATRIX,
             payload: c_matrix_dictionary(result.data)
+        })
+    }).catch(err => console.log(err));
+}
+
+/**
+ * test your model
+ */
+export const testModel = (project_id) => dispatch => {
+    axios.get('/api/project/' + project_id + "/test").then(result => {
+        dispatch({
+            type: TEST_MODEL,
+            payload: result.data
         })
     }).catch(err => console.log(err));
 }

@@ -37,3 +37,6 @@ def read_layers(file_path):
             return { 'valid': True, 'layers': data }        
         except:
             return error_return
+
+def get_known_model(known_model):
+    return KnownModels.objects.filter(id=known_model)[0]

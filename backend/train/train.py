@@ -77,7 +77,7 @@ class ModelTrain(tnn.Module,):
             total_accuracy += accuracy_epoch
             dev_results = self.evaluate_over_dev()
             actions.save_epoch(epoch, { 'loss': loss_epoch / batches_epoch, 'accuracy': accuracy_epoch / train_size }, dev_results, self.epochs, self.run_id)
-            time.sleep(2)
+            time.sleep(300)
 
         total_loss = total_loss / (batches_epoch * self.epochs)
         total_accuracy = total_accuracy / (train_size * self.epochs)
@@ -105,9 +105,7 @@ class ModelTrain(tnn.Module,):
                 loss = self.loss_function(output, y)
                 total_loss += loss.item()
                 predictions = output.argmax(dim=1)
-                print(predictions)
                 for results in torch.stack((y, predictions), dim=1):
-                    print (results)
                     label, prediction = results.tolist()
                     if label == prediction:
                         good = good + 1

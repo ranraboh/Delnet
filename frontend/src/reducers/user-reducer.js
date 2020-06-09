@@ -24,18 +24,14 @@ export function userReducer(state = initialState, action) {
         image: action.payload.image
       };
     case USER_LOOKUP_SUCCESS:
-      console.log('success reducer')
       state.users_queries[action.payload.username] = true;
       state.query_receive = state.query_receive + 1;
       return state;
     case USER_LOOKUP_FAIL:
-      console.log('fail reducer')
       state.users_queries[action.payload.username] = false;
       state.query_receive = state.query_receive + 1;
       return state;
     case UPLOAD_IMAGE: 
-      console.log('upload reducer')
-      console.log(action.payload)
       return {
         ...state, 
         image: media + action.payload.url,

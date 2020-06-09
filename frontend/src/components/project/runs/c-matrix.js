@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getConfusionMatrix } from '../../../actions/project/model.js';
-import { getDatasetLabels, selectDataset } from '../../../actions/datasets.js'
+import { getDatasetLabels } from '../../../actions/dataset/get'
+import { selectDataset } from '../../../actions/dataset/manipulation'
 import BarChart from '../../graph/bar.js';
 import MultiBarChart from '../../graph/multibar.js';
   

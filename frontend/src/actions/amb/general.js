@@ -1,4 +1,4 @@
-import { CREATE_AMB_PROJECT, GET_PROJECT_LAYERS, UPDATE_LAYERS } from '../types'
+import { CREATE_AMB_PROJECT, GET_PROJECT_LAYERS, UPDATE_LAYERS, GET_KNOWN_MODELS } from '../types'
 import axios from 'axios'
 
 
@@ -40,4 +40,18 @@ export const saveLayers = (request, callback_function) => dispatch => {
             payload: result.data
         })
     }).then(callback_function)
+}
+
+/**
+ * get known models
+ */
+export const getKnownModels = () => dispatch => {
+    axios.get('/api/known').then(result => {
+        console.log('get known resposne')
+        console.log(result.data)
+        dispatch({
+            type: GET_KNOWN_MODELS,
+            payload: result.data
+        })
+    }).catch(err => console.log(err));
 }

@@ -60,28 +60,9 @@ def get_total_size(files):
         size = size + file.size
     return size
 
-def files_statics(project):
-    files = ProjectFiles.objects.filter(project=project)
-    statics = {
-        'files_quantity' : files.count(),
-        'total_size': get_total_size(files),
-        'most_uploader': most_query(files, 'insert_by'),
-        'most_file_uploads': most_query(files, 'insertion_date'),
-    }
-    return statics
-
 def most_query(files, category):
     grouped_results = files.values(category).annotate(favorite=Count(category)).order_by('-favorite').first()
-    print(grouped_results)
     return {
         category: grouped_results[category],
         'count': grouped_results['favorite'],
     }
-
-def team_statics(project):
-    team = ProjectTeam.objects.filter(project=project)
-    statics = {
-        "team_size": team.count(),
-        "managers": team.filter(presmissions=5).count()
-    }
-    return statics

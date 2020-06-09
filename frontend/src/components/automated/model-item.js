@@ -5,10 +5,9 @@ function ModelItem(props) {
         <div class="col-sm-6 col-md-4">
         <div class="mu-team-content-single">
             <div class="mu-team-profile">
-                <img src={ props.image } alt="team member" className="prebuild-model-image" />
-                <div class="mu-team-social-info">
-                    <a href="#"><i class="icon-social-facebook">Details</i></a>
-                    <a href="#"><i class="icon-social-twitter" onClick={ props.on_select }>Select</i></a>
+                <img src={ props.image } alt="team member" className="prebuild-model-image" onClick={ props.on_select } />
+                <div className={(props.is_selected)?'known-selected':'known-selected-hide'} >
+                    <h4 className="known-selected-text">Selected</h4>
                 </div>
             </div>
             <div class="mu-team-info">

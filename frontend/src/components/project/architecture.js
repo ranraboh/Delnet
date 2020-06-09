@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import ModelArchitercture from '../automated/architecture';
+import ModelArchitercture from '../automated/architecture/architecture';
 
 class ProjectArchitercture extends Component {
     constructor(props) {

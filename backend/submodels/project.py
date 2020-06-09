@@ -45,7 +45,7 @@ class ProjectFiles(models.Model):
     insert_by = models.ForeignKey(User, default=None, on_delete=models.CASCADE)
     insertion_date = models.DateField(auto_now_add=True)
     main = models.BooleanField(default=False)
-
+    
     def __str__(self):
         return str(self.file.name)
 

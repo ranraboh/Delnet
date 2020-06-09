@@ -8,11 +8,16 @@ import matplotlib.image as mpimg
 from PIL import Image as pil
 import matplotlib.pyplot as plt
 from django.core.files.images import get_image_dimensions
+from itertools import chain
 import urllib.request
 from enum import Enum
 import torch.nn
 import numpy as np
 import os
+
+# returns all the dataset with view permission
+def public_dataset():
+    return Dataset.objects.filter(public_view=True)
 
 # returns dataset object by its identification number
 def dataset_by_id(dataset_id):
@@ -36,7 +41,6 @@ def image_to_sample(image):
     plt.imshow(image)
     image_data = torch.as_tensor(np.asarray(image), dtype=torch.float).permute(2, 1, 0).cuda()    
     return image_data.view(1, 3, 64, 64)
-
 
 # load labels records of project dataset
 def labels_dictionary(dataset_id):
@@ -67,6 +71,18 @@ def upload_items_list(label, insert_by, dataset, items_quantity, items_list):
         img.save(item_path, "PNG")
         DataItem.objects.create(label=label, insert_by=user, dataset=dataset, item=item_path)
     
+def upload_unlabeled_list(insert_by, dataset, items_quantity, items_list):
+    user = User.objects.filter(username=insert_by)[0]
+    dataset = Dataset.objects.filter(id=dataset)[0]
+    save_to = settings.MEDIA_ROOT + '/datasets/' + str(dataset.id) + '/unlabeled/'
+    create_dirs_along_path(path=save_to)
+    for i in range(items_quantity):
+        item = items_list[str(i)]
+        item_path = save_to + item.name
+        img = pil.open(item.file)
+        img.save(item_path, "PNG")
+        UnlabeledSamples.objects.create(insert_by=user, dataset=dataset, item=item_path)
+
 # upload new image-item into server and add corresponding record into database
 def add_item(label, insert_by, dataset, image_url):
     label = DataLabel.objects.filter(id=label)[0]
@@ -77,6 +93,16 @@ def add_item(label, insert_by, dataset, image_url):
     create_dirs_along_path(path=save_to)
     urllib.request.urlretrieve(image_url, name)
     DataItem.objects.create(label=label, insert_by=user, dataset=dataset, item=name)
+
+# upload new unlabeled into server and add corresponding record into database
+def add_unlabeled(insert_by, dataset, image_url):
+    user = User.objects.filter(username=insert_by)[0]
+    dataset = Dataset.objects.filter(id=dataset)[0]
+    save_to = settings.MEDIA_ROOT + '/datasets/' + str(dataset.id) + '/unlabeled/'
+    name = os.path.join(save_to, image_url.split('/')[-1])
+    create_dirs_along_path(path=save_to)
+    urllib.request.urlretrieve(image_url, name)
+    UnlabeledSamples.objects.create(insert_by=user, dataset=dataset, item=name)
 
 # load datasets records of praticular user
 def user_datasets(username):
@@ -148,7 +174,47 @@ def models_results(dataset_id):
 def models_count(dataset_id):
     return models_results(dataset_id).count()
 
+def get_dataset_projects(dataset_id):
+    return Project.objects.filter(dataset=dataset_id)
+
 # get dataset identification of given project
 def get_project_dataset(project_id):
     project = Project.objects.filter(id=project_id)[0]
     return project.dataset
+
+def get_unlabeled_items(dataset_id):
+    return UnlabeledSamples.objects.filter(dataset=dataset_id)
+
+def dataset_by_name(name):
+    return Dataset.objects.filter(name__contains=name)
+
+def dataset_labels_offers(dataset_id):
+    labels = labels_records(dataset_id)
+    labels_offers = []
+    for label in labels:
+        queryset = get_items_label_name(dataset_id ,label.name)
+        labels_offers.append(queryset)
+    return list(chain(*labels_offers))
+
+def get_items_label_name(dataset_id, label_name):
+    return DataItem.objects.exclude(dataset=dataset_id).filter(label__name__contains=label_name)
+
+def follow_dictionary(username):
+    dict = {}
+    followers = DatasetFollowers.objects.filter(user=username)
+    for follow in followers:
+        dict[follow.dataset.id] = follow.id
+    return dict 
+
+def follow_record(datasets, username):
+    follow_dict = follow_dictionary(username)
+    for dataset in datasets:
+        if dataset.id in follow_dict and follow_dict[dataset.id] > 0:
+            dataset.follow = True
+            dataset.follow_id = follow_dict[dataset.id]
+        else:
+            dataset.follow = False
+            dataset.follow_id = -1
+    print (datasets)
+    return datasets
+    

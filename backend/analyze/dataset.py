@@ -1,6 +1,8 @@
 from backend.actions.dataset import *
 from backend.analyze.enums import StandardSize
 from backend.actions.general import float_precision
+from backend.actions.dataset import get_project_dataset
+from backend.analyze.text import DatasetProjectVerification
 import copy
 import math
 
@@ -17,16 +19,27 @@ class DatasetAnalyzer():
             self.items_quantity_vector[index] = label.items_quantity
 
     def report_imperfections(self):
-        imperfections = []
+        # in case dataset analysis didn't triggered yet
         if not self.dataset_analysis:
             self.dataset_analysis = self.analyze()
-        print(self.dataset_analysis['size']['size_category'])
-        if self.dataset_analysis['size']['size_category'] in [ DatasetSize.SMALL, DatasetSize.EXTRA_SMALL, DatasetSize.MEDIOCRE ]:
-            imperfections.append(self.dataset_analysis['size']['info_representation'])
-        if self.dataset_analysis['standard_deviation']['category'] in [ DistributionSize.SLIGHTLY_UNBALANCED, DistributionSize.UNEVEN_DISTRIBUTED, DistributionSize.REDICIOUSLY_UNBALANCED ]:
-            imperfections.append(self.dataset_analysis['standard_deviation']['distribution_text'])
-        print(imperfections)
-        return imperfections
+        
+        # holds the critical and minor imperfections
+        criticals = []
+        warnings = []
+
+        # conditions to include faults in imperfections report
+        if self.dataset_analysis['size']['size_category'] in [ DatasetSize.SMALL, DatasetSize.EXTRA_SMALL ]:
+            criticals.append(self.dataset_analysis['size']['info_representation'])
+        elif self.dataset_analysis['size']['size_category'] == DatasetSize.MEDIOCRE:
+            warnings.append(self.dataset_analysis['size']['info_representation'])
+        if self.dataset_analysis['standard_deviation']['category'] in [ DistributionSize.UNEVEN_DISTRIBUTED, DistributionSize.REDICIOUSLY_UNBALANCED ]:
+            criticals.append(self.dataset_analysis['standard_deviation']['distribution_text'])
+        elif self.dataset_analysis['standard_deviation']['category'] == DistributionSize.SLIGHTLY_UNBALANCED:
+            warnings.append(self.dataset_analysis['size']['info_representation'])
+        return {
+            'critical': criticals,
+            'warnings': warnings
+        }
 
     def format_response(self):
         if not self.dataset_analysis:
@@ -36,9 +49,6 @@ class DatasetAnalyzer():
         analysis['standard_deviation']['category'] = analysis['standard_deviation']['category'].name
         for _, label in analysis['balance'].items():
             label['standard_category'] = label['standard_category'].name
-        print ('##################################33')
-        print (self.dataset_analysis['size'])
-        print ('##################################33')
         return analysis
 
     def analyze(self):
@@ -47,7 +57,8 @@ class DatasetAnalyzer():
             'mean': self.mean(),
             'standard_deviation': self.standard_deviation(),
             'balance': self.datasetBalance(text=True),
-            'labels_quantity': self.labels_quantity
+            'labels_quantity': self.labels_quantity,
+            'projects': self.project_verifications()
         }
         return self.format_response()
 
@@ -146,6 +157,38 @@ class DatasetAnalyzer():
         elif standard_category == StandardSize.RADICAL or standard_category == StandardSize.EXTREMLY_RADICAL:
             return 'consider re-design you dataset to make it more balanced'
         return ''
+    
+    def project_verifications(self):
+        max_accuracy = 0
+        projects = get_dataset_projects(self.dataset.id)
+        status = DatasetProjectVerification.NONE_PROJECT
+        for project in projects:
+            if project.result > max_accuracy:
+                if project.result > 90:
+                    status = DatasetProjectVerification.WELL_DESIGNED_DATASET
+                elif project.result > 75:
+                    status = DatasetProjectVerification.GOOD_DATASET_FEW_PROJECT
+                elif project.result > 60:
+                    status = DatasetProjectVerification.MEDIOCRE_DATASET_FEW_PROJECT
+                else:
+                    status = DatasetProjectVerification.BAD_DATASET_FEW_PROJECT
+                max_accuracy = project.result
+
+        # evaluate quantity of project that used this dataset and change analysis accordingly
+        projects_quantity = projects.count()
+        if projects_quantity > 5:
+            if status == DatasetProjectVerification.GOOD_DATASET_FEW_PROJECT:
+                status = DatasetProjectVerification.GOOD_DATASET_MANY_PROJECT
+            elif status == DatasetProjectVerification.MEDIOCRE_DATASET_FEW_PROJECT:
+                status = DatasetProjectVerification.MEDIOCRE_DATASET_MANY_PROJECT
+            elif status == DatasetProjectVerification.BAD_DATASET_FEW_PROJECT:
+                status = DatasetProjectVerification.BAD_DATASET_MANY_PROJECT
+        return {
+            'max': max_accuracy,
+            'quantity': projects_quantity,
+            'status': status.name,
+            'text': status.value
+        }
     
 class DatasetSize(Enum):
     EXTRA_SMALL = 500

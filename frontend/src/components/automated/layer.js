@@ -5,7 +5,7 @@ function LayerItem(props) {
     let colors = [ 'blue', 'red', 'green', 'aqua', 'pink', 'yellow', 'orange', 'purple' ];
     let color = colors[(props.id - 1) % colors.length]
     return (
-        <div className="row layer-row">
+        <div className={ (props.error)?"error-layer row layer-row": "row layer-row" }>
                 <div className="col-4">
                     <div className={ "icon-container icon-container-" + color }>
                         <p>{ props.id }</p>
@@ -16,6 +16,7 @@ function LayerItem(props) {
                     &nbsp;
                     <i className="fa fa-close fa-lg delete-danger" onClick={ () => props.on_delete(props.layer.id) }></i>
                     {/*btn btn-outline-info btn-datasets */}
+                    <i className="fa fa-add fa-lg add-success" onClick={ () => props.on_insert(props.layer.id) }></i>
                 </div>
                 </div>
                 <div className="col-4">
