@@ -3,20 +3,36 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { updateLayer } from '../../actions/amb/state.js';
 import LayerParams from './params.js';
+import { init_linear_layer, init_convolution_layer, init_batch_norm, init_dropout, init_flatten_layer, init_pool } from './actions/init.js';
+import { display_size } from './actions/display.js';
 
-class AmbSelect extends Component {
+class SelectedLayer extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            layer: this.props.layer_selected
+            layer: this.props.layer_selected,
+            error: ''
         }
+
         /* bind internal methods */
         this.linear_selected = this.linear_selected.bind(this);
         this.convolution_selected = this.convolution_selected.bind(this);
         this.flatten_selected = this.flatten_selected.bind(this);
         this.batch_norm_selected = this.batch_norm_selected.bind(this);
         this.dropout_selected = this.dropout_selected.bind(this);
+        this.pool_selected = this.pool_selected.bind(this);
         this.on_activation_change = this.on_activation_change.bind(this);
+    }
+
+    alert_message() {
+        if (this.state.error != '') {
+            return(
+                <div class="alert alert-warning" role="alert">
+                    { this.state.error }
+                </div>
+            )
+        }
+        return ''
     }
 
     componentWillReceiveProps(nextProps) {
@@ -28,64 +44,34 @@ class AmbSelect extends Component {
     }
 
     linear_selected() {
-        this.setState({
-            ...this.state,
-            layer: {
-                id: this.state.layer.id,
-                type: 'Linear',
-                activation: this.state.layer.activation,
-                input_dimension: 1,
-                output_dimension: 1,
-                input: [this.state.layer.input],
-                output: ['--'],
-                bias: 'yes',
-                params_form: [ { id: 'input', name: 'Input features', type: 'text',  dimension: 1, description: 'Enter size of input vector', disable: (this.state.layer.id == 1)?false:true },
-                    { id: 'output', name: 'Output features', type: 'text', dimension :1,  description: 'Enter size of output vector', disable: false },
-                    { id: 'bias', name: 'Bias', type:'choose', options: ['yes', 'no'] }
-                 ]
-            }
-        }, () => {
-            this.props.updateLayer(this.state.layer)
-        })
+        if (this.state.layer.input.length > 1) {
+            this.setState({
+                ...this.state,
+                error: 'input for linear layer should be one dimension, you can use different type of layer or use flatten'
+            })
+        } else {
+            this.setState({
+                ...this.state,
+                layer: init_linear_layer(this.state)
+            }, () => {
+                this.props.updateLayer(this.state.layer)
+            })
+        }
     }
 
     convolution_selected() {
-        let output = [ out_channels ]
-        output.append(this.state.input[1] + 2)
-        
         this.setState({
             ...this.state,
-            layer: {
-                id: this.state.layer.id,
-                type: 'Convolution',
-                activation: this.state.layer.activation,
-                input_dimension: 3,
-                output_dimension: 3,
-                input:  this.state.layer.input,
-                output: [ out_channels,  ],
-                in_channels: '--',
-                out_channels: '--',
-                kernel_size: [ '--', '--' ],
-                strides: '--',
-                params_form: [ { id: 'in_channels', name: 'input features', description: 'enter number of input channels'},
-                    { id: 'out_channels', name: 'output features', description: 'enter number of output channels' },
-                    { id: 'kernel_size', name: 'kernel size', description: 'enter size of kernel' },
-                    { id: 'strides', name: 'strides', description: 'enter size of strides' } ]
-            }
+            layer: init_convolution_layer(this.state)
+        }, () => {
+            this.props.updateLayer(this.state.layer)
         })
     }
 
     flatten_selected() {
         this.setState({
             ...this.state,
-            layer: {
-                id: this.state.layer.id,
-                type: 'Flatten',
-                activation: this.state.layer.activation,
-                input: this.state.layer.input,
-                output: '---',
-                params_form: [ { id: 'input', name: 'Input features', type: 'text', description: 'Enter size of input vector', disable: (this.state.layer.id == 1)? false: true },
-                { id: 'output', name: 'Output features', type: 'text', description: 'Enter size of output vector', disable: true } ]            }
+            layer: init_flatten_layer(this.state)
         }, () => {
             this.props.updateLayer(this.state.layer)
         })
@@ -94,15 +80,7 @@ class AmbSelect extends Component {
     batch_norm_selected() {
         this.setState({
             ...this.state,
-            layer: {
-                id: this.state.layer.id,
-                type: 'Batch Norm',
-                activation: this.state.layer.activation,
-                input: this.state.layer.input,
-                output: this.state.layer.input,
-                params_form: [ { id: 'input', name: 'Input features', type: 'text', description: 'Enter size of input vector', disable: (this.state.layer.id == 1)? false: true },
-                { id: 'output', name: 'Output features', type: 'text', description: 'Enter size of output vector', disable: true } ]
-            }
+            layer: init_batch_norm(this.state)
         }, () => {
             this.props.updateLayer(this.state.layer)
         })
@@ -111,17 +89,16 @@ class AmbSelect extends Component {
     dropout_selected() {
         this.setState({
             ...this.state,
-            layer: {
-                id: this.state.layer.id,
-                type: 'Dropout',
-                activation: this.state.layer.activation,
-                dropout_constant: '0.5',
-                input: this.state.layer.input,
-                output: this.state.layer.input,
-                params_form: [ { id: 'input', name: 'Input features', type: 'text', description: 'Enter size of input vector', disable: (this.state.layer.id == 1)? false: true },
-                    { id: 'output', name: 'Output features', type: 'text', description: 'Enter size of output vector', disable: true },
-                    { id: 'dropout_constant', name: 'dropout constant', type: 'text', description: 'enter dropout constant'} ]
-            }
+            layer: init_dropout(this.state)
+        }, () => {
+            this.props.updateLayer(this.state.layer)
+        })
+    }
+
+    pool_selected() {
+        this.setState({
+            ...this.state,
+            layer: init_pool(this.state)
         }, () => {
             this.props.updateLayer(this.state.layer)
         })
@@ -142,25 +119,18 @@ class AmbSelect extends Component {
 
     render() {
         if (this.state.layer == null) {
-            return (<span id="select-section" className="section-in-main">
-                <div className="header-section-v2">
-                <h1 className="dataset-header-title dataset-header-green">
-                    Design Layer
-                </h1>
-                <p />
+            return (<span id="select-section">
                 <h6 className="text">no selected layers</h6>
-            </div>
             </span>)
         }
+        let alert_message = this.alert_message()
         return (
-        <span id="select-section" className="section-in-main">
-            <div className="header-section-v2">
-                <h1 className="dataset-header-title dataset-header-green">
-                    Design Layer
-                </h1>
-            </div>
+        <span id="select-section">
             <div id="amb-select-internal">
-                <h6 className="text">ID: { this.state.layer.id }</h6>
+                { alert_message }
+                <h6 className="text">Layer ID: { this.state.layer.id }</h6>
+                <h6 className="text">Input: { display_size(this.state.layer.input) }</h6>
+                <h6 className="text">Output: { display_size(this.state.layer.output) }</h6>
                 <h6 className="text">Type: { this.state.layer.type }</h6>
                 <div id="layer-types">
                     <table>
@@ -197,7 +167,7 @@ class AmbSelect extends Component {
                             </td>
                             <td>
                                 <button type="button" class="btn btn-primary btn-select"
-                                    onClick={ this.dropout_selected }>Pool</button>
+                                    onClick={ this.pool_selected }>Pool</button>
                             </td>
                         </row>
                     </table>
@@ -236,7 +206,6 @@ class AmbSelect extends Component {
                             </td>
                         </row>
                     </table>
-                    <LayerParams />
                 </div>
             </div>
         </span>
@@ -247,7 +216,7 @@ class AmbSelect extends Component {
 const mapStateToProps = state => {
     return {
         username: state.authentication.user,
-        layer_selected: state.ambReducer.selected_layer
+        layer_selected: state.ambReducer.customizable.selected_layer
     }
 }
 
@@ -259,4 +228,4 @@ const mapDispatchToProps = dispatch => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AmbSelect);
+export default connect(mapStateToProps, mapDispatchToProps)(SelectedLayer);

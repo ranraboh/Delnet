@@ -1,10 +1,10 @@
-import { GET_USER_DATASETS, CREATE_DATASET, DELETE_DATASET, SELECT_DATASET, GET_DATASET_TEAM, ADD_ITEM, ADD_LABEL, DELETE_LABEL } from '../actions/types.js';
+import { GET_USER_DATASETS, CREATE_DATASET, DELETE_DATASET, SELECT_DATASET, GET_DATASET_TEAM, ADD_ITEM, ADD_LABEL, DELETE_LABEL, DATASET_ANALYZE_ACTIVE, DATASET_ANALYZE_NONACTIVE, GET_DATASET_ANALYSIS, DATASET_STATICS_ACTIVE, DATASET_STATICS_NONACTIVE, DATASET_CONTRIBUTIONS_ACTIVE, DATASET_CONTRIBUTIONS_NONACTIVE, DATASET_MODELS_GRAPH_ACTIVE, DATASET_MODELS_GRAPH_NONACTIVE, DATE_UPLOAD_GRAPH_ACTIVE, DATE_UPLOAD_GRAPH_NONACTIVE, GET_DATE_DISTRIBUTION, GET_USER_CONTRIBUTION, GET_DATASET_PROJECTS_PERFORMANCE } from '../actions/types.js';
 import { GET_ITEMS_COUNT, GET_DATASETS_ITEMS_AMOUNT, DATASET_DETAILS_ACTIVE, DATASET_DETAILS_NONACTIVE, GET_LABELS_COUNT, GET_DATASET_LABELS, GET_DATA_ITEMS, DELETE_DATA_ITEM } from '../actions/types.js';
-import { COLLECTORS_TEAM_ACTIVE, COLLECTORS_TEAM_NONACTIVE, LABELS_SECTION_ACTIVE, LABELS_SECTION_NONACTIVE, ITEMS_SECTION_ACTIVE, ITEMS_SECTION_NONACTIVE, ADD_ITEM_ACTIVE,ADD_LABEL_ACTIVE , ADD_LABEL_NONACTIVE, ADD_ITEM_NONACTIVE } from "../actions/types.js";
-
+import {GET_NOTIFICATION_DATASET, COLLECTORS_TEAM_ACTIVE, COLLECTORS_TEAM_NONACTIVE, LABELS_SECTION_ACTIVE, LABELS_SECTION_NONACTIVE, ITEMS_SECTION_ACTIVE, ITEMS_SECTION_NONACTIVE, ADD_ITEM_ACTIVE,ADD_LABEL_ACTIVE , ADD_LABEL_NONACTIVE, ADD_ITEM_NONACTIVE, LABEL_DISTRIBUTION_ACTIVE, LABEL_DISTRIBUTION_NONACTIVE } from "../actions/types.js";
 
 const initialState = {
     user_datasets: null,
+    show_notification_datasets: null,
     dataset_selected: {
         id: window.localStorage.getItem('dataset-id'),
         name: window.localStorage.getItem('dataset-name'),
@@ -15,8 +15,12 @@ const initialState = {
         labels: null,
         labels_quantity: null,
         pages: -1,
-        items: []
-    }
+        items: [],
+        analysis: null
+    },
+    user_contribution: null,
+    date_distribution: null,
+    dataset_projects: null
 }
 const toggleInitialState = {
     dataset_display: {
@@ -25,11 +29,26 @@ const toggleInitialState = {
         labels_section: false,
         items_section: false, 
         add_label: false,
-        add_item: true
+        add_item: true,
+        analyze: true,
+        statics: false,
+        user_contributions: false,
+        date_distribution: false,
+        label_distribution: false,
+        dataset_projects: false
     }
 }
 export function datasetsReducer(state = initialState, action) {
     switch(action.type) {
+        case GET_NOTIFICATION_DATASET:
+            console.log("redusershiran")
+            console.log(action.payload)
+
+
+            return {
+                ...state,
+                show_notification_datasets: action.payload
+            }
         case GET_USER_DATASETS: 
             return {
                 ...state,
@@ -125,6 +144,26 @@ export function datasetsReducer(state = initialState, action) {
             return {
                 ...state,
                 dataitem_added: action.payload
+            }
+        case GET_DATASET_ANALYSIS:
+            return {
+                ...state,
+                analysis: action.payload
+            }
+        case GET_DATE_DISTRIBUTION:
+            return {
+                ...state,
+                date_distribution: action.payload
+            }
+        case GET_USER_CONTRIBUTION:
+            return {
+                ...state,
+                user_contribution: action.payload
+            }
+        case GET_DATASET_PROJECTS_PERFORMANCE:
+            return {
+                ...state, 
+                dataset_projects: action.payload
             }
         default:
             return state;
@@ -229,7 +268,102 @@ export function datasetsToggleReducer(state = toggleInitialState, action) {
                     add_item: false
                 }
             }
-            
+        case DATASET_ANALYZE_ACTIVE:
+            return {
+                ...state,
+                dataset_display: {
+                    ...state.dataset_display,
+                    analyze: true
+                }
+            }
+        case DATASET_ANALYZE_NONACTIVE:
+            return {
+                ...state,
+                dataset_display: {
+                    ...state.dataset_display,
+                    analyze: false
+                }
+            }
+        case DATASET_STATICS_ACTIVE: 
+            return {
+                ...state,
+                dataset_display: {
+                    ...state.dataset_display,
+                    statics: true
+                }
+            }
+        case DATASET_STATICS_NONACTIVE:
+            return {
+                ...state,
+                dataset_display: {
+                    ...state.dataset_display,
+                    statics: false
+                }
+            }
+        case DATASET_CONTRIBUTIONS_ACTIVE: 
+            return {
+                ...state,
+                dataset_display: {
+                    ...state.dataset_display,
+                    user_contributions: true
+                }
+            }
+        case DATASET_CONTRIBUTIONS_NONACTIVE:
+            return {
+                ...state,
+                dataset_display: {
+                    ...state.dataset_display,
+                    user_contributions: false
+                }
+            }
+        case DATASET_MODELS_GRAPH_ACTIVE: 
+            return {
+                ...state,
+                dataset_display: {
+                    ...state.dataset_display,
+                    dataset_projects: true
+                }
+            }
+        case DATASET_MODELS_GRAPH_NONACTIVE:
+            return {
+                ...state,
+                dataset_display: {
+                    ...state.dataset_display,
+                    dataset_projects: false
+                }
+            }
+        case DATE_UPLOAD_GRAPH_ACTIVE: 
+            return {
+                ...state,
+                dataset_display: {
+                    ...state.dataset_display,
+                    date_distribution: true
+                }
+            }
+        case DATE_UPLOAD_GRAPH_NONACTIVE:
+            return {
+                ...state,
+                dataset_display: {
+                    ...state.dataset_display,
+                    date_distribution: false
+                }
+            }    
+        case LABEL_DISTRIBUTION_ACTIVE: 
+            return {
+                ...state,
+                dataset_display: {
+                    ...state.dataset_display,
+                    label_distribution: true
+                }
+            }
+        case LABEL_DISTRIBUTION_NONACTIVE:
+            return {
+                ...state,
+                dataset_display: {
+                    ...state.dataset_display,
+                    label_distribution: false
+                }
+            }          
         default:
             return state;
     }

@@ -697,15 +697,17 @@
 	color: #fff;
 	border: 1px solid #fff;
 	text-align: center;
-	border-radius: 50%;
-	width: 45px;
+	width: 85px;
 	height: 45px;
+	border-radius: 10px;
 	display: inline-block;
 	font-size: 18px;
 	line-height: 45px;
 	margin: 0 4px;
 	-webkit-transition: all 0.5s;
 	transition: all 0.5s;
+	position: relative;
+	top: -70px;
 }
 
 .mu-team-social-info a:hover,

@@ -1,5 +1,6 @@
-import { MODEL_INTERACTION_ACTIVE, MODEL_INTERACTION_NONACTIVE } from '../actions/types.js'
-import { EMBED_APPLICATION_NONACTIVE, EMBED_APPLICATION_ACTIVE } from '../actions/types.js'
+import { DEPLOY_MODEL_ACTIVE, DEPLOY_MODEL_NONACTIVE } from '../actions/types.js'
+import { LAYERS_DISPLAY_ACTIVE, LAYERS_DISPLAY_NONACTIVE } from '../actions/types.js'
+import { ARCHITECTURE_DISPLAY_ACTIVE, ARCHITECTURE_DISPLAY_NONACTIVE } from '../actions/types.js'
 import { RUN_MODEL_ACTIVE, RUN_MODEL_NONACTIVE } from '../actions/types.js'
 import { RUNS_OUTCOMES_ACTIVE, RUNS_OUTCOMES_NONACTIVE } from '../actions/types.js'
 import { ACCESS_DATASET_ACTIVE, ACCESS_DATASET_NONACTIVE } from '../actions/types.js'
@@ -17,16 +18,17 @@ const initialState = {
     general_details_active: false,
     project_team_active: false,
     model_files_active: false,
-    run_outcomes_active: true,
+    run_outcomes_active: false,
     recommendations_active: false,
     tests_active: false,
     diagrams_active: false,
-    statics_active: false,
+    statics_active: true,
     check_list_active: false,
     access_dataset_active: false,
-    run_model_active: true,
-    embed_application_active: false,
-    model_interaction_active: false
+    run_model_active: false,
+    deploy_model_active: true,
+    layers_active: false,
+    architecture_active: false
 }
 export function projectSectionsReducer(state = initialState, action) {
     switch (action.type) {
@@ -120,25 +122,35 @@ export function projectSectionsReducer(state = initialState, action) {
             ...state,
             access_dataset_active: false
         };
-    case EMBED_APPLICATION_ACTIVE:
+    case LAYERS_DISPLAY_ACTIVE:
         return {
             ...state,
-            embed_application_active: true
+            layers_active: true
         };
-    case EMBED_APPLICATION_NONACTIVE:
+    case LAYERS_DISPLAY_NONACTIVE:
         return {
             ...state,
-            embed_application_active: false
+            layers_active: false
         };
-    case MODEL_INTERACTION_ACTIVE:
+    case ARCHITECTURE_DISPLAY_ACTIVE:
         return {
             ...state,
-            model_interaction_active: true
+            architecture_active: true
         };
-    case MODEL_INTERACTION_NONACTIVE:
+    case ARCHITECTURE_DISPLAY_NONACTIVE:
         return {
             ...state,
-            model_interaction_active: false
+            architecture_active: false
+        };
+    case DEPLOY_MODEL_ACTIVE:
+        return {
+            ...state,
+            deploy_model_active: true
+        };
+    case DEPLOY_MODEL_NONACTIVE:
+        return {
+            ...state,
+            deploy_model_active: false
         };
     case MODEL_FILES_ACTIVE:
         return {

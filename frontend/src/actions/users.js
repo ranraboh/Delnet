@@ -1,5 +1,6 @@
 import axios from 'axios'
-import { LOGIN_SUCCESS, LOGOUT, GET_USER_DETAILS, USER_LOOKUP_SUCCESS, USER_LOOKUP_FAIL, UPDATE_USER, UPLOAD_IMAGE, UPDATE_USER_IMAGE } from './types.js'
+import {ADD_MESSAGES, LOGIN_SUCCESS, LOGOUT, GET_USER_DETAILS, USER_LOOKUP_SUCCESS, USER_LOOKUP_FAIL,
+     UPDATE_USER, UPLOAD_IMAGE, UPDATE_USER_IMAGE, SENDER_MESSAGES, RECEIVER_MESSAGES,MESSAGES_HEADER } from './types.js'
 import { useReducer } from 'react';
 import { homepage } from '../appconf.js';
 
@@ -11,7 +12,39 @@ export const getUserDetails = (username) => dispatch => {
         })
     }).catch(err => console.log(err));
 }
+export const getContentMessages = (content) => dispatch => {
+    axios.get('api/messages/content/' + content).then(result => {
+        dispatch({
+            type: CONTENT_MESSAGES,
+            payload: result.data
+        })
+    }).catch(err => console.log(err));
+}
 
+export const getSenderMessages = (sender) => dispatch => {
+    axios.get('/api/messages/sender/' + sender).then(result => {
+        dispatch({
+            type: SENDER_MESSAGES,
+            payload: result.data
+        })
+    }).catch(err => console.log(err));
+}
+export const getReceiverMessages = (receiver) => dispatch => {
+    axios.get('/api/messages/receiver/' + receiver).then(result => {
+        dispatch({
+            type: RECEIVER_MESSAGES,
+            payload: result.data
+        })
+    }).catch(err => console.log(err));
+}
+export const getMessagHeader = (receiver) => dispatch => {
+    axios.get('api/messages/header/' + receiver).then(result => {
+        dispatch({
+            type: MESSAGES_HEADER,
+            payload: result.data
+        })
+    }).catch(err => console.log(err));
+}
 export const uploadImage = (image) => dispatch => {
     let formData = new FormData();
     formData.append('image', image.image, image.name);
@@ -35,7 +68,16 @@ export const loginAction = (username) => dispatch => {
     window.localStorage.setItem('loggedIn', true);
     window.localStorage.setItem('user', username);
 }
-
+export const addMessages = (messages, callback_function) => dispatch => {
+    axios.post('/api/messages/', messages).then(response => {
+        console.log("addMessages")
+        console.log(response)
+        dispatch({
+            type: ADD_MESSAGES,
+            payload: response.data
+        })
+    }).then(callback_function).catch(err => console.log(err))
+}
 export const logoutAction = () => dispatch => {
     dispatch({ 
         type: LOGOUT,

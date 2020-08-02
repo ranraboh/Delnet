@@ -1,16 +1,20 @@
 
 import React, { Component } from 'react';
+import { display_size } from './actions/display.js';
 
 function Shape3D(props) {
+    var td_matrix = [];
+    for (var i = 1; i <= Math.min(props.size[0], 6); i++) {
+        td_matrix.push(i);
+    }
     return (
-        <div className="col-md-2 col-xs-3">
-            <div className="convolution-shape-wrapper">
-                <div id="shape-1" className="convolution-twod-shape convolution-twod-shape-1"></div>
-                <div id="shape-2" className="convolution-twod-shape convolution-twod-shape-2"></div>
-                <div id="shape-3" className="convolution-twod-shape convolution-twod-shape-3"></div>
-                <div id="shape-4" className="convolution-twod-shape convolution-twod-shape-4"></div>
-                <div id="shape-5" className="convolution-twod-shape convolution-twod-shape-5"></div>
-                <div id="shape-5" className="convolution-twod-shape convolution-twod-shape-6"></div>
+        <div className="row">
+            <div className="shape-3d-wrapper">
+            {
+                td_matrix.map((index) =>
+                    <div id={"shape-" + index} className={"shape-3d shape-3d-" + index }></div>
+                )
+            }
             </div>
         </div>
     );

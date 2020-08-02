@@ -1,6 +1,9 @@
-from ..submodels.user import *
+from backend.submodels.user import *
 
-def update_user(user)    
+def get_user(username):
+    return User.objects.filter(username=username)[0]
+
+def update_user(user):
     user = User.objects.filter(username=user['username'])[0]
     user.firstname = user['firstname']
     user.lastname = user['lastname']

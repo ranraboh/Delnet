@@ -7,6 +7,18 @@ class PersonalDetails extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            errors: {
+                username: '',
+                password: '',
+                confirm_password: '',
+                firstname: '',
+                lastname: '',
+                occupation: '',
+                email: '',
+                gender: 'm',
+                image: ''
+                
+            },
             user : {
                 username: props.username,
                 firstname: props.firstname,
@@ -16,7 +28,7 @@ class PersonalDetails extends Component {
                 email: props.email,
                 join_date: props.join_date,
                 image: props.image
-            },
+            }
         }
         
         /* bind methods */
@@ -24,23 +36,56 @@ class PersonalDetails extends Component {
         this.update_profile = this.update_profile.bind(this);
         this.female_select_handler = this.female_select_handler.bind(this);
         this.male_select_handler = this.male_select_handler.bind(this);
-    }
+        this.on_change = this.on_change.bind(this);
+        this.restartErrors = this.restartErrors.bind(this);
 
-    update_profile() {
+    }
+    restartErrors(errors){
+        errors['username'] =''
+        errors['password'] =''
+        errors['confirm_password'] =''
+        errors['firstname'] =''
+        errors['lastname'] =''
+        errors['occupation'] =''
+        errors['email'] =''
+        errors['image'] =''
+    }
+    update_profile(e) {
+        e.preventDefault();
+        console.log('register')
+        let errors = this.state.errors
+        let user = this.state.user;
+        
+        this.restartErrors(errors);
+      //  if (!this.check_itsnot_empty(user['username'])) {
+        if (false) {
+            errors['username'] ="the name is empy ,enter name."
+        }
+        this.setState({
+            ...this.state,
+            errors
+        })
         console.log(this.state.user)
+        if(user['image']==''){
         this.props.updateUser(this.state.user, () =>{
             alert('your details successfully updated')
-        })
+            window.location = homepage + '/profile';
+        })}
     }
 
     on_change(field, value) {
+        console.log('on change')
         let user = this.state.user;
         user[field] = value;
 
         this.setState({
-            ...this.state,
             user
         })
+
+      //  this.setState({
+      //      ...this.state,
+       //     user
+      //  })
     }
 
     female_select_handler() {
@@ -82,6 +127,7 @@ class PersonalDetails extends Component {
     render() {
         return (
             <div id="personal-details">
+                <form method="POST">
                 <div id="inner-personal-details" className="container">
                     <div className="row intro-personal-details">
                         <h6>This section contains your perosnal details that you had mentioned earlier.</h6>
@@ -89,18 +135,39 @@ class PersonalDetails extends Component {
                     </div>
                     <div className="row">
                         <div class="col-sm">
-                            <input value={ this.state.user.username } className="textbox-v1" disabled="true" onChange={ (e)=> this.on_change('username', e.target.value)} ></input>
-                            <label className="label-v1">Username</label>
+                            <div class="value">
+                            <input class={(this.state.errors.username == '')? 'input--style-5' : 'input--style-5 form-control is-invalid'} 
+                            type="text" name="user_name" value={ this.state.user.username }className="textbox-v1" 
+                            onChange={ (e) => this.on_change('username', e.target.value) } />
+                                <div class="invalid-feedback">
+                                    { this.state.errors.username }
+                                </div>
+                                <label className="label-v1">Usernamell</label>
+                         </div>
                         </div>
                     </div>
                     <div className="row">
                         <div class="col-sm">
-                            <input value={ this.state.user.firstname } className="textbox-v1" onChange={ (e)=> this.on_change('firstname', e.target.value)} ></input>
-                            <label className="label-v1">First Name</label>
+                        <div class="value">
+                            <input class={(this.state.errors.firstname == '')? 'input--style-5' : 'input--style-5 form-control is-invalid'} 
+                            type="text" name="first_name" value={ this.state.user.firstname }className="textbox-v1" 
+                            onChange={ (e) => this.on_change('firstname', e.target.value) } />
+                                <div class="invalid-feedback">
+                                    { this.state.errors.firstname }
+                                </div>
+                                <label className="label-v1">First Name</label>
+                         </div>
                         </div>
                         <div class="col-sm">
-                            <input value={ this.state.user.lastname } className="textbox-v1" onChange={ (e)=> this.on_change('lastname', e.target.value)} ></input>
-                            <label className="label-v1">Last Name</label>
+                        <div class="value">
+                            <input class={(this.state.errors.lastname == '')? 'input--style-5' : 'input--style-5 form-control is-invalid'} 
+                            type="text" name="last_name" value={ this.state.user.lastname }className="textbox-v1" 
+                            onChange={ (e) => this.on_change('lastname', e.target.value) } />
+                                <div class="invalid-feedback">
+                                    { this.state.errors.lastname }
+                                </div>
+                                <label className="label-v1">Last Name</label>
+                         </div>
                         </div>
                     </div>
                     <div className="row">
@@ -146,6 +213,7 @@ class PersonalDetails extends Component {
                         <button type="button" className="button-v1 button-v1-red button-v1-small">Reset</button>
                     </div>
                 </div>
+                </form>
             </div>
         )
     }

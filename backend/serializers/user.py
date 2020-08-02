@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..submodels.user import User, UploadImage
+from ..submodels.user import User, UploadImage, Message
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -9,4 +9,9 @@ class UserSerializer(serializers.ModelSerializer):
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = UploadImage
+        fields = '__all__'
+
+class MessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
         fields = '__all__'

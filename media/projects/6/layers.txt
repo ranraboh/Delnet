@@ -1,0 +1,1 @@
+[{"activation": "Relu", "id": 1, "in_channels": 3, "input": [3, 64, 64], "input_dimension": 3, "kernel_size": ["3", "3"], "out_channels": "3", "output": ["3", 20, 20], "output_dimension": 3, "strides": "3", "type": "Convolution"}]

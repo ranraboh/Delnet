@@ -49,3 +49,42 @@ class ImageViewSet(generics.ListAPIView):
         user = User.objects.filter(username=request.data['user'])[0]
         image = UploadImage.objects.create(user=user ,image=image_file)
         return HttpResponse(json.dumps({'url': str(image.image)}), status=200)
+
+
+
+
+
+
+
+
+
+class MessageViewSet(viewsets.ModelViewSet):
+    queryset = Message.objects.all()
+    permission_classes = {
+        permissions.AllowAny
+    }
+    serializer_class = MessageSerializer
+
+
+  
+
+    @action(detail=True, methods=['post'], name='MessageAdd')
+    def messageAdd (self, request, *args, **kwargs):
+        print(request.data)
+        receiver = request.data['receiver']
+        sender = request.data['sender']
+        content = request.data['content']
+        Message.objects.create(receiver=receiver,sender=sender,content=content)
+        return HttpResponse(json.dumps({'status':"message added successfuly"}), status=200)
+    
+    @action(detail=False)
+    def messages_header(self, request,  *args, **kwargs):
+        query = []
+        receiver = self.kwargs['receiver']
+        messages = Message.objects.filter(receiver=receiver)[:2]     
+        for meessage in messages:
+            query.append({
+                'image': message.receiver.image, 'content': message.content, 'receiver': message.receiver.username
+            })
+        return Response(query)
+    

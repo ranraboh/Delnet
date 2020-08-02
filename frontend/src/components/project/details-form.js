@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { updateProject } from '../../actions/projects.js'
-import { getUserDatasets } from '../../actions/datasets.js';
+import { updateProject } from '../../actions/projects'
+import { getUserDatasets } from '../../actions/dataset/get';
 
 class ProjectDetailsForm extends Component {
     constructor(props) {
         super(props)
-        console.log('constructor')
-        console.log(props.project_data)
         this.state = {
             project: {
                 user: props.username,
@@ -16,13 +14,13 @@ class ProjectDetailsForm extends Component {
                 name: props.project_data.project_name,
                 description: props.project_data.description,
                 result: props.project_data.result,
-                dataset: props.project_data.dataset
+                dataset: props.project_data.dataset,
+                type: props.project_data.type_description
             },
             user_datasets: props.user_datasets
         }
 
         /* send requests for crucial data from backend  */
-        console.log(this.state.project.user)
         this.props.getUserDatasets(this.state.project.user)
 
         /* bind internal methods */
@@ -132,6 +130,16 @@ class ProjectDetailsForm extends Component {
                     </div>
                 </div> 
             </div>
+            <div className="row row-form">
+                <div className="col-2">
+                    <p className="project-form-field">Model Type</p>
+                </div>
+                <div className="col-6">
+                    <div class="value">
+                        <p className="project-form-field">{ this.state.project.type } </p>
+                    </div>
+                </div>
+                </div>
                 {/* Possible profile operations */}
                 <div id="project-details-operations">
                     <button type="button" className="button-v1 button-v1-blue button-v1-small" onClick={ this.register_project }

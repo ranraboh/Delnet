@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { getDataItems, deleteDataItem } from '../../actions/datasets.js';
+import { getDataItems } from '../../actions/dataset/get';
+import { deleteDataItem } from '../../actions/dataset/manipulation';
 
 class ItemsSection extends Component {
     constructor(props) {

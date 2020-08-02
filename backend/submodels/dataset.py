@@ -1,6 +1,7 @@
 from django.db import models
 from .user import User
 
+
 # represent a dataset in system, contains infromation about the dataset such as 
 # dataset name, description, creation date, user who created it so on.
 class Dataset(models.Model):
@@ -38,3 +39,11 @@ class DatasetCollectors(models.Model):
     role = models.TextField(default='unknown role')
     presmissions = models.IntegerField(default=1)
     join_date = models.DateField(auto_now_add=True)
+
+class DatesetNotifcation(models.Model):
+    topic=models.TextField(unique=False, blank=True, default='')
+    user = models.ForeignKey(User, default=None, on_delete=models.CASCADE)
+    dataset = models.ForeignKey(Dataset, default=None, on_delete=models.CASCADE)
+    content=models.TextField(unique=False, blank=True, default='')
+    date=models.DateField(auto_now_add=True)
+    time=models.TimeField(auto_now_add=True,null=True, blank=True)       

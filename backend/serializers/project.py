@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..submodels.project import Project, ProjectTeam, ProjectFiles
+from ..submodels.project import Project, ProjectTeam, ProjectFiles,ProjectNotifcation,ProjectCheckList
 from django.db import models
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -30,3 +30,12 @@ class ExtendedProjectFilesSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectFiles
         fields = '__all__'
+
+class ProjectNotifcationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectNotifcation
+        fields = '__all__'        
+class ProjectCheckListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectCheckList
+        fields = '__all__' 

@@ -1,88 +1,109 @@
-from ..submodels.model import *
-from backend.actions.dataset import labels_records
+def dropout_exists(layers):
+    exist = 0
+    constants = []
+    for layer in layers:
+        if layer['type'] == 'Dropout':
+            exist = exist + 1
+            constant.append(layer['parameters']['dropout_constant'])
+    return { 'exist': exist, 'dropout_constant': constants  }
 
-# returns confusion matrix of praticular run
-def confusion_matrix(run_code):
-    # read records from database
-    confusion_matrix = {}
-    records = LabelsMetrics.objects.filter(run=run_code)   
+def batchnormn_exists(layers):
+    exist = 0
+    for layer in layers:
+        if layer['type'] == 'BatchNorm':
+            exist = exist + 1
+    return exist
+
+def activations_used(layers):
+    activations = {}
+    for layer in layers:
+        activation = layer['activation']
+        if activation != None and activation != 'None':
+            if activation not in layers:
+                activations[activation] = 0
+            activations[activation] += 1
+    return activations
     
-    # arrange data in matrix/dictionary
-    for record in records:
-        confusion_matrix[(record.label, record.prediction)] = record.value
-    return confusion_matrix
+def module_used(layers):
+    modules = {}
+    for layer in layers:
+        type = layer['type']
+        if type not in modules:
+            modules[type] = 0
+        modules[type] += 1
+    return modules
 
-def confusion_matrix_records(run_code):
-    # read confusion matrix records from database
-    records = LabelsMetrics.objects.filter(run=run_code)   
-    return records
 
-# returns recall evaluation of praticular run
-def recall(run_code):
-    # read crucial data to compute recall score
-    c_matrix = confusion_matrix(run_code)
-    print(c_matrix)
-    dataset = dataset_of_run(run_code)
-    labels = labels_records(dataset.id)
+def module_exists(layers, type):
+    exist = 0
+    constants = []
+    for layer in layers:
+        if layer['type'] == type:
+            exist = exist + 1
+    return exist
 
-    # compute recall using confusion matrix
-    recall = []
-    for label in labels:
-        numerator = c_matrix[(label, label)]
-        denomirator = 0
-        for prediction in labels:
-            denomirator += c_matrix[(label, prediction)]
-        if denomirator == 0:
-            recall.append({'name': label.name, 'recall': 0})
-        else:
-            recall.append({'name': label.name, 'recall': (numerator / denomirator) * 100 } )
-    return recall
+def convolution_info(layers):
+    quantity = 0
+    stride_sum = 0
+    kernal_size_sum = 0
+    for layer in layers:
+        if layer['type'] != 'Convolution':
+            continue
         
-# returns precision evaluation of praticular run
-def precision(run_code):
-    # read data to help compute the recall
-    c_matrix = confusion_matrix(run_code)
-    dataset = dataset_of_run(run_code)
-    labels = labels_records(dataset.id)
+        # compute statics
+        kernel_size = layer['kernel_size']
+        quantity += 1
+        stride_sum += int(layer['strides'])
+        kernal_size_sum += (int(kernel_size[0]) * int(kernel_size[1]))
 
-    # compute recall using confusion matrix
-    precision = []
-    for label in labels:
-        numerator = c_matrix[(label, label)]
-        denomirator = 0
-        for prediction in labels:
-            denomirator += c_matrix[(prediction, label)]
-        if denomirator == 0:
-            precision.append({'name': label.name, 'precision': 0})
-        else:
-            precision.append({'name': label.name, 'precision': (numerator / denomirator) * 100 } )
-    return precision
+    stride_avg = kernal_size_avg = 0
+    if quantity != 0:
+        stride_avg = stride_sum / quantity
+        kernal_size_avg = kernal_size_sum / quantity
+    return {
+        'quantity': quantity,
+        'stride_avg': stride_avg,
+        'kernel_size_avg': kernal_size_avg
+    }
 
-# returns f1 evaluation of praticular run
-def f_one(run_code):
-    f_scores = []
-    recall_results = recall(run_code=run_code)
-    precision_results = precision(run_code=run_code)
-    for p_label, r_label in zip(precision_results, recall_results):
-        if r_label['recall'] + p_label['precision'] != 0:
-            score = 2 * (r_label['recall'] * p_label['precision']) / (r_label['recall'] + p_label['precision'])
-        else:
-            score = 0
-        f_scores.append({ 'name': r_label['name'], 'score': score })
-    return f_scores
+def parameters_quantity(layers):
+    parameters = 0
+    for layer in layers:
+        if layer['type'] == 'Linear':
+            parameters += (layer['input'][0] * int(layer['output'][0]))
+        elif layer['type'] == 'Convolution':
+            kernel_size = layer['kernel_size']
+            out_channels = int(layer['out_channels'])
+            in_channels = layer['in_channels']
+            parameters +=  (in_channels * out_channels * int(kernel_size[0]) * int(kernel_size[1])) + out_channels
+    return parameters
 
-# returns dataset object of praticular run
-def dataset_of_run(run_code):
-    run = ProjectRuns.objects.filter(id=run_code)[0]
-    return run.project.dataset
+def use_rate_activation(activations):
+    sum = 0
+    activations_rate = {}
+    
+    # compute total number of activations usage in model
+    for _, frequency in activations.items():
+        sum = sum + frequency
 
-# 
-def store_confusion_matrix(total_results, labels, run):
-    confusion_matrix = total_results['confusion_matrix']
-    labels_quantity = len(labels)
-    i = 0
-    for i in range(labels_quantity):
-        label = labels[i]
-        for j in range(labels_quantity):
-            prediction = labels[j]
-            LabelsMetrics.objects.create(label=label, prediction=prediction, run=run, value=confusion_matrix[i, j])
+    # iterate through activations and compute usage rate in model
+    for activation, frequency in activations.items():
+        activations_rate[activation] = frequency / sum
+    return activations_rate
+
+def max_used_activation(activations):
+    max_value = 0
+    max_activation = 'None'
+    for activation, frequency in activations.items():
+        if frequency > max_value:
+            max_value = frequency
+            max_activation = activation
+    return {
+        'activation': max_activation,
+        'value': max_value
+    }
+
+def get_activation_value(activation, activations):
+    if activation not in activations:
+        return 0
+    return activations[activation]

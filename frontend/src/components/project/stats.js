@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import MiniSection from '../home/mini.js';
 import { connect } from 'react-redux';
-import { getItemsCount, getDatasetTeam } from '../../actions/datasets.js';
+import { getItemsCount, getDatasetTeam } from '../../actions/dataset/get';
 
 class ProjectStats extends Component {
     constructor(props) {

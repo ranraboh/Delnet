@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { addLabel } from '../../actions/datasets.js';
+import { addLabel } from '../../actions/dataset/manipulation';
 
 class AddLabel extends Component {
     constructor(props) {

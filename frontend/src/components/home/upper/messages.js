@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { homepage } from '../../../appconf.js';
- 
+
 class MessagesPopup extends Component {
     constructor(props) {
         super(props)
         this.state = {
             username: this.props.user
+            
         }
+
+
     }
 
     componentWillMount() {
@@ -16,6 +19,9 @@ class MessagesPopup extends Component {
             window.location = homepage + '/login'
     }
 
+
+
+    
     render() {
         return (
             <div id="messages-popup" className="message_dd">
@@ -62,9 +68,12 @@ class MessagesPopup extends Component {
 
 
 const mapStateToProps = state => {
+    console.log("sdsdfds")
+    console.log(state.userReducer.messageHedear)
     return {
         loggedIn: state.authentication.loggedIn,
-        username: state.authentication.user
+        username: state.authentication.user,
+        messageHedear: state.userReducer.messageHedear
     }
 }
 

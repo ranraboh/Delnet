@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { createUser } from '../../actions/users.js'
 import { homepage } from '../../appconf.js';
 
+
 class RegisterForm extends Component {
     constructor(props) {
         super(props);
@@ -53,9 +54,9 @@ class RegisterForm extends Component {
     if(inputText.match(mailformat))
     {return true;
     }
-    else{
+    
         return false;
-    }
+    
     }
 /*check about if its only string*/
     allLetter(inputtxt)
@@ -65,10 +66,9 @@ class RegisterForm extends Component {
      {
       return true;
      }
-   else
-     {
+   
      return false;
-     }
+     
   }
   check_password(password,confirm_password){
       if((password=='')||(password.length<5)){
@@ -167,7 +167,7 @@ class RegisterForm extends Component {
             errors['email']="There is an error in the email address,fix it please."
         }
         if(!this.isFileImage(user['image'])){
-            errors['image']="Please enter a suitable image."
+           // errors['image']="Please enter a suitable image."
         }
         this.setState({
             ...this.state,
@@ -199,9 +199,13 @@ class RegisterForm extends Component {
         console.log('image is empty');
 
         console.log(this.isFileImage(user['image']));
-       
-
-
+        if(user['image']==''){
+        //    window.location = homepage + '/login';
+            this.props.createUser(this.state.user, () => {
+                alert(' shiran the user added successfully, you are able to log in');
+                window.location = homepage + '/login';
+            })
+        }
 
         /*this.props.createUser(this.state.user, () => {
             console.log('callback..')

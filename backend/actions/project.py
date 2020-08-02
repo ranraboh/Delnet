@@ -1,5 +1,25 @@
+from django.db.models import Avg, Max, Min, Sum, Count
 from ..submodels.project import *
 from ..submodels.user import User
+from backend.actions.general import create_dirs_along_path
+from django.conf import settings
+import matplotlib.image as mpimg
+from PIL import Image as pil
+import matplotlib.pyplot as plt
+from django.core.files.images import get_image_dimensions
+
+def save_deploy_image(project_id, image):
+    path = settings.MEDIA_ROOT + "/projects/" + str(project_id) + "/deploy/"
+    create_dirs_along_path(path)
+    item_path = path + image.name
+    img = pil.open(image.file)
+    img.save(item_path, "PNG")
+    print(item_path)
+    return item_path
+
+# returns project object by its identifaction number
+def project_by_id(project_id):
+    return Project.objects.filter(id=project_id)[0]
 
 def update_project(project_data):
     project = Project.objects.filter(id=project_data['id'])[0]
@@ -32,3 +52,36 @@ def upload_file(files_quantity, files_list, project_id, username):
     user = User.objects.filter(username=username)[0]
     for file_model in files_list: 
         ProjectFiles.objects.create(project=project ,file=file_model, insert_by=user, name=file_model.name, type=file_model.content_type)
+
+def get_total_size(files):
+    size = 0
+    for record in files:
+        file = record.file
+        size = size + file.size
+    return size
+
+def files_statics(project):
+    files = ProjectFiles.objects.filter(project=project)
+    statics = {
+        'files_quantity' : files.count(),
+        'total_size': get_total_size(files),
+        'most_uploader': most_query(files, 'insert_by'),
+        'most_file_uploads': most_query(files, 'insertion_date'),
+    }
+    return statics
+
+def most_query(files, category):
+    grouped_results = files.values(category).annotate(favorite=Count(category)).order_by('-favorite').first()
+    print(grouped_results)
+    return {
+        category: grouped_results[category],
+        'count': grouped_results['favorite'],
+    }
+
+def team_statics(project):
+    team = ProjectTeam.objects.filter(project=project)
+    statics = {
+        "team_size": team.count(),
+        "managers": team.filter(presmissions=5).count()
+    }
+    return statics

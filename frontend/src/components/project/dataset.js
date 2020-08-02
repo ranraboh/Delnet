@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { homepage } from '../../appconf.js';
-import { selectDataset, getItemsCount, getLabelsCount } from '../../actions/datasets.js'
+import { getItemsCount, getLabelsCount } from '../../actions/dataset/get'
+import { selectDataset } from '../../actions/dataset/manipulation'
  
 class DataSetProject extends Component {
     constructor(props) {

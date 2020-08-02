@@ -5,6 +5,12 @@ import Activeness from '../home/activeness.js';
 import PersonalDetails from './personal';
 import ChangePassword from './change-password.js';
 import ChangeImage from './change-image.js';
+import MessagesWrapper from './messages-wrapper';
+
+import RecieverMessage from './recieverMessage.js';
+import SenderMessage from './senderMessage.js';
+import Cotent from './write-message.js';
+
 
 
 
@@ -31,22 +37,38 @@ class MainProfileContent extends Component {
         let personal_details_section = this.section(<PersonalDetails/>, 'Personal Details', this.props.personal_details_active)
         let change_password_section = this.section(<ChangePassword/>, 'Change Password', this.props.change_password_active)
         let change_image_section = this.section(<ChangeImage/>, 'Change Image', this.props.change_image_active)
+        
+        let change_sender_massages = this.section(<RecieverMessage/>, 'Sender Messages ', this.props.active_sender_message)
+        let change_reciver_massages = this.section(<SenderMessage/>, 'Reciever Messages', this.props.active_reciever_message)
+        let change_content_massages = this.section(<Cotent/>, 'Content Messages', this.props.active_content_message)
+
+
         return (
             <div className="main-section">
                 { activeness_section }
                 { personal_details_section }
                 { change_password_section }
                 { change_image_section }
+                
+                { change_sender_massages }
+                { change_reciver_massages }
+                { change_content_massages }
+
             </div>
         );
     }
 }
-
+  
 const mapStateToProps = state => {
     return {
         personal_details_active: state.profileReducer.personal_details_active,
         activeness_section_active: state.profileReducer.activeness_section_active,
         change_password_active: state.profileReducer.change_password_active,
+
+        active_reciever_message: state.profileReducer.active_reciever_message,
+        active_content_message: state.profileReducer.active_content_message,
+        active_sender_message: state.profileReducer.active_sender_message,
+
         change_image_active: state.profileReducer.change_image_active
     }
 }

@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { getDatasetTeam } from '../../actions/datasets.js';
+import { getDatasetTeam } from '../../actions/dataset/get';
 
 class DatasetTeam extends Component {
     constructor(props) {
         super(props)
-        console.log('team constructor')
-        console.log(props.dataset_data)
         this.state = {
             dataset: {
                 user: props.username,
@@ -31,8 +29,6 @@ class DatasetTeam extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        console.log(nextState)
-        console.log('should update')
         return true;
     }
 

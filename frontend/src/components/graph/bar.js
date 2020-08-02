@@ -20,34 +20,29 @@ class BarChart extends Component {
                     yAxes: [{
                         ticks: {
                             beginAtZero:true,
-                            min: 0,
-                            max: 100    
+                            min: this.props.min,
+                            max: this.props.max    
                         }
                     }]
                 }
             },
             category_display: props.display,
-            value: props.value,
-            data_ready: false
+            value: props.value
         }
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.state.data_ready === true)
-            return
+    componentWillMount() {
         let colors = [ 'rgba(255, 99, 132, 0.6)', 'rgba(54, 162, 235, 0.6)', 'rgba(255, 206, 86, 0.6)',
         'rgba(75, 192, 192, 0.6)', 'rgba(153, 102, 255, 0.6)', 'rgba(255, 159, 64, 0.6)', 'rgba(255, 99, 132, 0.6)' ]
-        nextProps.data.map((project, index) => {
+        this.props.data.map((project, index) => {
             let chart_data = this.state.chart_data;
             chart_data.labels = [ ...chart_data.labels, project[this.state.category_display] ];
             chart_data.datasets[0].data = [ ...chart_data.datasets[0].data, project[this.state.value] ];
             chart_data.datasets[0].backgroundColor = [ ...chart_data.datasets[0].backgroundColor, colors[index] ];
             this.setState({
-                chart_data: chart_data,
-                data_ready: true
+                chart_data: chart_data
             }) 
         })
-        console.log(this.state)
     }
 
     componentDidMount() {

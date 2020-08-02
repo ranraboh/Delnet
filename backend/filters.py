@@ -2,11 +2,11 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
-from .submodels.user import User
+from .submodels.user import User, Message
 from .submodels.project import *
 from .submodels.model import *
 from .submodels.dataset import Dataset
-from .serializers.user import UserSerializer
+from .serializers.user import UserSerializer, MessageSerializer
 from .serializers.project import *
 from .serializers.dataset import *
 from .serializers.model import *
@@ -154,6 +154,37 @@ class RunRecordFilter(generics.ListAPIView):
     def get_queryset(self):
         run_id = self.kwargs['id']
         return ProjectRuns.objects.filter(id=run_id)
+
+class MessageReceiverFilter(generics.ListAPIView):
+    serializer_class = MessageSerializer
+    def get_queryset(self):
+        receiver = self.kwargs['receiver']
+        return Message.objects.filter(receiver=receiver)
+class MessageSenderFilter(generics.ListAPIView):
+    serializer_class = MessageSerializer
+    def get_queryset(self):
+        sender = self.kwargs['sender']
+        return Message.objects.filter(sender=sender)
+      
+
+
+class AllTheTaskDone(generics.ListAPIView):
+    serializer_class = ProjectCheckListSerializer
+    def get_queryset(self):
+        project_id = self.kwargs['id']
+        return ProjectCheckList.objects.filter(project=project_id, complete=True)
+
+class AllTheTaskNotDone(generics.ListAPIView):
+    serializer_class = ProjectCheckListSerializer
+    def get_queryset(self):
+        project_id = self.kwargs['id']
+        return ProjectCheckList.objects.filter(project=project_id, complete=True)
+            
+
+
+             
+        
+
 
 
 

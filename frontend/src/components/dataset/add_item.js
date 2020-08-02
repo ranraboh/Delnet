@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { addDataItem, getDatasetLabels, uploadItems } from '../../actions/datasets.js';
+import { addDataItem, uploadItems } from '../../actions/dataset/manipulation';
+import { getDatasetLabels } from '../../actions/dataset/get';
 
 class AddItem extends Component {
     constructor(props) {

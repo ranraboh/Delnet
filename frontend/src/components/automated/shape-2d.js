@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 
 function Shape2D(props) {
     return (
-        <div className="col-md-1 col-xs-3">
-            <div className="twod-shape">
+        <div className="row">
+            <div className="shape-2d">
 
             </div>
             <p/>

@@ -1,4 +1,5 @@
-import { GET_USER_DETAILS, USER_LOOKUP_SUCCESS, USER_LOOKUP_FAIL, UPLOAD_IMAGE, UPDATE_USER, UPDATE_USER_IMAGE } from '../actions/types.js'
+import { ADD_MESSAGES,GET_USER_DETAILS, USER_LOOKUP_SUCCESS, USER_LOOKUP_FAIL, UPLOAD_IMAGE, UPDATE_USER,
+   UPDATE_USER_IMAGE,SENDER_MESSAGES,RECEIVER_MESSAGES,CONTENT_MESSAGES,MESSAGES_HEADER} from '../actions/types.js'
 import { media } from '../appconf.js'
 
 const initialState = {
@@ -9,12 +10,26 @@ const initialState = {
     join_date: null,
     query_receive: 0,
     users_queries: { },
-    upload_image: null
+    upload_image: null,
+    senderMessages:null,
+    receiverMessages:null,
+    contentMessages:null,
+    messagesHeader:null,
+    add_message:null
+    
 }
 export function userReducer(state = initialState, action) {
     switch (action.type) {
+    case ADD_MESSAGES:
+      console.log("action----16")
+      console.log(action.payload)
+      return {
+        ...state,
+        add_message: action.payload
+      };
     case GET_USER_DETAILS:
       return {
+        ...state,
         firstname: action.payload.firstname,
         lastname: action.payload.lastname,
         email: action.payload.email,
@@ -41,6 +56,30 @@ export function userReducer(state = initialState, action) {
         image: media + action.payload.url,
         upload_image: media + action.payload.url
       }
+    case SENDER_MESSAGES:
+      
+      console.log(action.payload)
+      return {
+        ...state,
+        senderMessages: action.payload
+    }
+    case MESSAGES_HEADER:
+      console.log("shiranRan")
+      console.log(action.payload)
+      return {
+        ...state,
+        messagesHeader: action.payload
+    }
+    case RECEIVER_MESSAGES:
+      return {
+        ...state,
+        receiverMessages: action.payload
+    }
+    case CONTENT_MESSAGES:
+      return {
+        ...state,
+        contentMessages: action.payload
+    }
     case UPDATE_USER: 
       return {
         ...state

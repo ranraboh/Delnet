@@ -1,5 +1,6 @@
-import { MODEL_INTERACTION_ACTIVE, MODEL_INTERACTION_NONACTIVE } from '../types.js'
-import { EMBED_APPLICATION_NONACTIVE, EMBED_APPLICATION_ACTIVE } from '../types.js'
+import { DEPLOY_MODEL_ACTIVE, DEPLOY_MODEL_NONACTIVE } from '../types.js'
+import { LAYERS_DISPLAY_ACTIVE, LAYERS_DISPLAY_NONACTIVE } from '../types.js'
+import { ARCHITECTURE_DISPLAY_ACTIVE, ARCHITECTURE_DISPLAY_NONACTIVE } from '../types.js'
 import { RUN_MODEL_ACTIVE, RUN_MODEL_NONACTIVE } from '../types.js'
 import { ACCESS_DATASET_ACTIVE, ACCESS_DATASET_NONACTIVE } from '../types.js'
 import { CHECK_LIST_ACTIVE, CHECK_LIST_NONACTIVE } from '../types.js'
@@ -14,14 +15,12 @@ import { PROJECT_RECOMMENDATIONS_ACTIVE, PROJECT_RECOMMENDATIONS_NONACTIVE } fro
 import { PROJECT_TESTS_ACTIVE, PROJECT_TESTS_NONACTIVE } from '../types.js'
 
 export const activateSection = (section) => dispatch => {
-    console.log('in activate')
     dispatch({ 
         type: activate_map_actiontype(section),
         payload: null  
     });
 }
 export const hideSection = (section) => dispatch => {
-    console.log('in action hide')
     dispatch({ 
         type: hide_map_actiontype(section),
         payload: null  
@@ -48,16 +47,18 @@ export const activate_map_actiontype = (section) => {
             return PROJECT_STACTICS_ACTIVE;
         case 'Diagrams':
             return PROJECT_DIAGRAMS_ACTIVE;
-        case 'Model Interaction':
-            return MODEL_INTERACTION_ACTIVE;
+        case 'Deploy Model':
+            return DEPLOY_MODEL_ACTIVE;
         case 'Run Model':
             return RUN_MODEL_ACTIVE;
         case 'Runs Outcomes':
             return RUNS_OUTCOMES_ACTIVE;
         case 'Access Dataset':
             return ACCESS_DATASET_ACTIVE;
-        case 'Embed In Application':
-            return EMBED_APPLICATION_ACTIVE;
+        case 'Model Layers':
+            return LAYERS_DISPLAY_ACTIVE;
+        case 'Model Architecture':
+            return ARCHITECTURE_DISPLAY_ACTIVE;
         case 'Check List':
             return CHECK_LIST_ACTIVE;
         default:
@@ -85,16 +86,18 @@ export const hide_map_actiontype = (section) => {
             return PROJECT_STACTICS_NONACTIVE;
         case 'Diagrams':
             return PROJECT_DIAGRAMS_NONACTIVE;
-        case 'Model Interaction':
-            return MODEL_INTERACTION_NONACTIVE;
+        case 'Deploy Model':
+            return DEPLOY_MODEL_NONACTIVE;
         case 'Run Model':
             return RUN_MODEL_NONACTIVE;
         case 'Runs Outcomes':
             return RUNS_OUTCOMES_NONACTIVE;
         case 'Access Dataset':
             return ACCESS_DATASET_NONACTIVE;
-        case 'Embed In Application':
-            return EMBED_APPLICATION_NONACTIVE;
+        case 'Model Layers':
+            return LAYERS_DISPLAY_NONACTIVE;
+        case 'Model Architecture':
+            return ARCHITECTURE_DISPLAY_NONACTIVE;
         case 'Check List':
             return CHECK_LIST_NONACTIVE;
         default:

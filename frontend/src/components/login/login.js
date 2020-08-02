@@ -14,6 +14,7 @@ class LoginForm extends Component {
     }
     
     login_system() {
+       
         this.props.login(this.state.username);
         window.location = "../home";
     }

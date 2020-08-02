@@ -4,14 +4,19 @@ from .project import Project
 from .dataset import DataLabel
 
 class LossTypes(models.Model):
-    loss_type = models.TextField()
+    loss_type = models.TextField(null=False, blank=False)
     def __str__(self):
         return self.loss_type
 
 class Optimizer(models.Model):
-    optimizer = models.TextField()
+    optimizer = models.TextField(null=False, blank=False)
     def __str__(self):
         return self.optimizer
+
+class KnownModels(models.Model):
+    name = models.TextField()
+    def __str__(self):
+        return self.known_model
 
 # used to store the results for each run in the system.
 # the project team can evaluate their algorithm performance and 
@@ -36,6 +41,9 @@ class ProjectRuns(models.Model):
     accuracy = models.FloatField(default=0)
     loss = models.FloatField(default=0)
 
+    def __str__(self):
+        return str(self.id) + " "  + self.project.project_name
+
 class LabelsMetrics(models.Model):
     label = models.ForeignKey(DataLabel,default=None, on_delete=models.CASCADE, related_name="label")
     prediction = models.ForeignKey(DataLabel, default=None, on_delete=models.CASCADE, related_name="prediction")
@@ -52,3 +60,10 @@ class RunResult(models.Model):
     epoch = models.IntegerField(blank=False)
     accuracy_rate = models.FloatField(blank=False)
     loss = models.FloatField(blank=False)
+
+    def __str__(self):
+        return 'run: ' + str(self.run.id) + ' set: ' + self.set + ' epoch: ' + str(self.epoch) + ' results: ' + str(self.accuracy_rate) + " , " + str(self.loss)
+
+class ProjectKnownModel(models.Model):
+    project = models.ForeignKey(Project,default=None, on_delete=models.CASCADE)
+    known_model = models.ForeignKey(KnownModels, default=None, on_delete=models.CASCADE)

@@ -15,6 +15,7 @@ class User(models.Model):
     occupation = models.TextField(unique=False, default='undefined occupation')
     image = models.TextField(unique=False, null=True, blank=True, default='./static/images/default-image.jpg')
     join_date = models.DateField(auto_now_add=True)
+    
 
     def __str__(self):
         return "{}, {} {}".format(self.username, self.email, self.join_date)
@@ -28,3 +29,15 @@ class UploadImage(models.Model):
 
     def __str__(self):
         return str(self.image)
+
+
+class Message(models.Model):
+    sender= models.ForeignKey(User,default=None, on_delete=models.CASCADE, related_name="sender")
+    receiver= models.ForeignKey(User,default=None, on_delete=models.CASCADE, related_name="receiver")
+    content=models.TextField(unique=False, blank=True, default='')
+    date=models.DateField(auto_now_add=True)
+    time=models.TimeField(auto_now_add=True,null=True, blank=True)
+    
+    
+
+

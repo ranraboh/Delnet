@@ -1,39 +1,47 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { createProject, createMember } from '../../actions/projects.js'
+import { MODEL_TYPE_STAGE } from './actions/enums.js';
+import { updateGeneralDetails } from '../../actions/amb/state.js';
+import { stageAdvance } from '../../actions/amb/state.js';
+import { getUserDatasets } from '../../actions/datasets.js';
 
 class AmbGeneralDetails extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            error: '',
             project: {
                 user: this.props.username,
                 project_name: '',
                 description: '',
-                result: 0
+                result: 0,
+                dataset: null
             }
         }
+        
+        /* send requests for crucial data from backend  */
+        this.props.getUserDatasets(this.state.project.user)
 
         /* bind internal methods */
         this.on_change = this.on_change.bind(this);
-        this.register_project = this.register_project.bind(this);
         this.reset_handler = this.reset_handler.bind(this);
+        this.alert_message = this.alert_message.bind(this);
+        this.next_stage = this.next_stage.bind(this);
+        this.on_dataset_select = this.on_dataset_select.bind(this);
     }
 
-    register_project() {
-        this.props.createProject(this.state.project, (result) => {
-            console.log(this.props.project_created)
-            this.props.createMember({
-                project: this.props.project_created.id,
-                user: this.state.project.user,
-                role: 'Project Manager',
-                premissions: '5'
-            });
-            alert('the project was inserted successfully')
-            this.reset_handler()
-        });
-
+    on_dataset_select(e) {
+        let value = e.target.value
+        if (value == "-")
+            value = null
+        this.setState({
+            ...this.state,
+            project : {
+                ...this.state.project,
+                dataset: value
+            }
+        }, () => console.log(this.state.project) )
     }
 
     reset_handler() {
@@ -42,11 +50,22 @@ class AmbGeneralDetails extends Component {
                 user: this.props.username,
                 project_name: '',
                 description: '',
-                result: 0
+                result: 0,
+                dataset: null
             }
         })
     }
-
+    
+    alert_message() {
+        if (this.state.error != '') {
+            return(
+                <div class="alert alert-warning" role="alert">
+                    { this.state.error }
+                </div>
+            )
+        }
+        return ''
+    }
     on_change(field, value) {
         let project = this.state.project;
         project[field] = value;
@@ -55,9 +74,34 @@ class AmbGeneralDetails extends Component {
         })
     }
 
+    next_stage() {
+        if (this.state.project.project_name == '') {
+            this.setState({
+                ...this.state,
+                error: 'please enter a project name'
+            })
+        } else if (this.state.project.description == '') {
+            this.setState({
+                ...this.state,
+                error: 'please enter a project description'
+            })
+        }
+        else {
+            this.props.updateGeneralDetails(this.state.project);
+            this.props.stageAdvance(MODEL_TYPE_STAGE);
+        }
+    }
+
     render() {
+        let dataset_options = ''
+        if (this.props.user_datasets != null)
+            dataset_options = (
+                this.props.user_datasets.map((dataset) =>
+                    <option value={ dataset.id } selected={ this.state.project.dataset == dataset.id } >{ dataset.name }</option>
+                )
+            )
         return (
-        <div id="projects-create" className="section-in-main">
+        <div id="amb-project-create" className="section-in-main">
             <div className="header-section-v2">
                 <h1 className="dataset-header-title dataset-header-blue">
                     General Details
@@ -88,8 +132,24 @@ class AmbGeneralDetails extends Component {
                         </div>
                     </div>
                 </div>
+                <div className="row row-form">
+                    <div className="col-2">
+                        <p className="project-form-field">Dataset</p>
+                    </div>
+                    <div className="col-6">
+                        <div class="value">
+                            <select name="project_dataset" className="input-projects" onChange={ this.on_dataset_select }>
+                                <option value="-">-----</option>
+                                { dataset_options }
+                            </select>
+                        </div>
+                    </div> 
+                </div>
+                { this.alert_message() }
+                <div class="col-md-12">
+                    <p className="button-v3"><a class="button" onClick={ this.next_stage }>Next</a></p>
+                </div>
             </div>
-
         </div>
         );
     }
@@ -98,17 +158,21 @@ class AmbGeneralDetails extends Component {
 const mapStateToProps = state => {
     return {
         username: state.authentication.user,
-        project_created: state.projectReducer.project_created
+        project_created: state.projectReducer.project_created,
+        user_datasets: state.datasetsReducer.user_datasets,
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        createMember: (member) => {
-            dispatch(createMember(member));
+        updateGeneralDetails: (details) => {
+            dispatch(updateGeneralDetails(details))
         },
-        createProject: (project, callback) => {
-            dispatch(createProject(project, callback));
+        stageAdvance: (stage) => {
+            dispatch(stageAdvance(stage))
+        },
+        getUserDatasets: (username) => {
+            dispatch(getUserDatasets(username))
         }
     }
 }

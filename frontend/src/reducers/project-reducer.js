@@ -1,17 +1,27 @@
-import { GET_FILE_CONTENT, UPDATE_PROJECT, GET_PROJECT_FILES ,GET_USER_PROJECTS, CREATE_PROJECT, DELETE_PROJECT, SELECT_PROJECT, GET_PROJECT_TEAM, ADD_MEMBER_TEAM, DELETE_MEMBER_TEAM, SELECT_FILE } from '../actions/types.js'
+import {CHANGE_TASK_COMPLETE,GET_CHECKLIST_DONE,GET_CHECKLIST_NOT_DONE,GET_TASK,GET_NOTIFICTION_PROJECT, GET_FILE_CONTENT, UPDATE_PROJECT, GET_PROJECT_FILES ,GET_USER_PROJECTS, CREATE_PROJECT, DELETE_PROJECT, SELECT_PROJECT, GET_PROJECT_TEAM, ADD_MEMBER_TEAM, DELETE_MEMBER_TEAM, SELECT_FILE, GET_PROJECT_STATICS } from '../actions/types.js'
+import showNotifiction from '../components/project/show-notifiction.js';
 
 const initialState = {
     user_projects: null,
+    show_notification_project: null,
+    tasks:null,
+    add_Task:null,
     project_created: null,
     project_deleted: null,
+    taskComplete: null,
+    taskNotComplite: null,
+    changeTaskComplete:null,
     project_selected: {
       id: window.localStorage.getItem('project-id'),
       project_name: window.localStorage.getItem('project-name'),
       description: window.localStorage.getItem('description'),
       result: window.localStorage.getItem('result'),
       dataset: window.localStorage.getItem('dataset'),
+      model_type: window.localStorage.getItem('model_type'),
+      type_description: window.localStorage.getItem('type_description'),
       files: [],
       files_quantity: -1,
+      statics: null
     },
     file_selected: {
       id: -1,
@@ -23,6 +33,33 @@ const initialState = {
 }
 export function projectReducer(state = initialState, action) {
     switch (action.type) {
+    case GET_CHECKLIST_DONE:
+      return {
+        ...state,
+        taskComplete: action.payload
+      };
+    case GET_CHECKLIST_NOT_DONE:
+        return {
+          ...state,
+          taskNotComplite: action.payload
+        }; 
+    case CHANGE_TASK_COMPLETE:
+          return {
+            ...state,
+            changeTaskComplete: action.payload
+          };    
+    case GET_TASK:
+      console.log("shiran2222222222222222222222222229999999999999999999999999999999999999999")
+      return {
+        ...state,
+        tasks: action.payload
+      };
+    case GET_NOTIFICTION_PROJECT:
+      console.log("redusershiran")
+      return {
+        ...state,
+        show_notification_project: action.payload
+      };
     case GET_USER_PROJECTS:
       return {
         ...state,
@@ -46,7 +83,8 @@ export function projectReducer(state = initialState, action) {
           project_name: action.payload.project_name,
           description: action.payload.description,
           result: action.payload.result,
-          dataset: action.payload.dataset
+          dataset: action.payload.dataset,
+          model_type: action.payload.model_type
         }
       }
     case UPDATE_PROJECT:
@@ -109,6 +147,14 @@ export function projectReducer(state = initialState, action) {
             ...state,
             member_deleted: action.payload
         }
+        case GET_PROJECT_STATICS:
+          return {
+            ...state,
+            project_selected: {
+              ...state.project_selected,
+              statics: action.payload
+            }
+          }
     default:
       return state
   }

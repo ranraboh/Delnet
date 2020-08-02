@@ -5,12 +5,19 @@ from .dataset import Dataset
 # represent a project in system, contains infromation about the project such as 
 # project name, description, code files, user who created it so on.
 class Project(models.Model):
+    MODEL_TYPE = (
+        ('u', 'User Upload'),
+        ('c', 'Customizable'),
+        ('k', 'Known Model')
+    )
     project_name = models.TextField(default='unamed project')
     description = models.TextField(default='none description')
-    result = models.FloatField(default=50)
+    result = models.FloatField(default=0)
     user = models.ForeignKey(User, default=None, on_delete=models.CASCADE)
     project_date = models.DateField(auto_now_add=True)
     dataset = models.ForeignKey(Dataset, default=None, on_delete=models.CASCADE, blank=True, null=True)
+    model_type = models.CharField(max_length=1, choices=MODEL_TYPE, default='u')
+    best_model_saved = models.FloatField(default=0)    
 
     def __str__(self):
         return self.project_name + ": " + self.description + " " + str(self.result)
@@ -29,6 +36,24 @@ class ProjectTeam(models.Model):
 
 def nameFile(instance, filename):
     return '/'.join(['projects', str(instance.project.id) , filename])
+
+
+class ProjectNotifcation(models.Model):
+    topic=models.TextField(unique=False, blank=True, default='')
+    user = models.ForeignKey(User, default=None, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, default=None, on_delete=models.CASCADE)
+    content=models.TextField(unique=False, blank=True, default='')
+    date=models.DateField(auto_now_add=True)
+    time=models.TimeField(auto_now_add=True,null=True, blank=True)  
+
+
+class ProjectCheckList(models.Model):
+    executor_task= models.ForeignKey(User, default=None, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, default=None, on_delete=models.CASCADE)
+    task=models.TextField(unique=False, blank=True, default='')
+    complete=models.BooleanField(default=False)
+    date=models.DateField(auto_now_add=True)
+    time=models.TimeField(auto_now_add=True,null=True, blank=True)       
 
 class ProjectFiles(models.Model):
     project = models.ForeignKey(Project,default=None, on_delete=models.CASCADE)

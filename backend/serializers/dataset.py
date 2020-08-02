@@ -28,3 +28,7 @@ class DatasetCollectorsSerializer(serializers.ModelSerializer):
     class Meta:
         model = DatasetCollectors
         fields = '__all__'
+class DatasetNotifcationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DatesetNotifcation
+        fields = '__all__' 

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { getUserProjects } from '../../actions/projects.js';
-import BarChart from '../graph/bar.js'
+import { getUserProjects } from '../../actions/projects';
+import BarChart from '../graph/bar'
 
 class ProjectsGraph extends Component {
     constructor(props) {
@@ -11,6 +11,8 @@ class ProjectsGraph extends Component {
 	}
 	
     render() {
+        if (this.props.user_projects == null)
+            return ''
         return (
             <div id="projects-graph-section">
                 <div id="graph-header">
