@@ -10,7 +10,7 @@ function PoolLayer(props) {
                 <h6 className="text text-small">Pool Layer</h6>
                 <h6 className="text text-small">type: { props.type } </h6>
                 <h6 className="text text-small">input: { display_size(props.input) }</h6>
-                <h6 className="text text-small">output: { props.output }</h6>
+                <h6 className="text text-small">output: { display_size(props.output) }</h6>
             </div>
         </div>
         <div className="col-2">

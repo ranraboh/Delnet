@@ -40,3 +40,7 @@ def read_layers(file_path):
 
 def get_known_model(known_model):
     return KnownModels.objects.filter(id=known_model)[0]
+
+def get_project_known_model(project):
+    return ProjectKnownModel.objects.filter(project=project)[0].known_model
+    

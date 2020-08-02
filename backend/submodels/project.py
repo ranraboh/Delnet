@@ -19,8 +19,14 @@ class Project(models.Model):
     model_type = models.CharField(max_length=1, choices=MODEL_TYPE, default='u')
     best_model_saved = models.FloatField(default=0)    
 
+    def user_upload(self):
+        return self.model_type == 'u'
+
+    def popular_model(self):
+        return self.model_type == 'k'
+
     def __str__(self):
-        return self.project_name + ": " + self.description + " " + str(self.result)
+        return self.project_name + ": " + self.description + " " + str(self.result) + " " + self.model_type
 
 # used to store the team which take part in each project.
 # contains role, presmmisions, join-date and more data for each user in team.

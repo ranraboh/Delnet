@@ -77,7 +77,7 @@ class ModelTrain(tnn.Module,):
             total_accuracy += accuracy_epoch
             dev_results = self.evaluate_over_dev()
             actions.save_epoch(epoch, { 'loss': loss_epoch / batches_epoch, 'accuracy': accuracy_epoch / train_size }, dev_results, self.epochs, self.run_id)
-            time.sleep(300)
+            time.sleep(2)
 
         total_loss = total_loss / (batches_epoch * self.epochs)
         total_accuracy = total_accuracy / (train_size * self.epochs)

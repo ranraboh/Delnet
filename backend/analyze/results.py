@@ -37,8 +37,11 @@ class ResultsAnalysis():
         # check out the status for any hyper parameter
         # and report in any case of imperfection
         for name, parameter in self.runs_analysis_data['parameters'].items():
-            if parameter['conclusion']['conclusion_text']['status'] in [ 'TOO_LOW_VALUES', 'TOO_HIGH_VALUES' ]:
+            urgency = abs(parameter['conclusion']['urgency'])
+            if parameter['conclusion']['conclusion_text']['status'] in [ 'TOO_LOW_VALUES', 'TOO_HIGH_VALUES' ] and urgency >= 1.25:
                 critical.append(name + ":" + parameter['conclusion']['conclusion_text']['description'])
+            elif parameter['conclusion']['conclusion_text']['status'] in [ 'TOO_LOW_VALUES', 'TOO_HIGH_VALUES' ] and urgency > 0.5 and urgency < 1.25:
+                warnings.append(name + ":" + parameter['conclusion']['conclusion_text']['description'])
             elif parameter['conclusion']['conclusion_text']['status'] == 'VERSATILE':
                 warnings.append(name + ":" + parameter['conclusion']['conclusion_text']['description'])
         return {
@@ -187,9 +190,9 @@ class ResultsAnalysis():
             # build container to hold parameter inforamtion
             if parameter not in summary:
                 summary[parameter] = { 'status': {}, 'factor': {}, 'frequency': 0, 'average': 0, 'max': 0, 'min': 100  }
-            if status not in summary[parameter]['status']:
+            if status.name not in summary[parameter]['status']:
                 summary[parameter]['status'][status.name] = { 'status': status, 'frequency': 0 }
-            if factor not in summary[parameter]['factor']:
+            if factor.name not in summary[parameter]['factor']:
                 summary[parameter]['factor'][factor.name] = { 'factor': factor, 'frequency' : 0 }
             
             # update parameter statics
@@ -262,8 +265,6 @@ class ResultsAnalysis():
     def optimizer_conclusion(self, summary, test_results):
         status = OptimizerFactor.REASONABLE_VALUE
         best_accuracy = test_results['result']
-        print (summary['summary'])
-        print ('Adam' not in summary['summary'])
         if len(summary['summary']) >= 3 and best_accuracy < 0.8:
             status = OptimizerFactor.MANY_OPTIONS_FAIL
         elif 'Adam' not in summary['summary']:
@@ -281,6 +282,7 @@ class ResultsAnalysis():
         too_low = []
         too_high = []
         reasonable_values = []
+        general_average = 0
         for value, parameter in sorted(summary['summary'].items()):
             # compute frequency rate for each parameter status
             average = 0
@@ -301,6 +303,7 @@ class ResultsAnalysis():
             elif average <= -0.2:
                 too_high.append(value)
                 status = ParameterModify.DECREASE_VALUE
+            general_average = general_average + average
 
             # compute max frequency
             max_frequency = 0
@@ -317,6 +320,7 @@ class ResultsAnalysis():
             'too_low': too_low,
             'too_high': too_high,
             'reasonable': reasonable_values,
+            'urgency': general_average / len(summary['summary']),
             'conclusion_text': self.build_parameter_summary_message(reasonable_values, too_low, too_high, len(summary['summary']))
         }
         return summary

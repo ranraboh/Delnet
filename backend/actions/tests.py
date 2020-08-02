@@ -5,11 +5,12 @@ import sys
 
 class Tester():
     def __init__(self, project):
+        print ('tester created')
         self.project = project
 
     def test_model_create(self):
         try:
-            self.model = create_model_instance(project, self.labels_quantity)
+            self.model = create_model_instance(self.project, self.labels_quantity)
             self.create_model_error = { 'is_error': False, 'error_message': ModelError.CREATE_MODEL_SUCCESS.value }
         except Exception as e:
             self.create_model_error = { 'is_error':True, 'error': ModelError.CREATE_MODEL.value + str(e) }  
@@ -17,14 +18,18 @@ class Tester():
             self.create_model_error = { 'is_error':True, 'error': ModelError.CREATE_MODEL.value + str(e) }  
 
     def test_project(self):
+        print ('test project')
         dataset_exist = self.dataset_load()
         if dataset_exist:
+            print ('items and labels check')
             items_check = self.checks_items_quantity()
             labels_check = self.check_labels_quantity()
-            test_model_create()
+            print ('test creation')
+            self.test_model_create()
             dataset_exists_error = ModelError.DATASET_EXIST.value
             if self.create_model_error['is_error'] == False:
                 labels_output_check = self.check_model_output()
+                print ('test run')
                 run_check = self.run_model()
             else:
                 labels_output_check = { 'is_error': True, 'error_message': ModelError.CANT_LABELS_OUTPUT.value }
@@ -35,6 +40,7 @@ class Tester():
             labels_check = { 'is_error': True, 'error_message': ModelError.CANT_LABELS_OUTPUT.value }
             labels_output_check = { 'is_error': True, 'error_message': ModelError.DATASET_FAIL_LABELS.value }
             run_check = { 'is_run': False, 'error_message': ModelError.RUN_DATASET_PROBLEMS.value }
+        print ('about to return data')
         return {
             'model': {
                 'create_model': self.create_model_error,
@@ -83,6 +89,7 @@ class Tester():
         batch_size = min(self.items_quantity, 32)
         epoch = 1
 
+        print ("create data for running")
         # load dataset into memory
         dataset_id = get_project_dataset(self.project.id)
         items = items_records(dataset_id)
@@ -106,8 +113,10 @@ class Tester():
 
         # create train object and use it to train user model
         try:
+            print ("build train objecct")
             train_obj = train.ModelTrain(model=self.model, train_set=train_set, dev_set=dev_set, test_set=test_set, 
             run_request=request, labels_quantity=self.labels_quantity)
+            print ("train")
             train_obj.train()
             return { 'is_run':True, 'error_message': ModelError.RUN_SUCCESS.value }
         except Exception as e:

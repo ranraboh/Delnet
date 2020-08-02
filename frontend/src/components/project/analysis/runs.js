@@ -97,14 +97,14 @@ class RunsAnalysis extends Component {
                             perhaps the model doesn't generalize well which leads to an insufficient accuracy of samples he never exposed before during train set.
                             <p/>
                             <span className="text-bold">
-                            Good Performance Rate: { this.props.analysis.runs.runs_status.mediocre.quantity + "/" + this.props.analysis.runs.runs_quantity.value + "  " + float_precision(this.props.analysis.runs.runs_status.mediocre.rate * 100, 4) + "%" } <br/>    
+                            Good Performance Rate: { this.props.analysis.runs.runs_status.good.quantity + "/" + this.props.analysis.runs.runs_quantity.value + "  " + float_precision(this.props.analysis.runs.runs_status.good.rate * 100, 4) + "%" } <br/>    
                             </span>
                             good is a state where the model learns well on the train set and the test set as well,
                             perhaps it can reach higher accuracy/performance.
                             a slight changes in your model or in selected hyper-parameters may make the difference.
                             <p/>
                             <span className="text-bold">
-                            Excellent Performance Rate: { this.props.analysis.runs.runs_status.mediocre.quantity + "/" + this.props.analysis.runs.runs_quantity.value + "  " + float_precision(this.props.analysis.runs.runs_status.mediocre.rate * 100, 4) + "%" } <br/>    
+                            Excellent Performance Rate: { this.props.analysis.runs.runs_status.excellent.quantity + "/" + this.props.analysis.runs.runs_quantity.value + "  " + float_precision(this.props.analysis.runs.runs_status.excellent.rate * 100, 4) + "%" } <br/>    
                             </span>
                             excellent is a state where the model has superb performance on the train set and the test set as well,
                             to be more accurate, the accuracy rate over test set has reached 90-100%  

@@ -11,6 +11,8 @@ from backend.train import train
 from django.conf import settings
 from backend.train.model import Model
 import torchvision.models as models
+from backend.actions.layersextractor import LayersExtractor
+from backend.actions.project import get_project_model_file
 import torchvision
 import importlib
 import random
@@ -137,3 +139,14 @@ def save_parameters(model, path):
 
 def load_parameters(model, path):
     model.load_state_dict(torch.load(path))
+
+def extract_layers(project):
+    exratctor = LayersExtractor()
+    labels_quantity = compute_labels_quantity(project.dataset)
+    model = create_model_instance(project, labels_quantity)
+    file_path = get_project_model_file(project)
+    layers = exratctor.extractLayers(file_path, model)
+    return {
+        'valid': True,
+        'layers': layers
+    }

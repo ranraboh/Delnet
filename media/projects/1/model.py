@@ -1,5 +1,5 @@
 import torch.nn as tnn
-from backend.train import flatten
+import torch
 
 class Model(tnn.Module,):
     def __init__(self):
@@ -12,11 +12,10 @@ class Model(tnn.Module,):
     def init_layers(self):
         self.conv_1 = tnn.Conv2d(in_channels=3, out_channels=20, kernel_size=4, stride=1).cuda()
         self.conv_2 = tnn.Conv2d(in_channels=20, out_channels=1, kernel_size=4, stride=1).cuda()
-        self.maxpool = tnn.MaxPool2d(kernel_size=2)
+        self.maxpool = tnn.MaxPool2d(kernel_size=3)
 
         self.fc_1 = tnn.Linear(in_features=169, out_features=20).cuda()
-        self.fc_2 = tnn.Linear(in_features=20, out_features=3).cuda()
-        self.flatten = flatten.Flatten().cuda()
+        self.fc_2 = tnn.Linear(in_features=20, out_features=2).cuda()
 
     def init_activation(self):
         self.tanh = tnn.Tanh()
@@ -28,7 +27,7 @@ class Model(tnn.Module,):
         h1 = self.tanh(z1)
         z2 = self.maxpool(self.conv_2(h1))
         h2 = self.relu(z2)
-        h3 = self.flatten(h2)
+        h3 = h2.view(h2.size()[0], -1)
         h4 = self.fc_1(h3)
         return self.softmax(self.fc_2(h4))
 

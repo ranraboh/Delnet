@@ -221,7 +221,7 @@ class DropoutFactor(Enum):
     the dropout frequency and constant parameters you have chosen seems reasonable and fits your model,
     be advised, a change in model structure may lead to a different evaluation
     """
-
+    
 class ActivationsFactor(Enum):
     NO_ACTIVATIONS = """
     it seems that your model architecture does not include usage of activations functions.

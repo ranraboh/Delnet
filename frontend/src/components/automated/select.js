@@ -11,7 +11,6 @@ class SelectedLayer extends Component {
         super(props)
         this.state = {
             layer: this.props.layer_selected,
-            error: ''
         }
 
         /* bind internal methods */
@@ -24,17 +23,6 @@ class SelectedLayer extends Component {
         this.on_activation_change = this.on_activation_change.bind(this);
     }
 
-    alert_message() {
-        if (this.state.error != '') {
-            return(
-                <div class="alert alert-warning" role="alert">
-                    { this.state.error }
-                </div>
-            )
-        }
-        return ''
-    }
-
     componentWillReceiveProps(nextProps) {
         console.log(nextProps.layer_selected)
         this.setState({
@@ -44,19 +32,12 @@ class SelectedLayer extends Component {
     }
 
     linear_selected() {
-        if (this.state.layer.input.length > 1) {
-            this.setState({
-                ...this.state,
-                error: 'input for linear layer should be one dimension, you can use different type of layer or use flatten'
-            })
-        } else {
-            this.setState({
-                ...this.state,
-                layer: init_linear_layer(this.state)
-            }, () => {
-                this.props.updateLayer(this.state.layer)
-            })
-        }
+        this.setState({
+            ...this.state,
+            layer: init_linear_layer(this.state)
+        }, () => {
+            this.props.updateLayer(this.state.layer)
+        })
     }
 
     convolution_selected() {
@@ -123,11 +104,9 @@ class SelectedLayer extends Component {
                 <h6 className="text">no selected layers</h6>
             </span>)
         }
-        let alert_message = this.alert_message()
         return (
         <span id="select-section">
             <div id="amb-select-internal">
-                { alert_message }
                 <h6 className="text">Layer ID: { this.state.layer.id }</h6>
                 <h6 className="text">Input: { display_size(this.state.layer.input) }</h6>
                 <h6 className="text">Output: { display_size(this.state.layer.output) }</h6>

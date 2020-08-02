@@ -611,9 +611,6 @@ Main Section
 }
 /* Activeness section */
 
-.text-purple {
-    color:#cb99c5;
-}
 .border-left-purple {
     border-left: 0.25rem solid #cb99c5 !important;
 }

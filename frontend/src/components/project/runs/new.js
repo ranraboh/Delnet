@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { homepage } from '../../../appconf.js';
 import { runModel, addRunRecord, getLossTypes, getOptimizerTypes  } from '../../../actions/project/model.js'
- 
+import { testModel } from '../../../actions/project/model';
+
 class RunModel extends Component {
     constructor(props) {
         super(props)
@@ -19,7 +20,11 @@ class RunModel extends Component {
                     learning_rate: 0.001,
                     weight_decay: 0.001
                 }
-            }
+            },
+            error_message: '',
+            is_error: false,
+            start_test: false,
+            run_start: false
         }
 
         /* receive data from backend */
@@ -83,32 +88,75 @@ class RunModel extends Component {
     }
 
     run_model() {
-        this.props.addRunRecord({
-            user: this.state.user,
-            project: this.state.project,
-            batch_size: this.state.parameters.batch_size,
-            optimizer: this.state.parameters.optimizer.optimizer,
-            epochs: this.state.parameters.epochs,
-            learning_rate: this.state.parameters.optimizer.learning_rate,
-            weight_decay: this.state.parameters.optimizer.weight_decay,
-            loss_type: this.state.parameters.loss_type,
-            progress: 0
-        }, () => {
+        this.setState({
+            ...this.state,
+            start_test: true
+        })
+        this.props.testModel(this.state.project, (response) => {
+            console.log(response.model.run_model.is_error)
             this.setState({
                 ...this.state,
-                run: this.props.run_added.id
-            }, () =>{
-                this.props.runModel(this.state, () => {
-                    alert('your model is currently running on server, wait for it to finish')
+                is_error: response.model.run_model.is_error,
+                error_message: response.model.run_model.error_message,
+            })
+            if (response.model.run_model.is_error == true)
+                return
+            this.setState({
+                ...this.state,
+                run_start: true
+            })
+            this.props.addRunRecord({
+                user: this.state.user,
+                project: this.state.project,
+                batch_size: this.state.parameters.batch_size,
+                optimizer: this.state.parameters.optimizer.optimizer,
+                epochs: this.state.parameters.epochs,
+                learning_rate: this.state.parameters.optimizer.learning_rate,
+                weight_decay: this.state.parameters.optimizer.weight_decay,
+                loss_type: this.state.parameters.loss_type,
+                progress: 0
+            }, () => {
+                this.setState({
+                    ...this.state,
+                    run: this.props.run_added.id
+                }, () =>{
+                    this.props.runModel(this.state, () => {
+                        alert('your model is currently running on server, wait for it to finish')
+                    })
                 })
             })
-        })
+        }) 
     }
 
     componentWillMount() {
         console.log(this.props.loggedIn)
         if (this.props.loggedIn === false || this.props.loggedIn === 'false')
             window.location = homepage + '/login'
+    }
+
+    display_status_message() {
+        if (this.state.is_error == true) {
+            return (
+                <h4 className="project-analysis-text text-purple">
+                    { "the server has encountered an error in training your model, check out tests option for extra information " }
+                </h4>
+            )
+        } else if (this.state.start_test == true) {
+            if (this.state.run_start == false) {
+                return (
+                    <h4 className="project-analysis-text text-purple">
+                        please be petient and wait for the model test...
+                    </h4>
+            )} else {
+                return (
+                    <h4 className="project-analysis-text text-blue">
+                        the traning process has began, you can follow its advancement is running models section.
+                        as soon as the training completed, you can view its results and performence
+                    </h4>
+                )}
+            }
+
+
     }
 
     render() {
@@ -224,6 +272,8 @@ class RunModel extends Component {
                     <button className="btn btn-danger" onClick={ this.defualt_handler }>
                         Default Values
                     </button>  
+                    <p/>
+                    { this.display_status_message() }
                 </div>
 
             </div>
@@ -243,19 +293,22 @@ const mapStateToProps = state => {
     }
 }
 
-const mapDispatchToProps = disaptch => {
+const mapDispatchToProps = dispatch => {
     return {
         runModel: (run_request, callback) => {
-            disaptch(runModel(run_request, callback))
+            dispatch(runModel(run_request, callback))
         },
         addRunRecord: (run_request, callback) => {
-            disaptch(addRunRecord(run_request, callback))
+            dispatch(addRunRecord(run_request, callback))
         },
         getLossTypes: () => {
-            disaptch(getLossTypes());
+            dispatch(getLossTypes());
         },
         getOptimizerTypes: () => {
-            disaptch(getOptimizerTypes());
+            dispatch(getOptimizerTypes());
+        },
+        testModel: (request, callback) => {
+            dispatch(testModel(request, callback))
         }
     }
 }

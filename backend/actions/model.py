@@ -24,9 +24,11 @@ def activations_used(layers):
     for layer in layers:
         activation = layer['activation']
         if activation != None and activation != 'None':
-            if activation not in layers:
+            print (activation)
+            if activation not in activations:
                 activations[activation] = 0
-            activations[activation] += 1
+            activations[activation] = activations[activation] + 1
+            print (activations[activation])
     return activations
     
 def module_used(layers):

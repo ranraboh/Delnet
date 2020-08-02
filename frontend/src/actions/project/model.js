@@ -217,13 +217,15 @@ export const getConfusionMatrix = (run_code) => dispatch => {
 /**
  * test your model
  */
-export const testModel = (project_id) => dispatch => {
+export const testModel = (project_id, callback_function) => dispatch => {
+    console.log('testing')
     axios.get('/api/project/' + project_id + "/test").then(result => {
         dispatch({
             type: TEST_MODEL,
             payload: result.data
         })
-    }).catch(err => console.log(err));
+        return result.data
+    }).then(callback_function).catch(err => console.log(err));
 }
 
 function c_matrix_dictionary(data) {

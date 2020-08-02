@@ -2,11 +2,18 @@ from django.db.models import Avg, Max, Min, Sum, Count
 from ..submodels.project import *
 from ..submodels.user import User
 from backend.actions.general import create_dirs_along_path
+from backend.actions.amb import get_project_known_model
 from django.conf import settings
 import matplotlib.image as mpimg
 from PIL import Image as pil
 import matplotlib.pyplot as plt
 from django.core.files.images import get_image_dimensions
+
+def get_project_model_file(project):
+    if project.user_upload():
+        return settings.MEDIA_ROOT + "/projects/" + str(project.id) + "/model.py"
+    id = get_project_known_model(project).id
+    return settings.MEDIA_ROOT + "/known/" + str(id) + ".txt"
 
 def save_deploy_image(project_id, image):
     path = settings.MEDIA_ROOT + "/projects/" + str(project_id) + "/deploy/"

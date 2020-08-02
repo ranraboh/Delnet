@@ -12,6 +12,7 @@ from backend.serializers.project import *
 
 # import actions
 from backend.train import train
+from backend.train.actions import extract_layers
 from backend.actions.project import *
 from backend.actions.runs import *
 from backend.actions.amb import *
@@ -67,9 +68,14 @@ class ProjectViewSet(viewsets.ModelViewSet):
         
     @action(detail=True, methods=['get'], name='Get Layers')
     def get_layers(self, request, *args, **kwargs):
-        project_id = self.kwargs['id']
-        layers_file = get_file_layers(project_id)
-        return Response(read_layers(layers_file))
+        project = Project.objects.filter(id=self.kwargs['id'])[0]
+        if project.user_upload() or project.popular_model():
+            layers = extract_layers(project)
+            return Response(layers)
+        else:
+            layers_file = get_file_layers(project.id)
+            layers = read_layers(layers_file)
+            return Response(layers)
     
     @action(detail=True, methods=['post'], name='Save Layers')
     def save_layers(self, request, *args, **kwargs):

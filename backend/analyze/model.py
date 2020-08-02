@@ -3,14 +3,18 @@ from backend.actions.amb import *
 from backend.analyze.text import ProjectStatus
 from backend.analyze.enums import ParameterModify
 from backend.analyze.text import ModelStructure, DropoutFactor, ActivationsFactor, ConvolutionFactor
+from backend.train.actions import extract_layers
 import copy
 class ModelAnalyzer():
     def __init__(self, project, project_status, runs_data):
         # load essential data for analysis
         self.project = project
         self.project_status = project_status
-        layers_file = get_file_layers(self.project.id)
-        layers_object =  read_layers(layers_file)
+        if project.user_upload() or project.popular_model():
+            layers_object = extract_layers(self.project)
+        else:
+            layers_file = get_file_layers(self.project.id)
+            layers_object = read_layers(layers_file)
         if layers_object['valid']:
             self.layers = layers_object['layers']
         else:
@@ -28,13 +32,13 @@ class ModelAnalyzer():
         
         critical = []
         warnings = []
-        critical_case = [ ParameterModify.INCREASE_VALUE_HR, ParameterModify.INCREASE_VALUE, ParameterModify.ADD_MODULE ]
+        critical_case = [ ParameterModify.INCREASE_VALUE_HR, ParameterModify.DECREASE_VALUE_HR, ParameterModify.ADD_MODULE ]
         warning_case = [ ParameterModify.INCREASE_VALUE, ParameterModify.DECREASE_VALUE ]
         # check out the status for different parts of model examination
         # and report in any case of imperfection 
         self.examinations = [
             { 'status': self.model_analysis['structure']['status'], 'text': self.model_analysis['structure']['text'], 'critical_case': [ ModelStructure.MODEL_EXTREMELY_SIMPLE, ModelStructure.MODEL_SIMPLE ], 'warning_case': [ ModelStructure.PARAMETERS_TOO_SMALL, ModelStructure.LAYERS_TOO_SMALL ]  },
-            { 'status': self.model_analysis['modules']['convolution']['quantity']['status'], 'text': self.model_analysis['modules']['convolution']['quantity']['text'] , 'critical_case': critical_case, 'warning_case': warning_case },
+            { 'status': self.model_analysis['modules']['convolution']['quantity']['factor'], 'text': self.model_analysis['modules']['convolution']['quantity']['text'] , 'critical_case': [ ConvolutionFactor.GREAT_SHORTAGE_CONVOLUTION, ConvolutionFactor.NO_CONVOLUTION ], 'warning_case': [ ConvolutionFactor.SHORTAGE_CONVOLUTION ] },
             { 'status': self.model_analysis['modules']['dropout']['status'], 'text': self.model_analysis['modules']['dropout']['text'], 'critical_case': critical_case, 'warning_case': warning_case },
             { 'status': self.model_analysis['modules']['batch_normalization']['status'], 'text': 'batch normalization', 'critical_case': critical_case, 'warning_case': warning_case},
             { 'status': self.model_analysis['modules']['activations']['usage']['status'], 'text': self.model_analysis['modules']['activations']['usage']['text'], 'critical_case': critical_case, 'warning_case': warning_case },
@@ -45,7 +49,7 @@ class ModelAnalyzer():
                 critical.append(examination['text'])
             elif examination['status'] in examination['warning_case']:
                 warnings.append(examination['text'])
-        if self.model_analysis['modules']['activations']['type']['status'] != ParameterModify.KEEP_VALUE:
+        if self.model_analysis['modules']['activations']['type']['status'] != ActivationsFactor.REASONABLE_TYPE:
             warnings.append(self.model_analysis['modules']['activations']['type']['text'])
         return {
             'critical': critical,
@@ -66,6 +70,7 @@ class ModelAnalyzer():
         analysis['structure']['layers_quantity']['status'] = analysis['structure']['layers_quantity']['status'].name
         analysis['modules']['dropout']['status'] = analysis['modules']['dropout']['status'].name
         analysis['modules']['dropout']['factor'] = analysis['modules']['dropout']['factor'].name
+        analysis['modules']['convolution']['quantity']['factor'] = analysis['modules']['convolution']['quantity']['factor'].name
         analysis['modules']['batch_normalization']['status'] = analysis['modules']['batch_normalization']['status'].name
         analysis['modules']['activations']['usage']['status'] =  analysis['modules']['activations']['usage']['status'].name
         analysis['modules']['activations']['type']['status'] =  analysis['modules']['activations']['type']['status'].name
@@ -115,11 +120,11 @@ class ModelAnalyzer():
         structure_status = ModelStructure.REASONABLE_STRUCTURE
         if layers_status == ParameterModify.INCREASE_VALUE_HR and dimension_status == ParameterModify.INCREASE_VALUE_HR:
             structure_status = ModelStructure.MODEL_EXTREMELY_SIMPLE
-        elif layers_status in [ ParameterModify.INCREASE_VALUE_HR, ParameterModify.INCREASE_VALUE ]  and dimension_status == [ParameterModify.INCREASE_VALUE_HR, ParameterModify.INCREASE_VALUE ]:
+        elif layers_status in [ ParameterModify.INCREASE_VALUE_HR, ParameterModify.INCREASE_VALUE ] and dimension_status in [ParameterModify.INCREASE_VALUE_HR, ParameterModify.INCREASE_VALUE ]:
             structure_status = ModelStructure.MODEL_SIMPLE
-        elif layers_status == ParameterModify.KEEP_VALUE:
+        elif layers_status == ParameterModify.KEEP_VALUE and dimension_status in [ ParameterModify.INCREASE_VALUE_HR, ParameterModify.INCREASE_VALUE ]:
             structure_status = ModelStructure.PARAMETERS_TOO_SMALL
-        elif dimension_status == ParameterModify.KEEP_VALUE:
+        elif dimension_status == ParameterModify.KEEP_VALUE and layers_status in [ ParameterModify.INCREASE_VALUE_HR, ParameterModify.INCREASE_VALUE ]:
             structure_status = ModelStructure.LAYERS_TOO_SMALL
         return {
             'parameters': {
@@ -189,7 +194,7 @@ class ModelAnalyzer():
             factor = ConvolutionFactor.GREAT_SHORTAGE_CONVOLUTION
         
         # evaluate status when the project in underfitting state
-        if self.project_status in [ ProjectStatus.UNDERFITTING, ProjectStatus.NOT_LEARN ]:
+        elif self.project_status in [ ProjectStatus.UNDERFITTING, ProjectStatus.NOT_LEARN ]:
             # evaluate kernel status
             kernel_status = ParameterModify.CHANGE_VALUE 
 
@@ -200,7 +205,7 @@ class ModelAnalyzer():
                 stride_status = ParameterModify.INCREASE_VALUE_HR
             
             # evaluate frequency usage of convolution module
-            if convolution_data['quantity'] < 6 * self.underfitting_rate:
+            if convolution_data['quantity'] < 12 * self.underfitting_rate:
                 quantity_status = ParameterModify.INCREASE_VALUE_HR
                 factor = ConvolutionFactor.GREAT_SHORTAGE_CONVOLUTION
             elif convolution_data['quantity'] < 20 * self.underfitting_rate:
@@ -213,7 +218,7 @@ class ModelAnalyzer():
             'quantity': {
                 'value': convolution_data['quantity'],
                 'status': quantity_status,
-                'factor': factor.name,
+                'factor': factor,
                 'text': factor.value
             },
             'stride': {
