@@ -134,6 +134,9 @@ export const addNotificationDataset = (notification, callback_function) => dispa
         console.log(response)
         dispatch({
             type: ADD_NOTIFICTION_DATASET,
+        })
+    }).then(callback_function)
+}
 
 /**
  * delete an unlabeled item or sample of praticular dataset

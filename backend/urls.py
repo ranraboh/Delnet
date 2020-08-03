@@ -117,9 +117,7 @@ queries_url = [
     path('api/messages/addMessage', MessageViewSet.as_view({ 'post' : 'messageAdd' })),
     path('api/projects/header/<int:id>', ProjectNotificationViewSet.as_view({ 'get' : 'notification_headerProject'})),
     path('api/dataset/header/<int:id>', DateSateNotificationViewSet.as_view({ 'get' : 'notification_headerDataset'})),
-    path('api/project/<int:id>/checkList', CheckListViewSet.as_view({ 'get' : 'checkList_header'}))
-] 
-urlpatterns = router.urls + static_routing + pages_url + queries_url + updates_url
+    path('api/project/<int:id>/checkList', CheckListViewSet.as_view({ 'get' : 'checkList_header'})),
     path('api/datasets/public/view/<slug:username>', PublicDataSetFilter.as_view()),
     path('api/dataset/<int:id>/unlabeled', UnlabeledDatasetFilter.as_view()),
     path('api/datasets/search/<slug:name>/user/<slug:username>', DatasetNameFilter.as_view()),
