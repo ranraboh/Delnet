@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getF1Scores } from '../../../actions/project/model.js';
+import { getF1Scores } from '../../../actions/project/model';
 import BarChart from '../../graph/bar.js';
 import MultiBarChart from '../../graph/multibar.js';
   

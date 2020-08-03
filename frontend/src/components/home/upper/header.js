@@ -50,9 +50,9 @@ class Upper extends Component {
                                 <div class="mu-featured-slider-content">
                                     <Navbar/>
                                     
-                                    <h1 className="header-title">WELCOME TO DEVNET</h1>
+                                    <h1 className="header-title">WELCOME TO DELNET</h1>
                                     <p>web application to manage your deep learning projects and making the process more efficient and friendly</p>
-                                    <a href="#" class="mu-primary-btn">CONTACT US</a>
+                                    <a href="#" class="mu-primary-btn">ABOUT APPLICATION</a>
                                 </div>
                             </div>    
                         </div>

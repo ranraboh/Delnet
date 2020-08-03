@@ -24,23 +24,9 @@ class ProjectFeatures extends Component {
                 <DatasetMenuItem name="Model Layers" description="display model layers in detail" state={ this.props.sections_status.layers_active } 
                         button_type="info" icon="fa-list" activate={ this.props.activateSection } hide={ this.props.hideSection } />
                 <DatasetMenuItem name="Model Architecture" description="display visually the model architecture" state={ this.props.sections_status.architecture_active } 
-                        button_type="danger" icon="fa-sitemap" activate={ this.props.activateSection } hide={ this.props.hideSection } />
-                    <tr className="dataset-menu-row">
-                        <td>
-                            <button type="button" class="btn btn-outline-success button-dataset-menu">
-                                <i className="fa fa-edit"></i>
-                            </button>
-                        </td>
-                        <td className="dataset-links">Recommendations</td>
-                    </tr>
-                    <tr className="dataset-menu-row">
-                        <td>
-                            <button type="button" class="btn btn-outline-danger button-dataset-menu">
-                                <i className="fa fa-edit"></i>
-                            </button>
-                        </td>
-                        <td className="dataset-links">Tests</td>
-                    </tr>
+                        button_type="success" icon="fa-sitemap" activate={ this.props.activateSection } hide={ this.props.hideSection } />
+                <DatasetMenuItem name="Project Analysis" description="analyze and get tips how to maximize your project performence" state={ this.props.sections_status.analysis_active } 
+                        button_type="danger" icon="fa-file" activate={ this.props.activateSection } hide={ this.props.hideSection } />
                     <DatasetMenuItem name="Statics" description="display project statics" state={ this.props.sections_status.statics_active } 
                         button_type="warning" icon="fa-sticky-note" activate={ this.props.activateSection } hide={ this.props.hideSection } />
                     <tr className="dataset-menu-row">

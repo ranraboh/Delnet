@@ -1,4 +1,4 @@
-import { GET_PROJECT_LAYERS, SELECT_LAYER, UPDATE_LAYER, UPDATE_MODEL_DETAILS, ADD_LAYER, BUILDING_STAGE, KNOWN_MODEL_SELECT, BUILD_TYPE, ABORT_LAYER_SELECTION, DISPATCH_LAYERS, DELETE_LAYER } from '../actions/types.js';
+import { GET_PROJECT_LAYERS, SELECT_LAYER, UPDATE_LAYER, UPDATE_MODEL_DETAILS, ADD_LAYER, BUILDING_STAGE, KNOWN_MODEL_SELECT, BUILD_TYPE, ABORT_LAYER_SELECTION, DISPATCH_LAYERS, DELETE_LAYER, GET_KNOWN_MODELS } from '../actions/types.js';
 import { init_new_layer } from '../components/automated/actions/init.js'
 import { INTRO_STAGE, MODEL_TYPE_STAGE ,MODEL_BUILDUP, CUSTOMIZABLE_MODEL } from '../components/automated/actions/enums.js';
 
@@ -11,9 +11,8 @@ const initialState = {
         layers_quantity: 0,
         selected_layer: null
     },
-    known_model: {
-        name: null
-    }
+    known_model: null,
+    known_models: null
 }
 export function ambReducer(state = initialState, action) {
     switch (action.type) {
@@ -99,6 +98,11 @@ export function ambReducer(state = initialState, action) {
             return {
                 ...state,
                 type: action.payload
+            }
+        case GET_KNOWN_MODELS:
+            return {
+                ...state,
+                known_models: action.payload
             }
         case GET_PROJECT_LAYERS:
             console.log(action.payload)

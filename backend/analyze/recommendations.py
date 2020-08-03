@@ -6,8 +6,7 @@ from backend.actions.amb import *
 from backend.analyze.model import ModelAnalyzer
 from backend.analyze.results import ResultsAnalysis
 from backend.analyze.dataset import DatasetAnalyzer
-from backend.analyze.enums import AccruacyClass
-from backend.analyze.text import ModelObstacle
+from backend.analyze.text import ProjectStatus
 import math
 
 class Recommendations():
@@ -15,56 +14,81 @@ class Recommendations():
         # read crucial data from database
         self.project = project_by_id(project_id)
         self.dataset = get_project_dataset(self.project.id)
-
-    def anlyzers_results(self):        
+    
+    def analysis(self):
         # create analysis objects
+        self.project_analysis = {}
+        
+        # runs analysis
         self.runs_analyzer = ResultsAnalysis(self.project)
+        runs = self.runs_analyzer.analyze_runs()
+        self.project_analysis['runs'] = runs
+        
+        # dataset analysis
         self.dataset_analyzer = DatasetAnalyzer(self.dataset.id)
+        dataset = self.dataset_analyzer.analyze()
+        self.project_analysis['dataset'] = dataset
+
+        # project status
+        project_status = self.project_status()
+        self.project_analysis['status'] = project_status
 
         # examinations of project 
-        runs = self.runs_analyzer.analyze_runs()
-        self.model_analyzer = ModelAnalyzer(self.project, runs)
+        self.model_analyzer = ModelAnalyzer(self.project, project_status ,runs)
         model = self.model_analyzer.analyze()
-        dataset = self.dataset_analyzer.analyze()
-        
-        # returns examinations results
-        return {
-            'model': model,
-            'dataset': dataset,
-            'runs': self.runs_analyzer.format_response(runs),
-        }
+        self.project_analysis['model'] = model
 
-
-    def analysis(self):
-        self.project_analysis = self.anlyzers_results()
-        labels_quantity = self.project_analysis['dataset']['labels_quantity']
-        best_result = self.project_analysis['runs']['best_result']        
-        overfitting_rate = self.project_analysis['runs']['fitting_rate']['overfitting']
-        underfitting_rate = self.project_analysis['runs']['fitting_rate']['underfitting']
-
-        # evaluate the model status
-        if best_result['train']['result'] < 1 / labels_quantity + 0.05:
-            problem = ModelObstacle.NOT_LEARN
-        elif best_result['train']['result'] < 0.8 and underfitting_rate > 0.65:
-            problem = ModelObstacle.UNDERFITTING
-        elif best_result['test']['result'] < 0.75 and overfitting_rate > 0.65:
-            problem = ModelObstacle.OVERFITTING
-        elif best_result['test']['result'] < 0.85:
-            problem = ModelObstacle.GOOD
-        else:
-            problem = ModelObstacle.EXCELLENT
-        self.project_analysis['status'] = {
-            'obstacle': problem.name,
-            'text': problem.value,
-            'not_learn': self.not_learn(),
-        }
+        # imperfections
+        imperfections = self.report_imperfections()
+        self.project_analysis['status']['imperfections'] = imperfections
         return self.project_analysis
 
-    def not_learn(self):
-        solve_techniques = []
-        solve_techniques.extend(self.dataset_analyzer.report_imperfections())
-        solve_techniques.extend(self.model_analyzer.report_imperfections())
-        
-        return solve_techniques
-        
-        
+    # evaluate the project situation based on the analysis 
+    def project_status(self):
+        # evalaute project status according to six last runs
+        labels_quantity = self.project_analysis['dataset']['labels_quantity']
+        best_result = self.project_analysis['runs']['best_result']        
+        runs_status = self.project_analysis['runs']['last-runs-status']
+
+        # if in three runs the model results were excellent (accuracy rate 90%-100%) 
+        # then the project status is EXCELLENT
+        if runs_status['excellent']['quantity'] >= 2:
+            status = ProjectStatus.EXCELLENT
+        # the same hold for good result (accuracy rate 80%-90%),
+        # if in two runs the moddel got excellent results, then the model in good state
+        elif runs_status['good']['quantity'] > 3:
+            status = ProjectStatus.GOOD
+        # the project earned status of overfitting, not_learn or underfitting
+        # if in 50% of the runs, the model was in this state
+        elif runs_status['overfitting']['rate'] >= 0.5:
+            status = ProjectStatus.OVERFITTING
+        elif runs_status['not_learn']['rate'] >= 0.5:
+            status = ProjectStatus.NOT_LEARN
+        elif runs_status['underfitting']['rate'] >= 0.5:
+            status = ProjectStatus.UNDERFITTING
+        else:
+            status = ProjectStatus.MEDIOCRE
+        text = status.value
+        if runs_status['excellent']['quantity'] == 1:
+            text += ProjectStatus.GOOD_EXCELLENT.value
+        return {
+            'status': status.name,
+            'text': text,
+        }
+
+    def report_imperfections(self):
+        dataset = self.dataset_analyzer.report_imperfections()
+        model = self.model_analyzer.report_imperfections()
+        results = self.runs_analyzer.report_imperfections()
+        return {
+            'critical': {
+                'dataset': dataset['critical'],
+                'model': model['critical'],
+                'parameters': results['critical']
+            },
+            'warnings': {
+                'dataset': dataset['warnings'],
+                'model': model['warnings'],
+                'parameters': results['warnings']
+            }
+        }

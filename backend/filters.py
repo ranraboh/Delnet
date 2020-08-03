@@ -12,6 +12,7 @@ from .serializers.dataset import *
 from .serializers.model import *
 from django.core.paginator import Paginator
 from .actions.model import *
+from backend.actions.dataset import *
 
 
 class ProjectsByUserFilter(generics.ListAPIView):
@@ -105,7 +106,6 @@ class DatasetItemFilter(generics.ListAPIView):
 
 class UnfinishedRunsFilter(generics.ListAPIView):
     serializer_class = ProjectRunsDepthSerializer
-
     # action which returns all run records of specific project that didn't finished yet 
     # url: /api/project/[id]/runs/unfinished
     def get_queryset(self):
@@ -166,8 +166,6 @@ class MessageSenderFilter(generics.ListAPIView):
         sender = self.kwargs['sender']
         return Message.objects.filter(sender=sender)
       
-
-
 class AllTheTaskDone(generics.ListAPIView):
     serializer_class = ProjectCheckListSerializer
     def get_queryset(self):
@@ -179,15 +177,36 @@ class AllTheTaskNotDone(generics.ListAPIView):
     def get_queryset(self):
         project_id = self.kwargs['id']
         return ProjectCheckList.objects.filter(project=project_id, complete=True)
-            
 
+class UnlabeledDatasetFilter(generics.ListAPIView):
+    serializer_class = UnlabeledSamplesSerializer
 
-             
-        
+    def get_queryset(self):
+        dataset_id = self.kwargs['id']
+        return get_unlabeled_items(dataset_id)
 
+class PublicDataSetFilter(generics.ListAPIView):
+    serializer_class = DataSetFollowSerializer
 
+    def get_queryset(self):
+        user = self.kwargs['username']
+        public = public_dataset()
+        return follow_record(public, user)
 
+class DatasetNameFilter(generics.ListAPIView):
+    serializer_class = DataSetFollowSerializer
 
+    def get_queryset(self):
+        user = self.kwargs['username']
+        dataset_name = self.kwargs['name']
+        return follow_record(dataset_by_name(dataset_name), user)
+
+class DatasetOffersFilter(generics.ListAPIView):
+    serializer_class = DataItemSerializer
+
+    def get_queryset(self):
+        dataset_id = self.kwargs['id']
+        return dataset_labels_offers(dataset_id)    
 
 
 

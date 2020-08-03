@@ -7,6 +7,8 @@
     "dev": "npm run dev-login & npm run dev-signup & npm run dev-home & npm run dev-profile & npm run dev-profile & npm run dev-projects & npm run dev-datasets & npm run dev-dataset & npm run dev-amb",
     "dev-login": "webpack --mode development ./frontend/src/components/login/index.js --output ./frontend/static/compiled/login-script.js",
     "dev-login-watch": "webpack --mode development ./frontend/src/components/login/index.js --output ./frontend/static/compiled/login-script.js --watch",
+    "dev-community": "webpack --mode development ./frontend/src/components/community/index.js --output ./frontend/static/compiled/community-script.js",
+    "dev-community-watch": "webpack --mode development ./frontend/src/components/community/index.js --output ./frontend/static/compiled/community-script.js --watch",
     "dev-signup": "webpack --mode development ./frontend/src/components/signup/index.js --output ./frontend/static/compiled/register-script.js",
     "dev-signup-watch": "webpack --mode development ./frontend/src/components/signup/index.js --output ./frontend/static/compiled/register-script.js --watch",
     "dev-home": "webpack --mode development ./frontend/src/components/home/index.js --output ./frontend/static/compiled/home-script.js",

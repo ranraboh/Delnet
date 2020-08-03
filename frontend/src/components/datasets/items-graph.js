@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { getDatasetsItemsAmount } from '../../actions/datasets.js';
+import { getDatasetsItemsAmount } from '../../actions/dataset/get';
 import BarChart from '../graph/bar.js'
 
 class DatasetsItemsGraph extends Component {
@@ -11,6 +11,8 @@ class DatasetsItemsGraph extends Component {
 	}
 	
     render() {
+        if (this.props.datasets_items_quantity == null)
+            return ''
         return (
             <div id="items-graph-section" className="section-in-main">
                 <div className="header-section-v1 header-v1-red">

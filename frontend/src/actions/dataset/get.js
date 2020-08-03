@@ -1,4 +1,4 @@
-import { GET_DATASET_ANALYSIS, GET_USER_DATASETS, GET_DATASETS_ITEMS_AMOUNT, GET_DATASET_TEAM, GET_ITEMS_COUNT, GET_DATASET_LABELS, GET_LABELS_COUNT, GET_DATA_ITEMS } from '../types.js'
+import { GET_DATASET_OFFERS, GET_SEARCH_DATASETS, GET_UNLABLED_SMAPLES, GET_DATASETS_PUBLIC,GET_DATASET_ANALYSIS, GET_USER_DATASETS, GET_DATASETS_ITEMS_AMOUNT, GET_DATASET_TEAM, GET_ITEMS_COUNT, GET_DATASET_LABELS, GET_LABELS_COUNT, GET_DATA_ITEMS } from '../types.js'
 import { GET_NOTIFICATION_DATASET,GET_DATE_DISTRIBUTION, GET_USER_CONTRIBUTION, GET_DATASET_PROJECTS_PERFORMANCE } from '../types.js'
 import axios from 'axios'
 
@@ -168,3 +168,39 @@ export const getNotificationDataset = (dataset, callback_function) => dispatch =
 }
 
 
+export const getItemsOffers = (dataset_id) => dispatch => {
+    axios.get('/api/dataset/' + dataset_id + '/offers').then(result => {
+        dispatch({
+            type: GET_DATASET_OFFERS,
+            payload: result.data
+        })
+    }).catch(err => console.log(err));
+}
+
+export const getDatasetByName = (dataset_name, username) => dispatch => {
+    axios.get('/api/datasets/search/' + dataset_name + '/user/' + username).then(result => {
+        dispatch({
+            type: GET_SEARCH_DATASETS,
+            payload: result.data
+        })
+    }).catch(err => console.log(err));
+}
+
+export const getUnlabeledSamples = (dataset_id) => dispatch => {
+    axios.get('/api/dataset/' + dataset_id + "/unlabeled").then(result => {
+        dispatch({
+            type: GET_UNLABLED_SMAPLES,
+            payload: result.data
+        })
+    }).catch(err => console.log(err));
+}
+
+export const datasetsPublicView = (username) => dispatch => {
+    console.log(username)
+    axios.get('/api/datasets/public/view/' + username).then(result => {
+        dispatch({
+            type: GET_DATASETS_PUBLIC,
+            payload: result.data
+        })
+    }).catch(err => console.log(err));
+}

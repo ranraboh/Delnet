@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { homepage } from '../../appconf';
+import ProjectAnalysis from './analysis/analysis';
 import ProjectGeneralDetails from './details'
 import ProjectTeam from './team';
 import DatasetProject from './dataset'
@@ -24,7 +25,7 @@ import ShowNotification from './show-notifiction';
 import Notification from './add-notification';
 
 
-
+import TestModel from './tests'
 class MainProject extends Component {
     constructor(props) {
         super(props)
@@ -56,9 +57,8 @@ class MainProject extends Component {
         let model_architecture = this.section(<ProjectArchitercture/>, this.props.sections_status.architecture_active)
         let statics = this.section(<ProjectStatics/>, this.props.sections_status.statics_active)
         let deploy_model = this.section(<DeployModel/>, this.props.sections_status.deploy_model_active)
-
-        /*let notificationDataset = this.section(<NotificationDataset/>, this.props.sections_status.deploy_model_active)*/
-
+        let project_analysis = this.section(<ProjectAnalysis />, this.props.sections_status.analysis_active)
+        let test_model = this.section(<TestModel/>, this.props.sections_status.tests_active)
         return (
             <div className="main-project">
                 <ProjectStats />
@@ -71,14 +71,16 @@ class MainProject extends Component {
                 { run_outcomes }
                 { model_layers }
                 { model_architecture }
-                { statics }
-                { deploy_model }
                 <Notification/>
                 <ShowNotification/>
                 <AddTask/>
                 <CheckList/>
                 <ChecklistAll/>
                
+                { project_analysis }
+                { statics }
+                { deploy_model }
+                { test_model }
             </div>
 
         );

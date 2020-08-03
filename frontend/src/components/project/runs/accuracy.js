@@ -53,11 +53,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         getTrainResult: (run_code) => {
-            console.log('get train')
             dispatch(getTrainResult(run_code))
         },
         getDevResult: (run_code) => {
-            console.log('get dev')
             dispatch(getDevResult(run_code))
         }
     }

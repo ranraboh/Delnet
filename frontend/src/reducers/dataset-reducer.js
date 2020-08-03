@@ -1,6 +1,7 @@
-import { GET_USER_DATASETS, CREATE_DATASET, DELETE_DATASET, SELECT_DATASET, GET_DATASET_TEAM, ADD_ITEM, ADD_LABEL, DELETE_LABEL, DATASET_ANALYZE_ACTIVE, DATASET_ANALYZE_NONACTIVE, GET_DATASET_ANALYSIS, DATASET_STATICS_ACTIVE, DATASET_STATICS_NONACTIVE, DATASET_CONTRIBUTIONS_ACTIVE, DATASET_CONTRIBUTIONS_NONACTIVE, DATASET_MODELS_GRAPH_ACTIVE, DATASET_MODELS_GRAPH_NONACTIVE, DATE_UPLOAD_GRAPH_ACTIVE, DATE_UPLOAD_GRAPH_NONACTIVE, GET_DATE_DISTRIBUTION, GET_USER_CONTRIBUTION, GET_DATASET_PROJECTS_PERFORMANCE } from '../actions/types.js';
+import { GET_USER_DATASETS, CREATE_DATASET, DELETE_DATASET, SELECT_DATASET, GET_DATASET_TEAM, ADD_ITEM, ADD_LABEL, DELETE_LABEL, DATASET_ANALYZE_ACTIVE, DATASET_ANALYZE_NONACTIVE, GET_DATASET_ANALYSIS, DATASET_STATICS_ACTIVE, DATASET_STATICS_NONACTIVE, DATASET_CONTRIBUTIONS_ACTIVE, DATASET_CONTRIBUTIONS_NONACTIVE, DATASET_MODELS_GRAPH_ACTIVE, DATASET_MODELS_GRAPH_NONACTIVE, DATE_UPLOAD_GRAPH_ACTIVE, DATE_UPLOAD_GRAPH_NONACTIVE, GET_DATE_DISTRIBUTION, GET_USER_CONTRIBUTION, GET_DATASET_PROJECTS_PERFORMANCE, GET_UNLABLED_SMAPLES, GET_DATASET_OFFERS, GET_DATASETS_PUBLIC, GET_SEARCH_DATASETS, OFFER_ITEMS_ACTIVE, OFFER_ITEMS_NONACTIVE, TAG_SAMPELS_ACTIVE, TAG_SAMPLES_NONACTIVE } from '../actions/types.js';
 import { GET_ITEMS_COUNT, GET_DATASETS_ITEMS_AMOUNT, DATASET_DETAILS_ACTIVE, DATASET_DETAILS_NONACTIVE, GET_LABELS_COUNT, GET_DATASET_LABELS, GET_DATA_ITEMS, DELETE_DATA_ITEM } from '../actions/types.js';
-import {GET_NOTIFICATION_DATASET, COLLECTORS_TEAM_ACTIVE, COLLECTORS_TEAM_NONACTIVE, LABELS_SECTION_ACTIVE, LABELS_SECTION_NONACTIVE, ITEMS_SECTION_ACTIVE, ITEMS_SECTION_NONACTIVE, ADD_ITEM_ACTIVE,ADD_LABEL_ACTIVE , ADD_LABEL_NONACTIVE, ADD_ITEM_NONACTIVE, LABEL_DISTRIBUTION_ACTIVE, LABEL_DISTRIBUTION_NONACTIVE } from "../actions/types.js";
+import { GET_NOTIFICATION_DATASET,COLLECTORS_TEAM_ACTIVE, COLLECTORS_TEAM_NONACTIVE, LABELS_SECTION_ACTIVE, LABELS_SECTION_NONACTIVE, ITEMS_SECTION_ACTIVE, ITEMS_SECTION_NONACTIVE, ADD_ITEM_ACTIVE,ADD_LABEL_ACTIVE , ADD_LABEL_NONACTIVE, ADD_ITEM_NONACTIVE, LABEL_DISTRIBUTION_ACTIVE, LABEL_DISTRIBUTION_NONACTIVE } from "../actions/types.js";
+
 
 const initialState = {
     user_datasets: null,
@@ -16,11 +17,16 @@ const initialState = {
         labels_quantity: null,
         pages: -1,
         items: [],
-        analysis: null
+        analysis: null,
+        offers: null,
+        unlabeled: null,
     },
     user_contribution: null,
     date_distribution: null,
-    dataset_projects: null
+    dataset_projects: null,
+    search_datasets: null,
+    public_datasets: null,
+
 }
 const toggleInitialState = {
     dataset_display: {
@@ -29,13 +35,15 @@ const toggleInitialState = {
         labels_section: false,
         items_section: false, 
         add_label: false,
-        add_item: true,
-        analyze: true,
+        add_item: false,
+        analyze: false,
         statics: false,
         user_contributions: false,
         date_distribution: false,
         label_distribution: false,
-        dataset_projects: false
+        dataset_projects: false,
+        offer_items: false,
+        tag_samples: false
     }
 }
 export function datasetsReducer(state = initialState, action) {
@@ -165,6 +173,35 @@ export function datasetsReducer(state = initialState, action) {
                 ...state, 
                 dataset_projects: action.payload
             }
+        case GET_SEARCH_DATASETS:
+            return {
+                ...state,
+                search_datasets: action.payload
+            }
+        case GET_DATASETS_PUBLIC:
+        console.log('in reducer of dataset')
+        console.log(action.payload)
+        return {
+            ...state,
+            public_datasets: action.payload,
+        }
+        case GET_DATASET_OFFERS:
+        return {
+            ...state,
+            dataset_selected: {
+            ...state.dataset_selected,
+            offers: action.payload
+            }
+        }
+        case GET_UNLABLED_SMAPLES:
+        return {
+            ...state,
+            dataset_selected: {
+            ...state.dataset_selected,
+            unlabeled: action.payload
+            }
+        }          
+    
         default:
             return state;
     }
@@ -363,8 +400,41 @@ export function datasetsToggleReducer(state = toggleInitialState, action) {
                     ...state.dataset_display,
                     label_distribution: false
                 }
-            }          
-        default:
+            }
+        case OFFER_ITEMS_ACTIVE: 
+            return {
+                ...state,
+                dataset_display: {
+                    ...state.dataset_display,
+                    offer_items: true
+                }
+            }
+        case OFFER_ITEMS_NONACTIVE:
+            return {
+                ...state,
+                dataset_display: {
+                    ...state.dataset_display,
+                    offer_items: false
+                }
+            }
+
+    case TAG_SAMPELS_ACTIVE: 
+        return {
+            ...state,
+            dataset_display: {
+                ...state.dataset_display,
+                tag_samples: true
+            }
+        }
+    case TAG_SAMPLES_NONACTIVE:
+        return {
+            ...state,
+            dataset_display: {
+                ...state.dataset_display,
+                tag_samples: false
+            }
+        }
+       default:
             return state;
     }
 }

@@ -668,8 +668,10 @@
 .mu-team-info span{
 	font-size: 13px;
 }
-
-.mu-team-social-info {
+.known-selected-hide {
+	opacity: 0;
+}
+.known-selected {
 	background: rgba(0,0,0,0.85);
 	position: absolute;
 	left: 0;
@@ -679,19 +681,15 @@
 	width: 100%;
 	height: 100%;
 	z-index: 10;
-	opacity: 0.9;
+	opacity: 1;
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=90)";
 	text-align: center;
 	padding-top: 49%;
-	opacity: 0;
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
 	-webkit-transition: all 0.5s;
 	transition: all 0.5s;
 }
 
-.mu-team-content-single:hover .mu-team-social-info{
-	opacity: 1;
-}
 
 .mu-team-social-info a {
 	color: #fff;
@@ -843,11 +841,12 @@
 }
 
 .mu-clients-content-single {
-	display: inline;
+	display: inline-block;
 	float: left;
 	text-align: left;
 	width: 100%;
 	padding: 15px;
+	height: 400px;
 }
 
 

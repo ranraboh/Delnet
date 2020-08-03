@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { MODEL_TYPE_STAGE } from './actions/enums.js';
 import { updateGeneralDetails } from '../../actions/amb/state.js';
 import { stageAdvance } from '../../actions/amb/state.js';
-import { getUserDatasets } from '../../actions/datasets.js';
+import { getUserDatasets } from '../../actions/dataset/get';
 
 class AmbGeneralDetails extends Component {
     constructor(props) {

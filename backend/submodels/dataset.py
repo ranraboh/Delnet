@@ -9,6 +9,8 @@ class Dataset(models.Model):
     description = models.TextField(default='none description')
     user = models.ForeignKey(User, default=None, on_delete=models.CASCADE)
     create_date = models.DateField(auto_now_add=True)
+    public_view = models.BooleanField(default=True)
+    public_use = models.BooleanField(default=True)
 
 # represent a label of particular dataset
 # contains infromation such as the relevant dataset, label name insertion date, description and so on. 
@@ -31,6 +33,12 @@ class DataItem(models.Model):
     insert_date = models.DateField(auto_now_add=True)
     insert_by = models.ForeignKey(User, default=None, on_delete=models.CASCADE)
 
+class UnlabeledSamples(models.Model):
+    dataset = models.ForeignKey(Dataset, default=None, on_delete=models.CASCADE)
+    item = models.TextField(default='item')
+    insert_date = models.DateField(auto_now_add=True)
+    insert_by = models.ForeignKey(User, default=None, on_delete=models.CASCADE)
+
 # used to store the team which take part in building the dataset.
 # contains role, presmmisions, join-date and more data for each user in team.
 class DatasetCollectors(models.Model):
@@ -46,4 +54,8 @@ class DatesetNotifcation(models.Model):
     dataset = models.ForeignKey(Dataset, default=None, on_delete=models.CASCADE)
     content=models.TextField(unique=False, blank=True, default='')
     date=models.DateField(auto_now_add=True)
-    time=models.TimeField(auto_now_add=True,null=True, blank=True)       
+    time=models.TimeField(auto_now_add=True,null=True, blank=True)  
+         
+class DatasetFollowers(models.Model):
+    user = models.ForeignKey(User, default=None, on_delete=models.CASCADE)
+    dataset = models.ForeignKey(Dataset, default=None, on_delete=models.CASCADE)

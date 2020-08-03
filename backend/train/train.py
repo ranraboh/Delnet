@@ -105,9 +105,7 @@ class ModelTrain(tnn.Module,):
                 loss = self.loss_function(output, y)
                 total_loss += loss.item()
                 predictions = output.argmax(dim=1)
-                print(predictions)
                 for results in torch.stack((y, predictions), dim=1):
-                    print (results)
                     label, prediction = results.tolist()
                     if label == prediction:
                         good = good + 1

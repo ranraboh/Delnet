@@ -1,53 +1,79 @@
 from backend.actions.model import *
 from backend.actions.amb import *
+from backend.analyze.text import ProjectStatus
 from backend.analyze.enums import ParameterModify
-from backend.analyze.text import ModelStructure, DropoutFactor
+from backend.analyze.text import ModelStructure, DropoutFactor, ActivationsFactor, ConvolutionFactor
+from backend.train.actions import extract_layers
 import copy
 class ModelAnalyzer():
-    def __init__(self, project, runs_data):
-        # load essential data
+    def __init__(self, project, project_status, runs_data):
+        # load essential data for analysis
         self.project = project
-        layers_file = get_file_layers(self.project.id)
-        layers_object =  read_layers(layers_file)
+        self.project_status = project_status
+        if project.user_upload() or project.popular_model():
+            layers_object = extract_layers(self.project)
+        else:
+            layers_file = get_file_layers(self.project.id)
+            layers_object = read_layers(layers_file)
         if layers_object['valid']:
             self.layers = layers_object['layers']
         else:
             self.layers = []
-
-        # compute overfitting and underfitting rate used for model examination
+        
+        # holds underfitting and overfitting rates for model analysis
         self.runs_data = runs_data
-        self.runs_quantity = runs_data['runs_quantity']['value']
-        self.overfitting_rate, self.underfitting_rate = runs_data['fitting_rate']['overfitting'] / self.runs_quantity, runs_data['fitting_rate']['underfitting'] / self.runs_quantity
-
+        self.underfitting_rate, self.overfitting_rate = self.runs_data['runs_status']['underfitting']['rate'], self.runs_data['runs_status']['overfitting']['rate']
+        
+    # report texutally the model structure imperfections 
     def report_imperfections(self):
+        # if model analysis didn't triggered yet
         if not self.model_analysis:
             self.analyze()
-        imperfections = []
-        if self.model_analysis['structure']['status'] != ParameterModify.KEEP_VALUE:
-            imperfections.append('number of parameters is too low')
-        if self.model_analysis['structure']['layers_quantity']['status'] != ParameterModify.KEEP_VALUE:
-            imperfections.append('number of layers is too low')
-        if self.model_analysis['modules']['dropout']['status'] != ParameterModify.KEEP_VALUE:
-            imperfections.append('dropout')
-        if self.model_analysis['modules']['batch_normalization']['status'] != ParameterModify.KEEP_VALUE:
-            imperfections.append('batch normalization')
-        if self.model_analysis['modules']['convolution']['quantity']['status'] != ParameterModify.KEEP_VALUE:
-            imperfections.append('convolution')
-        if self.model_analysis['modules']['activations']['status'] != ParameterModify.KEEP_VALUE:
-            imperfections.append('activations')
-        return imperfections
+        
+        critical = []
+        warnings = []
+        critical_case = [ ParameterModify.INCREASE_VALUE_HR, ParameterModify.DECREASE_VALUE_HR, ParameterModify.ADD_MODULE ]
+        warning_case = [ ParameterModify.INCREASE_VALUE, ParameterModify.DECREASE_VALUE ]
+        # check out the status for different parts of model examination
+        # and report in any case of imperfection 
+        self.examinations = [
+            { 'status': self.model_analysis['structure']['status'], 'text': self.model_analysis['structure']['text'], 'critical_case': [ ModelStructure.MODEL_EXTREMELY_SIMPLE, ModelStructure.MODEL_SIMPLE ], 'warning_case': [ ModelStructure.PARAMETERS_TOO_SMALL, ModelStructure.LAYERS_TOO_SMALL ]  },
+            { 'status': self.model_analysis['modules']['convolution']['quantity']['factor'], 'text': self.model_analysis['modules']['convolution']['quantity']['text'] , 'critical_case': [ ConvolutionFactor.GREAT_SHORTAGE_CONVOLUTION, ConvolutionFactor.NO_CONVOLUTION ], 'warning_case': [ ConvolutionFactor.SHORTAGE_CONVOLUTION ] },
+            { 'status': self.model_analysis['modules']['dropout']['status'], 'text': self.model_analysis['modules']['dropout']['text'], 'critical_case': critical_case, 'warning_case': warning_case },
+            { 'status': self.model_analysis['modules']['batch_normalization']['status'], 'text': 'batch normalization', 'critical_case': critical_case, 'warning_case': warning_case},
+            { 'status': self.model_analysis['modules']['activations']['usage']['status'], 'text': self.model_analysis['modules']['activations']['usage']['text'], 'critical_case': critical_case, 'warning_case': warning_case },
+        ]
+                
+        for examination in self.examinations:
+            if examination['status'] in examination['critical_case']:
+                critical.append(examination['text'])
+            elif examination['status'] in examination['warning_case']:
+                warnings.append(examination['text'])
+        if self.model_analysis['modules']['activations']['type']['status'] != ActivationsFactor.REASONABLE_TYPE:
+            warnings.append(self.model_analysis['modules']['activations']['type']['text'])
+        return {
+            'critical': critical,
+            'warnings': warnings
+        }
     
+    # convert analysis infromation into valid response format
     def format_response(self):
+        # in case analyze didn't triggered yet
         if not self.model_analysis:
             self.analyze()
+
+        # response format can't include enums type
+        # convert enums entries to string types
         analysis = copy.deepcopy(self.model_analysis)
         analysis['structure']['status'] = analysis['structure']['status'].name
         analysis['structure']['parameters']['status'] = analysis['structure']['parameters']['status'].name
         analysis['structure']['layers_quantity']['status'] = analysis['structure']['layers_quantity']['status'].name
         analysis['modules']['dropout']['status'] = analysis['modules']['dropout']['status'].name
         analysis['modules']['dropout']['factor'] = analysis['modules']['dropout']['factor'].name
+        analysis['modules']['convolution']['quantity']['factor'] = analysis['modules']['convolution']['quantity']['factor'].name
         analysis['modules']['batch_normalization']['status'] = analysis['modules']['batch_normalization']['status'].name
-        analysis['modules']['activations']['status'] =  analysis['modules']['activations']['status'].name
+        analysis['modules']['activations']['usage']['status'] =  analysis['modules']['activations']['usage']['status'].name
+        analysis['modules']['activations']['type']['status'] =  analysis['modules']['activations']['type']['status'].name
         for _, record in analysis['modules']['convolution'].items():
             record['status'] = record['status'].name
         return analysis
@@ -71,24 +97,34 @@ class ModelAnalyzer():
         # examine model structure
         dimension_status = ParameterModify.KEEP_VALUE
         layers_status = ParameterModify.KEEP_VALUE
-       
-        if self.overfitting_rate < 0.5:
-            # evaluate status of layers quantity
+        
+        # in case the model in good state
+        if layers_quantity < 5:
+            layers_status = ParameterModify.INCREASE_VALUE_HR
+        elif layers_quantity < 10:
+            layers_status = ParameterModify.INCREASE_VALUE
+
+        # in case the model in underfitting state
+        if self.project_status in [ ProjectStatus.UNDERFITTING, ProjectStatus.NOT_LEARN ]:            
+            # as underfitting rate grews, the limit of layers quantity between INCREASE_VALUE
+            # to INCREASE_VALUE_HR rise
             if layers_quantity < 40 * self.underfitting_rate:
                 layers_status = ParameterModify.INCREASE_VALUE_HR
             elif layers_quantity < 70 * self.underfitting_rate:
                 layers_status = ParameterModify.INCREASE_VALUE
-            
+
+        ######## need to determine dimension status according parameter size    
         dimension_status = layers_status
+
         # evaluate model structure status
         structure_status = ModelStructure.REASONABLE_STRUCTURE
         if layers_status == ParameterModify.INCREASE_VALUE_HR and dimension_status == ParameterModify.INCREASE_VALUE_HR:
             structure_status = ModelStructure.MODEL_EXTREMELY_SIMPLE
-        elif layers_status in [ParameterModify.INCREASE_VALUE_HR, ParameterModify.INCREASE_VALUE ]  and dimension_status == [ParameterModify.INCREASE_VALUE_HR, ParameterModify.INCREASE_VALUE ]:
+        elif layers_status in [ ParameterModify.INCREASE_VALUE_HR, ParameterModify.INCREASE_VALUE ] and dimension_status in [ParameterModify.INCREASE_VALUE_HR, ParameterModify.INCREASE_VALUE ]:
             structure_status = ModelStructure.MODEL_SIMPLE
-        elif layers_status == ParameterModify.KEEP_VALUE:
+        elif layers_status == ParameterModify.KEEP_VALUE and dimension_status in [ ParameterModify.INCREASE_VALUE_HR, ParameterModify.INCREASE_VALUE ]:
             structure_status = ModelStructure.PARAMETERS_TOO_SMALL
-        elif dimension_status == ParameterModify.KEEP_VALUE:
+        elif dimension_status == ParameterModify.KEEP_VALUE and layers_status in [ ParameterModify.INCREASE_VALUE_HR, ParameterModify.INCREASE_VALUE ]:
             structure_status = ModelStructure.LAYERS_TOO_SMALL
         return {
             'parameters': {
@@ -108,24 +144,37 @@ class ModelAnalyzer():
             'exist': batchnormn_exists(self.layers),
             'status': ParameterModify.KEEP_VALUE
         }
-        if self.underfitting_rate > 0.5 and batch_norm['exist'] == 0:
+        if self.project_status in [ ProjectStatus.UNDERFITTING, ProjectStatus.NOT_LEARN ] and batch_norm['exist'] == 0:
             batch_norm['status'] = ParameterModify.ADD_MODULE
         return batch_norm
     
     def dropout(self):
-        ###todo: check the amount of times it appeared
+        ### for now i ignore the amount of times dropout used.
+        ### not sure if i can evalaute it in any case
+
+        # returns the number of times dropout appeared        
         dropout = dropout_exists(self.layers)
+        # set initial status 
         dropout['status'] = ParameterModify.KEEP_VALUE
-        dropout['factor'] = DropoutFactor.REASONABLE_VALUE
-        if self.overfitting_rate > 0.5:
-            if dropout['exist']:
+        if dropout['exist'] == 0:
+            dropout['factor'] = DropoutFactor.UNUSED_REASONABLE_VALUE
+        else:
+            dropout['factor'] = DropoutFactor.REASONABLE_VALUE
+
+        # in case the project is in overfitting rate
+        if self.project_status == ProjectStatus.OVERFITTING:
+            if dropout['exist']:  
+                # if dropout module exists, evalatue dropout constant
                 if max(dropout['dropout_constant']) < 0.3:
                     dropout['status'] = ParameterModify.INCREASE_VALUE
                     dropout['factor'] = DropoutFactor.RISE_DROPOUT_CONSTANT
             else:
+                # otherwise recommend to add dropout module into model architecture
                 dropout['status'] = ParameterModify.ADD_MODULE
                 dropout['factor'] = DropoutFactor.ADD_MODULE 
-        elif self.underfitting_rate > 0.5 and dropout['exist']:
+        elif self.project_status in [ ProjectStatus.UNDERFITTING, ProjectStatus.NOT_LEARN ] and dropout['exist']:
+            # in case underfitting rate across the different runs is grater then 50 percent
+            # the model is too much regularized and therefore recommend to decrease dropout constant value
             dropout['status'] = ParameterModify.DECREASE_VALUE
             dropout['factor'] = DropoutFactor.REDUCE_DROPOUT_CONSTANT
         dropout['text'] = dropout['factor'].value
@@ -134,7 +183,18 @@ class ModelAnalyzer():
     def convolution(self):
         convolution_data = convolution_info(self.layers)
         quantity_status = stride_status = kernel_status = ParameterModify.KEEP_VALUE
-        if self.underfitting_rate > 0.5:
+        factor = ConvolutionFactor.REASONABLE_USAGE
+
+        # evaluate status in case the project in good state
+        if convolution_data['quantity'] == 0:
+            quantity_status = ParameterModify.INCREASE_VALUE_HR
+            factor = ConvolutionFactor.NO_CONVOLUTION
+        elif convolution_data['quantity'] < 6:
+            quantity_status = ParameterModify.INCREASE_VALUE
+            factor = ConvolutionFactor.GREAT_SHORTAGE_CONVOLUTION
+        
+        # evaluate status when the project in underfitting state
+        elif self.project_status in [ ProjectStatus.UNDERFITTING, ProjectStatus.NOT_LEARN ]:
             # evaluate kernel status
             kernel_status = ParameterModify.CHANGE_VALUE 
 
@@ -144,17 +204,22 @@ class ModelAnalyzer():
             elif convolution_data['stride_avg'] > 5:
                 stride_status = ParameterModify.INCREASE_VALUE_HR
             
-            # evaluate 
-            if convolution_data['quantity'] < 6 * self.underfitting_rate:
+            # evaluate frequency usage of convolution module
+            if convolution_data['quantity'] < 12 * self.underfitting_rate:
                 quantity_status = ParameterModify.INCREASE_VALUE_HR
+                factor = ConvolutionFactor.GREAT_SHORTAGE_CONVOLUTION
             elif convolution_data['quantity'] < 20 * self.underfitting_rate:
                 quantity_status = ParameterModify.INCREASE_VALUE
-        elif self.overfitting_rate > 0.5:
+                factor = ConvolutionFactor.SHORTAGE_CONVOLUTION
+        elif self.project_status == ProjectStatus.OVERFITTING:
             quantity_status = ParameterModify.DECREASE_VALUE
+            factor = ConvolutionFactor.OVERUSED_CONVOLUTION
         return {
             'quantity': {
                 'value': convolution_data['quantity'],
-                'status': quantity_status
+                'status': quantity_status,
+                'factor': factor,
+                'text': factor.value
             },
             'stride': {
                 'average': convolution_data['stride_avg'],
@@ -168,26 +233,63 @@ class ModelAnalyzer():
     
     def activations(self):
         activations = activations_used(self.layers)
-        
-        # analyze activation quantity
+        status = ParameterModify.KEEP_VALUE
+        factor = ActivationsFactor.REASONABLE_TYPE
+
+        # analyze activation frequency usage
         activations_quantity = len(activations)
-        if activations_quantity < 5:
+        size_factor = ActivationsFactor.REASONABLE_USAGE
+
+        # in case model in good state
+        if activations_quantity == 0:
             status = ParameterModify.INCREASE_VALUE_HR
-        elif activations_quantity < 10: 
+            factor = ActivationsFactor.NO_ACTIVATIONS
+        elif activations_quantity < 5:
             status = ParameterModify.INCREASE_VALUE
-        
-        # analyze actiovations types used
+            factor = ActivationsFactor.LACK_OF_ACTIVATIONS
+
+        # in case model in underfitting state
+        if self.project_status in [ ProjectStatus.UNDERFITTING, ProjectStatus.NOT_LEARN ]:
+            if activations_quantity < 5:
+                status = ParameterModify.INCREASE_VALUE_HR
+                factor = ActivationsFactor.GREAT_LACK_OF_ACTIVATIONS
+            elif activations_quantity < 10: 
+                status = ParameterModify.INCREASE_VALUE
+                factor = ActivationsFactor.LACK_OF_ACTIVATIONS
+        elif self.project_status == ProjectStatus.OVERFITTING:
+            if activations_quantity > 20:
+                status = ParameterModify.DECREASE_VALUE
+                factor = ActivationsFactor.OVERUSE_ACTIVATIONS
+            elif activations_quantity > 30:
+                status = ParameterModify.DECREASE_VALUE_HR
+                factor = ActivationsFactor.OVERUSE_ACTIVATIONS
+
+        # analyze activations types used
         activations_rate = use_rate_activation(activations)
         try_use = []
-        if get_activation_value('Relu', activations_rate) > 0.5:
+        type_status = ActivationsFactor.REASONABLE_TYPE
+        
+        # overuse relu activations function can lead to dead relu phenomenon
+        ### actually i can check if it reach dead relu, maybe later on 
+        if get_activation_value('Relu', activations_rate) > 0.5 and activations_rate['Relu'] > 5:
             try_use = [ 'LeakyRelu', 'PRelu' ]
+            type_status = ActivationsFactor.OVERUSE_RELU
         if get_activation_value('Sigmoid', activations_rate) + get_activation_value('HardTanh', activations_rate) > 0.5:
             try_use =  [ 'Tanh', 'Relu', 'LeakyRelu' ]
+            type_status = ActivationsFactor.SIGMOID_TANH_USE
         return {
             'activations_list': activations,
-            'activations_quantity': activations_quantity,
-            'status': status,
             'activations_rate': activations_rate,
-            'try_use': try_use,
-            'max_used': max_used_activation(activations_rate)
+            'max_used': max_used_activation(activations_rate),
+            'usage': {
+                'activations_quantity': activations_quantity,
+                'status': status,
+                'factor': factor.name,
+                'text': factor.value,
+            },
+            'type': {
+                'try_use': try_use,
+                'status': type_status,
+                'text': type_status.value
+            }
         }

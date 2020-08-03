@@ -1,8 +1,10 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractBaseUser
 
 # represent a user in system, contains personal infromation about the user such as 
 # name, email, occupation and so on.
-class User(models.Model):
+class User(AbstractBaseUser):
     GENDER = (
         ('m', 'Male'),
         ('f', 'Female'),

@@ -282,13 +282,13 @@ body {
     background-color: #EC51DE;
 }
 .icon-container-purple {
-    border: 2px groove #6A82FB;
+    border: 2px groove #cb99c5;
 }
 .icon-container-purple p {
-    color: #6A82FB;
+    color: #cb99c5;
 }
 .icon-container-purple:hover {
-    background-color: #6A82FB;
+    background-color: #cb99c5;
 }
 .icon-container-yellow {
     border: 2px groove #f0d264;
@@ -1332,7 +1332,76 @@ Data Sets
     font-family: "Poppins", sans-serif;
     font-size: 18px;    
 }
-
+.unlabeled-image {
+    width: 300px;
+    height: 250px;
+    position: relative;
+    margin-top: 40px;
+    margin-left: 150px;
+    border-radius: 5px;
+    animation-name: fade-in;
+    animation-duration: 2s;
+    opacity: 0.8;
+}
+.append-button {
+    width: 110px;
+    height: 60px;
+    font-weight: bold;
+    font-family: "Agency FB";
+    background: #36D1DC;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #5B86E5, #36D1DC);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #5B86E5, #36D1DC); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */    
+    color: white;
+    position: relative;
+    right: 10px;
+}
+.append-button:hover {
+    background: transparent;
+    color: blue;
+    border: 1px groove blue;
+}
+.purple-append-button {
+    width: 400px;
+    height: 40px;
+    font-weight: bold;
+    font-size: 15px;
+    background: #3494E6;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #EC6EAD, #3494E6);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #EC6EAD, #3494E6); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */         
+    color: white;
+    position: relative;
+    right: 150px;
+}
+.purple-append-button:hover {
+    background: transparent;
+    color: purple;
+    border: 1px groove purple;
+}
+.label-options {
+    margin-top: 15px;
+    margin-left: 220px;
+    font-size: 22px;
+}
+.unlabeled-image:hover {
+    opacity: 1;
+}
+.dataset-arrows-right {
+    width: 120px;
+    height: 80px;
+    margin-top: 200px;
+}
+.dataset-arrows-left {
+    width: 120px;
+    height: 80px;
+    margin-top: 200px;
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+}
+.dataset-arrows-right:hover, .dataset-arrows-left:hover {
+    border-radius: 70px;;
+    border: 1px double #00c6ff;
+    cursor: pointer;
+}
 
 /***********************************************
 Automated Model Builder
@@ -1453,6 +1522,10 @@ Automated Model Builder
 .delete-danger:hover {
     color: #fa5a5a;
 }
+.add-success:hover {
+    color: #2ECC71;
+}
+
 .btn-select {
     padding: 20px;
     font-size: 18pt;
@@ -1699,6 +1772,11 @@ Automated Model Builder
     height: 40px;
     position: relative;
 }
+.pool-shape-3d {
+    width: 350px;
+    height: 100px;
+    position: relative;
+}
 .shape-3d-1 {
     border: 2px double blue;
     top: 4px;
@@ -1749,6 +1827,51 @@ Automated Model Builder
     left: 5px;
 }
 
+.error-layer {
+    border-top: 1px double red;
+    padding-top: 15px;
+}
+
+.layers-error-box {
+    margin-top: 80px;
+}
+
+.error-shape {
+    background-color: red;
+    position: relative;
+    top: 10px;
+    border: 1px double #000000;
+    width: 300px;
+    height: 50px;
+    margin-right: 20px;
+}
+
+.error-shape h4 {
+    font-family: "Poppins", sans-serif;
+    font-size: 15px;
+    position: relative;
+    top: 5px;
+    left: 10px;
+}
+
+.warning-layer {
+    border-top: 1px double rgb(255, 223, 223);
+    border-bottom: 1px double rgb(255, 223, 223);
+    background-color: rgb(255, 245, 245);
+    padding-top: 10px;
+    margin-bottom: 15px;
+}
+
+.warning-text {
+    position: relative;
+    bottom: 20px;
+    margin-right: 90px;
+    font-family: "Agency FB";
+    font-size: 14px;
+    font-weight: 100;
+    text-align: left;
+}
+
 /* statics */
 .statics-text {
     font-family: "Poppins", sans-serif;
@@ -1774,6 +1897,12 @@ Automated Model Builder
 .tab-indent {
     position: relative;
     left: 20px;
+}
+.known-selected-text {
+    color: #0072ff;
+    font-size: 22px;
+    text-align: center;
+    font-family: "Poppins", sans-serif;
 }
 
 /* deploy */
@@ -1804,4 +1933,26 @@ Automated Model Builder
 }
 .deploy-results-record {
     margin-bottom: 10px;
+}
+.project-analysis-text {
+    position: relative;
+    left: 15px;
+    margin-right: 50px;
+    font-family: "Poppins", sans-serif;
+    font-size: 18px;
+    color: black;
+}
+.model-section-analysis {
+    font-weight: 600;
+    color: #0072ff;
+}
+.model-section-analysis:hover {
+    color: #ea80fc;
+    cursor: pointer;
+}
+#best-results-analysis {
+    margin-top: 40px;
+}
+#analysis-parameters-th {
+    font-size: 12px;
 }

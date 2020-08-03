@@ -35,7 +35,7 @@ class ProjectLayersModel extends Component {
                         this sections display extnesively the layers of the model and their features and parameters
                     </h2>
                 </div>
-            <ModelLayers save_handler={ this.save_handler } />
+            <ModelLayers save_handler={ this.save_handler } enable_modifications={ this.props.project.model_type == 'c' } />
         </div>
         );
     }

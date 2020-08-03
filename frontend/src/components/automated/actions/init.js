@@ -9,6 +9,17 @@ export function init_new_layer(state) {
     }
     return new_layer;
 }
+export function init_middle_layer(layers, index) {
+    let new_layer = {
+        id: index + 1,
+        type: 'None',
+        input: layers[index - 1].output,
+        output: '--',
+        activation: 'None',
+        params_form: []
+    }
+    return new_layer;
+}
 
 export function init_linear_layer(state) {
     return (
@@ -16,7 +27,7 @@ export function init_linear_layer(state) {
             id: state.layer.id,
             type: 'Linear',
             activation: state.layer.activation,
-            input: [ state.layer.input ],
+            input: (state.layer.id == 1)? [3, 64, 64 ] : [ state.layer.input ],
             output: [ '--' ],
             bias: '0',
             params_form: [ { id: 'input', name: 'Input Features', type: 'text',  dimensions: 1, description: 'Enter size of input vector', disable: true },
@@ -34,7 +45,7 @@ export function init_convolution_layer(state) {
         activation: state.layer.activation,
         input_dimension: 3,
         output_dimension: 3,
-        input: state.layer.input,
+        input: (state.layer.id == 1)? [3, 64, 64 ] : state.layer.input,
         output: '--',
         in_channels: state.layer.input[0],
         out_channels: '',
@@ -56,7 +67,7 @@ export function init_flatten_layer(state) {
             id: state.layer.id,
             type: 'Flatten',
             activation: state.layer.activation,
-            input: state.layer.input,
+            input: (state.layer.id == 1)? [3, 64, 64 ] : state.layer.input,
             output: [ output_dimension ],
             params_form: []        
         }
@@ -92,7 +103,7 @@ export function init_pool(state) {
         id: state.layer.id,
         type: 'Pooling',
         activation: state.layer.activation,
-        input: state.layer.input,
+        input: (state.layer.id == 1)? [3, 64, 64 ] : state.layer.input,
         output: '--',
         window: ['' , ''],
         pooling_type: 0,

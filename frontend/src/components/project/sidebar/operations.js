@@ -24,6 +24,8 @@ class ProjectOperations extends Component {
                         button_type="info" icon="fa-database" activate={ this.props.activateSection } hide={ this.props.hideSection } />
                     <DatasetMenuItem name="Deploy Model" description="deploy and use your own model" state={ this.props.sections_status.deploy_model_active } 
                         button_type="success" icon="fa-laptop" activate={ this.props.activateSection } hide={ this.props.hideSection } />
+                    <DatasetMenuItem name="Tests" description="check if there any errors or exceptions" state={ this.props.sections_status.tests_active } 
+                        button_type="dark" icon="fa-laptop" activate={ this.props.activateSection } hide={ this.props.hideSection } />
                     <tr className="dataset-menu-row">
                         <td>
                             <button type="button" class="btn btn-outline-danger button-dataset-menu">

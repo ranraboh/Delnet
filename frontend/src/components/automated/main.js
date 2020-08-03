@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import AmbGeneralDetails from './details'
 import AmbModelGenerator from './model'
-import AmbArchitercture from './architerctue-wrapper';
+import AmbArchitercture from './architecture/architerctue-wrapper';
 import IntroModelBuilder from './intro';
 import BuildOptions from '../automated/build-options';
 import Prebuild from './prebuild';

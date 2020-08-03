@@ -120,34 +120,20 @@ def store_confusion_matrix(total_results, labels, run):
             prediction = labels[j]
             LabelsMetrics.objects.create(label=label, prediction=prediction, run=run, value=confusion_matrix[i, j])
 
-def runs_statics(project):
-    results = ProjectRuns.objects.filter(project=project).filter(progress=100)
-    accuracy_decimal_digits = 6
-    loss_decimal_digits = 4
-    statics = {
-        # add time sum, time average, time max and min
-        'qunatity': results.count(),
-        'in_run': ProjectRuns.objects.filter(project=project).filter(progress__lt=100).count(),
-        'total_epoches': results.aggregate(Sum('epochs'))['epochs__sum'],
-        'accuracy_average': float_precision(results.aggregate(Avg('accuracy'))['accuracy__avg'], accuracy_decimal_digits),
-        'loss_average': float_precision(results.aggregate(Avg('loss'))['loss__avg'], loss_decimal_digits),
-        'accuracy_max': float_precision(results.aggregate(Max('accuracy'))['accuracy__max'], accuracy_decimal_digits),
-        'accuracy_min': float_precision(results.aggregate(Min('accuracy'))['accuracy__min'], accuracy_decimal_digits),
-        'loss_min': float_precision(results.aggregate(Min('loss'))['loss__min'], loss_decimal_digits),
-        'loss_max': float_precision(results.aggregate(Max('loss'))['loss__max'], loss_decimal_digits),
-        'favorite_params': {
-            'batch_size': favorite_parameter(results, 'batch_size'),
-            'loss': favorite_parameter(results, 'loss_type'),
-            'optimizer': favorite_parameter(results, 'optimizer'),
-            'weight_decay': favorite_parameter(results, 'weight_decay'),
-            'learning_rate': favorite_parameter(results, 'learning_rate'),
-            'epochs': favorite_parameter(results, 'epochs'),
-        },
-        'most_runner': favorite_parameter(results, 'user'),
-        'date_most_runs': favorite_parameter(results, 'date'),
-        'evaluation': fitting_rate()
-    }
-    return statics
+def accuracy_range(project):
+    range = [
+        { 'range':'0-10', 'frequency':0 }, { 'range':'10-20', 'frequency':0 },
+        { 'range':'20-30', 'frequency':0 }, { 'range':'30-40', 'frequency':0 },
+        { 'range':'40-50', 'frequency':0 }, { 'range':'50-60', 'frequency':0 },
+        { 'range':'60-70', 'frequency':0 }, { 'range':'70-80', 'frequency':0 },
+        { 'range':'80-90', 'frequency':0 }, { 'range':'90-100', 'frequency':0 },
+    ]
+    run_records = project_run_records(project, True)
+    for run_record in run_records:
+        accuracy = run_record.accuracy * 100
+        index = int(accuracy / 10)
+        range[index]['frequency'] += 1
+    return range
 
 # get favorite value for given hyper-parameter
 def favorite_parameter(results, category):

@@ -115,7 +115,6 @@ class RegisterForm extends Component {
         this.setState({
             user
         })
-        console.log(this.state)
     }
 
     female_button_change = (e) => {
@@ -124,7 +123,6 @@ class RegisterForm extends Component {
         this.setState({
             user
         })
-        console.log(this.state)
     }
     restartErrors(errors){
         errors['username'] =''
@@ -346,11 +344,10 @@ const mapStateToProps = state => {
     return {}
 }
 
-const mapDispatchToProps = disaptch => {
+const mapDispatchToProps = dispatch => {
     return {
         createUser: (user, callback) => {
-            console.log(callback)
-            createUser(user, callback);
+            dispatch(createUser(user, callback));
         }
     }
 }

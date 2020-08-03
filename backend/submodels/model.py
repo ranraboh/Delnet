@@ -15,6 +15,8 @@ class Optimizer(models.Model):
 
 class KnownModels(models.Model):
     name = models.TextField()
+    description = models.TextField()
+    image = models.TextField()
     def __str__(self):
         return self.known_model
 

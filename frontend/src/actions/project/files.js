@@ -26,8 +26,6 @@ export const uploadFiles = (update_object, callback_function) => dispatch => {
  */
 export const getProjectFiles = (project_id) => dispatch => {
     axios.get('/api/project/' + project_id +'/files').then(result => {
-        console.log('result from server')
-        console.log(result.data)
         dispatch({
             type: GET_PROJECT_FILES,
             payload: result.data
@@ -63,8 +61,6 @@ export const getFileContent = (file_id) => dispatch => {
  * @param {*} file file updated information
  */
 export const updateFileContent = (file, callback_function) => dispatch => {
-    console.log('update action')
-    console.log(file)
     axios.put('/api/file/content', file).then((result) => {
         dispatch({
             type: UPDATE_FILE_CONTENT,

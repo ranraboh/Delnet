@@ -11,7 +11,6 @@ class SelectedLayer extends Component {
         super(props)
         this.state = {
             layer: this.props.layer_selected,
-            error: ''
         }
 
         /* bind internal methods */
@@ -62,16 +61,16 @@ class SelectedLayer extends Component {
     convolution_selected() {
         this.setState({
             ...this.state,
-            layer: init_convolution_layer(this.state)
+            layer: init_linear_layer(this.state)
         }, () => {
             this.props.updateLayer(this.state.layer)
         })
     }
 
-    flatten_selected() {
+    convolution_selected() {
         this.setState({
             ...this.state,
-            layer: init_flatten_layer(this.state)
+            layer: init_convolution_layer(this.state)
         }, () => {
             this.props.updateLayer(this.state.layer)
         })
@@ -80,13 +79,22 @@ class SelectedLayer extends Component {
     batch_norm_selected() {
         this.setState({
             ...this.state,
-            layer: init_batch_norm(this.state)
+            layer: init_flatten_layer(this.state)
         }, () => {
             this.props.updateLayer(this.state.layer)
         })
     }
 
     dropout_selected() {
+        this.setState({
+            ...this.state,
+            layer: init_batch_norm(this.state)
+        }, () => {
+            this.props.updateLayer(this.state.layer)
+        })
+    }
+
+    pool_selected() {
         this.setState({
             ...this.state,
             layer: init_dropout(this.state)
@@ -127,7 +135,6 @@ class SelectedLayer extends Component {
         return (
         <span id="select-section">
             <div id="amb-select-internal">
-                { alert_message }
                 <h6 className="text">Layer ID: { this.state.layer.id }</h6>
                 <h6 className="text">Input: { display_size(this.state.layer.input) }</h6>
                 <h6 className="text">Output: { display_size(this.state.layer.output) }</h6>

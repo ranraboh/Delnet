@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import ModelArchitercture from '../automated/architecture';
+import { loadLayers } from '../../actions/amb/general'
+import ModelArchitercture from '../automated/architecture/architecture';
 
 class ProjectArchitercture extends Component {
     constructor(props) {
         super(props)
+
+        /* load layers of model */
+        this.props.loadLayers(this.props.project.id)       
     }
 
     render() {
@@ -29,12 +33,16 @@ class ProjectArchitercture extends Component {
 
 const mapStateToProps = state => {
     return {
-        layers: state.ambReducer.customizable.layers
+        layers: state.ambReducer.customizable.layers,
+        project: state.projectReducer.project_selected
     }
 }
 
-const mapDispatchToProps = disaptch => {
+const mapDispatchToProps = dispatch => {
     return {
+        loadLayers: (project_id) => {
+            dispatch(loadLayers(project_id))
+        },
     }
 }
 

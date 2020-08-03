@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { buildDataSet } from '../../actions/datasets.js'
+import { buildDataSet } from '../../actions/dataset/manipulation'
 import { homepage } from '../../appconf.js';
 
 class BuildDataset extends Component {

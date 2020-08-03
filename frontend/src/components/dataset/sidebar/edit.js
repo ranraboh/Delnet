@@ -21,25 +21,21 @@ class DataSetEdits extends Component {
             <div id="profile">
             <table class="table">
                 <tbody>
+                    <DatasetMenuItem name="Add Label" description="insert a new label to your dataset" state={ this.props.dataset_display.add_label } 
+                        button_type="primary" icon="fa-tag" activate={ this.props.activateSection } hide={ this.props.hideSection } />
+                    <DatasetMenuItem name="Add Item" description="append a new item to your dataset" state={ this.props.dataset_display.add_item } 
+                        button_type="info" icon="fa-plus" activate={ this.props.activateSection } hide={ this.props.hideSection } />    
+                    <DatasetMenuItem name="Tag Samples" description="tag your unlabeled samples" state={ this.props.dataset_display.tag_samples } 
+                        button_type="dark" icon="fa-plus" activate={ this.props.activateSection } hide={ this.props.hideSection } /> 
+                    <DatasetMenuItem name="Offer Items" description="offer additional samples to enrich datasets" state={ this.props.dataset_display.offer_items } 
+                        button_type="danger" icon="fa-plus" activate={ this.props.activateSection } hide={ this.props.hideSection } /> 
                     <tr className="dataset-menu-row">
                         <td>
-                            <button type="button" class="btn btn-outline-primary button-dataset-menu">
+                            <button type="button" class="btn btn-outline-successs button-dataset-menu">
                                 <i className="fa fa-edit"></i>
                             </button>
                         </td>
                         <td className="dataset-links">Add Notification</td>
-                    </tr>
-                    <DatasetMenuItem name="Add Label" description="insert a new label to your dataset" state={ this.props.dataset_display.add_label } 
-                        button_type="info" icon="fa-tag" activate={ this.props.activateSection } hide={ this.props.hideSection } />
-                    <DatasetMenuItem name="Add Item" description="append a new item to your dataset" state={ this.props.dataset_display.add_item } 
-                        button_type="success" icon="fa-plus" activate={ this.props.activateSection } hide={ this.props.hideSection } />    
-                    <tr className="dataset-menu-row">
-                        <td>
-                            <button type="button" class="btn btn-outline-danger button-dataset-menu">
-                                <i className="fa fa-edit"></i>
-                            </button>
-                        </td>
-                        <td className="dataset-links">Itemdata Lookup</td>
                     </tr>
                 </tbody>
                 </table>

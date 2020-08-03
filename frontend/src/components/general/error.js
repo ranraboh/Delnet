@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 
 function ErrorBox(props) {
-    if (props.message == '')
+    if (props.message == '' || props.message == null)
         return ''
     return (
     <div class={ "alert alert-" + props.color }>

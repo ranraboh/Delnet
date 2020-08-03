@@ -13,3 +13,11 @@ def create_dirs_along_path(path):
 def float_precision(value, precision):
     decimal_digits = math.pow(10, precision)
     return int(value * decimal_digits) / decimal_digits
+
+
+def list_to_string(list):
+    string = ''
+    for value in list:
+        string += str(value) + ','
+    return string[:-1]
+
