@@ -39,6 +39,10 @@ class Menu extends Component {
         window.location = homepage + '/home';   
     }
 
+    community_handler() {
+        window.location = homepage + '/community';   
+    }
+
     profile_handler() {
         window.location = homepage + '/profile';   
     }
@@ -104,9 +108,9 @@ class Menu extends Component {
                             <i className="fa fa-edit"></i>
                             <p className="menu-text" onClick={ this.projects_handler }>Projects</p>
                         </li>
-                        <li id="menu-groups" className="menu-item">
+                        <li id="menu-community" className="menu-item">
                             <i className="fa fa-users"></i>
-                            <p className="menu-text">Community</p>
+                            <p className="menu-text" onClick={ this.community_handler }>Community</p>
                         </li>
                         <li id="menu-datasets" className="menu-item">
                             <i className="fa fa-database"></i>

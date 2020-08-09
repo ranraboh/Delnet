@@ -1,16 +1,17 @@
 import { GET_PROJECT_ANALYSIS, GET_ACCURACY_RANGE, GET_SEARCH_DATASETS, GET_DATASETS_PUBLIC, GET_DATASET_OFFERS, GET_UNLABLED_SMAPLES ,CHANGE_TASK_COMPLETE,GET_CHECKLIST_DONE,GET_CHECKLIST_NOT_DONE,GET_TASK,GET_NOTIFICTION_PROJECT, GET_FILE_CONTENT, UPDATE_PROJECT, GET_PROJECT_FILES ,GET_USER_PROJECTS, CREATE_PROJECT, DELETE_PROJECT, SELECT_PROJECT, GET_PROJECT_TEAM, ADD_MEMBER_TEAM, DELETE_MEMBER_TEAM, SELECT_FILE, GET_PROJECT_STATICS } from '../actions/types.js'
-import showNotifiction from '../components/project/show-notifiction.js';
-
+import { ADD_NOTIFICTION_PROJECT, ADD_TASK, CHECKLIST_ABORT_UPDATE_STATE, CHECK_LIST_UPDATE_STATE } from '../actions/types'
+ 
 const initialState = {
     user_projects: null,
-    show_notification_project: null,
+    notifications: null,
     tasks:null,
     add_Task:null,
     project_created: null,
     project_deleted: null,
     taskComplete: null,
-    taskNotComplite: null,
+    taskNotComplete: null,
     changeTaskComplete:null,
+    update_state: null,
     project_selected: {
       id: window.localStorage.getItem('project-id'),
       project_name: window.localStorage.getItem('project-name'),
@@ -18,14 +19,21 @@ const initialState = {
       result: window.localStorage.getItem('result'),
       dataset: window.localStorage.getItem('dataset'),
       model_type: window.localStorage.getItem('model_type'),
+      type: window.localStorage.getItem('type'),
       type_description: window.localStorage.getItem('type_description'),
+      height: window.localStorage.getItem('height'),
+      width: window.localStorage.getItem('width'),
+      train_percentage: window.localStorage.getItem('train_percentage'),
+      dev_percentage: window.localStorage.getItem('dev_percentage'),
+      test_percentage: window.localStorage.getItem('test_percentage'),
       files: [],
       files_quantity: -1,
       statics: null,
       analysis: null,
       accuracy_range: null,
       offers: null,
-      unlabled: null
+      unlabled: null,
+      team: null
     },
     public_datasets: null,
     search_datasets: null,
@@ -56,24 +64,27 @@ export function projectReducer(state = initialState, action) {
     case GET_CHECKLIST_NOT_DONE:
         return {
           ...state,
-          taskNotComplite: action.payload
+          taskNotComplete: action.payload
         }; 
     case CHANGE_TASK_COMPLETE:
-          return {
-            ...state,
-            changeTaskComplete: action.payload
-          };    
+        return {
+          ...state,
+          changeTaskComplete: action.payload
+        };    
     case GET_TASK:
-      console.log("shiran2222222222222222222222222229999999999999999999999999999999999999999")
       return {
         ...state,
         tasks: action.payload
       };
-    case GET_NOTIFICTION_PROJECT:
-      console.log("redusershiran")
+    case ADD_TASK:
       return {
         ...state,
-        show_notification_project: action.payload
+        tasks: state.tasks.concat(action.payload)
+      }
+    case GET_NOTIFICTION_PROJECT:
+      return {
+        ...state,
+        notifications: action.payload
       };
     case GET_USER_PROJECTS:
       return {
@@ -121,6 +132,11 @@ export function projectReducer(state = initialState, action) {
           files: action.payload
         } 
       }
+    case ADD_NOTIFICTION_PROJECT:
+      return {
+        ...state,
+        notifications: [action.payload].concat(state.notifications)
+      }
     case SELECT_FILE: 
       let selected_file = action.payload[0]
       return {
@@ -136,7 +152,6 @@ export function projectReducer(state = initialState, action) {
         }
       }
     case GET_FILE_CONTENT: 
-    console.log(action.payload)
       return {
         ...state,
         file_selected: {
@@ -172,6 +187,16 @@ export function projectReducer(state = initialState, action) {
               ...state.project_selected,
               analysis: action.payload
             }
+          }
+        case CHECK_LIST_UPDATE_STATE:
+          return {
+            ...state,
+            update_state: action.payload
+          }
+        case CHECKLIST_ABORT_UPDATE_STATE:
+          return {
+            ...state,
+            update_state: null
           }
         case GET_ACCURACY_RANGE:
           return {

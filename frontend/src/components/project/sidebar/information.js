@@ -24,22 +24,10 @@ class ProjectInfo extends Component {
                         button_type="info" icon="fa-users" activate={ this.props.activateSection } hide={ this.props.hideSection } />
                 <DatasetMenuItem name="Model Files" description="manage and upload your model files" state={ this.props.sections_status.model_files_active } 
                         button_type="danger" icon="fa-file" activate={ this.props.activateSection } hide={ this.props.hideSection } />
-                    <tr className="dataset-menu-row">
-                        <td>
-                            <button type="button" class="btn btn-outline-warning button-dataset-menu">
-                                <i className="fa fa-edit"></i>
-                            </button>
-                        </td>
-                        <td className="dataset-links">Notifications</td>
-                    </tr>
-                    <tr className="dataset-menu-row">
-                        <td>
-                            <button type="button" class="btn btn-outline-warning button-dataset-menu">
-                                <i className="fa fa-edit"></i>
-                            </button>
-                        </td>
-                        <td className="dataset-links">Check List</td>
-                    </tr>
+                <DatasetMenuItem name="Notifications" description="view any updates and notifications" state={ this.props.sections_status.notifications_active } 
+                        button_type="success" icon="fa-file" activate={ this.props.activateSection } hide={ this.props.hideSection } />
+                <DatasetMenuItem name="Check List" description="manage the project tasks" state={ this.props.sections_status.check_list_active } 
+                        button_type="warning" icon="fa-file" activate={ this.props.activateSection } hide={ this.props.hideSection } />
                 </tbody>
                 </table>
             </div>

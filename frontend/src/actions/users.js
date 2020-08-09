@@ -1,6 +1,6 @@
 import axios from 'axios'
 import {ADD_MESSAGES, LOGIN_SUCCESS, LOGOUT, GET_USER_DETAILS, USER_LOOKUP_SUCCESS, USER_LOOKUP_FAIL,
-     UPDATE_USER, UPLOAD_IMAGE, UPDATE_USER_IMAGE, SENDER_MESSAGES, RECEIVER_MESSAGES,MESSAGES_HEADER } from './types.js'
+    NOTIFICATIONS_HEADER, UPDATE_USER, UPLOAD_IMAGE, UPDATE_USER_IMAGE, SENDER_MESSAGES, RECEIVER_MESSAGES,MESSAGES_HEADER } from './types.js'
 import { useReducer } from 'react';
 import { homepage } from '../appconf.js';
 
@@ -37,14 +37,24 @@ export const getReceiverMessages = (receiver) => dispatch => {
         })
     }).catch(err => console.log(err));
 }
-export const getMessagHeader = (receiver) => dispatch => {
-    axios.get('api/messages/header/' + receiver).then(result => {
+export const getMessagesHeader = (receiver) => dispatch => {
+    axios.get('/api/messages/header/' + receiver).then(result => {
         dispatch({
             type: MESSAGES_HEADER,
             payload: result.data
         })
     }).catch(err => console.log(err));
 }
+
+export const getNotificationsHeader = (username) => dispatch => {
+    axios.get('/api/notifications/header/' + username).then(result => {
+        dispatch({
+            type: NOTIFICATIONS_HEADER,
+            payload: result.data
+        })
+    }).catch(err => console.log(err));
+}
+
 export const uploadImage = (image) => dispatch => {
     let formData = new FormData();
     formData.append('image', image.image, image.name);

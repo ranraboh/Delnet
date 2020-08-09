@@ -55,3 +55,6 @@ def DatasetView(request):
 
 def AutomatedModelBuilderView(request):
     return render(request, './automated.html')
+
+def CommunityView(request):
+    return render(request, './community.html')

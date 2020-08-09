@@ -50,6 +50,9 @@ class DataSetMain extends Component {
         let labels_distribution = this.section(<LabelsDistribution/>, this.props.dataset_display.label_distribution)
         let tag_samples = this.section(<TagSamples/>, this.props.dataset_display.tag_samples)
         let offer_samples = this.section(<OfferSamples/>, this.props.dataset_display.offer_items)
+        let notifications = this.section(<ShowNotification/>, this.props.dataset_display.notifications)
+        let add_notification = this.section(<AddNotification/>, this.props.dataset_display.add_notification)
+
         return (
             <div className="main-dataset">
                 <Stats />
@@ -64,11 +67,8 @@ class DataSetMain extends Component {
                 { user_contributions }
                 { date_distribution }
                 { projects_dataset }
-                <AddNotification/>
-                <ShowNotification/>
-                
-              
-
+                { notifications }                
+                { add_notification }
                 { tag_samples }
                 { offer_samples }
             </div>

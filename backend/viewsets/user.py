@@ -4,7 +4,9 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.http import HttpResponse
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from ..submodels.user import *
+from backend.submodels.user import *
+from backend.submodels.project import ProjectNotifcation
+from backend.submodels.dataset import DatesetNotifcation
 from ..serializers.user import *
 from backend.actions.user import*
 
@@ -33,6 +35,23 @@ class UserViewSet(viewsets.ModelViewSet):
         image_url = request.data['image']
         update_user_image(username, image_url)
         return Response({'status': 'user image set'})
+    
+    @action(detail=False)
+    def notifications_header(self, request,  *args, **kwargs):
+        query = []
+        user = self.kwargs['username']
+        projects = ProjectNotifcation.objects.filter(user=user)[:2]     
+        datasets = DatesetNotifcation.objects.filter(user=user)[:2]     
+        for notification in projects:
+            query.append({
+                'image': notification.user.image, 'content': notification.content, 'topic': notification.topic, 'project': notification.project.project_name, 'date': notification.date
+            })
+        for notification in datasets:
+            query.append({
+                'image': notification.user.image, 'content': notification.content, 'topic': notification.topic, 'project': notification.dataset.name, 'date': notification.date
+            })
+        sorted_query = sorted(query, key = lambda i: i['date']) 
+        return Response(sorted_query[0:2])
 
     # action which returns the number users in the system
     @action(detail=False)
@@ -60,14 +79,6 @@ class ImageViewSet(generics.ListAPIView):
         image = UploadImage.objects.create(user=user ,image=image_file)
         return HttpResponse(json.dumps({'url': str(image.image)}), status=200)
 
-
-
-
-
-
-
-
-
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
     permission_classes = {
@@ -75,12 +86,8 @@ class MessageViewSet(viewsets.ModelViewSet):
     }
     serializer_class = MessageSerializer
 
-
-  
-
     @action(detail=True, methods=['post'], name='MessageAdd')
     def messageAdd (self, request, *args, **kwargs):
-        print(request.data)
         receiver = request.data['receiver']
         sender = request.data['sender']
         content = request.data['content']
@@ -92,9 +99,8 @@ class MessageViewSet(viewsets.ModelViewSet):
         query = []
         receiver = self.kwargs['receiver']
         messages = Message.objects.filter(receiver=receiver)[:2]     
-        for meessage in messages:
+        for message in messages:
             query.append({
-                'image': message.receiver.image, 'content': message.content, 'receiver': message.receiver.username
+                'image': message.sender.image, 'content': message.content, 'receiver': message.receiver.username, 'sender': message.sender.username
             })
         return Response(query)
-    

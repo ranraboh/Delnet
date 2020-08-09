@@ -12,6 +12,7 @@ from backend.viewsets.project import *
 from backend.viewsets.dataset import *
 from backend.viewsets.model import *
 from backend.filters import *
+from backend.viewsets.posts import *
 
 # routing of static data
 static_routing = static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
@@ -28,6 +29,7 @@ pages_url = [
     path('datasets/', views.DatasetsView, name='datasets'),
     path('dataset/', views.DatasetView, name="dataset"),
     path('automated/', views.AutomatedModelBuilderView, name="automated"),
+    path('community/', views.CommunityView, name="community"),
     path('upload/', ImageViewSet.as_view(), name='upload'),
     path('upload/project', UploadFilesViewSet.as_view(), name="project files")
 ]
@@ -61,6 +63,14 @@ router.register('api/dataset/Notification', DateSateNotificationViewSet, 'datasr
 router.register('api/notifications/projects', ProjectNotificationViewSet, 'project notification viewSet')
 router.register('api/unlabled', UnlabeledSamplesViewSet, 'unlabeled samples')
 router.register('api/followers/datasets', DatasetFollowersViewSet, 'dataset followers')
+router.register('api/groups', GroupViewSet, 'groups')
+router.register('api/posts', PostsViewSet, 'posts')
+router.register('api/comments', CommentsViewSet, 'comments')
+router.register('api/likes', LikeViewSet, 'likes')
+router.register('api/followed/groups', GroupFollowedViewSet, 'followed posts')
+router.register('api/followed/posts', PostsFollowedViewSet, 'followed groups')
+router.register('api/postsgroups', PostsGroupViewSet, 'postsgroups')
+
 
 # routing for filters and queries
 queries_url = [
@@ -98,11 +108,13 @@ queries_url = [
     path('api/run/<int:id>/results', RunsResultsFilter.as_view()),
     path('api/run/<int:id>/results/train', RunsTrainResultsFilter.as_view()),
     path('api/run/<int:id>/results/dev', RunsDevResultsFilter.as_view()),
+    path('api/projects/files/<int:pk>/user/<slug:username>', ProjectFilesViewSet.as_view({ 'delete' : 'destroy'})),
     path('api/project/<int:id>/runs', RunsProjectFilter.as_view()),
     path('api/items/add', DataItemViewSet.as_view({ 'post': 'add_item' }) ),
     path('api/items/upload', DataItemViewSet.as_view({ 'post': 'upload_items' }) ),
     path('api/amb/create', ProjectViewSet.as_view({ 'post' : 'amb_create'})),
     path('api/checkList/changeComplete', CheckListViewSet.as_view({ 'post' : 'changeComplete'})),
+    path('api/checkList/task/update', CheckListViewSet.as_view({ 'post' : 'update_task'})),
     path('api/project/<int:id>/accuracy/range', ProjectViewSet.as_view({ "get" : "accuracy_range" })),
     path('api/runs/<int:id>/full', RunRecordFilter.as_view()),
     path('api/project/<int:id>/runs/unfinished', UnfinishedRunsFilter.as_view()),
@@ -116,6 +128,7 @@ queries_url = [
     path('api/run/<int:id>/analysis', ProjectRunsViewSet.as_view({ 'get' : 'run_analysis'})),
     path('api/project/<int:id>/analysis/runs', ProjectRunsViewSet.as_view({ 'get' : 'projects_runs_analysis'})),
     path('api/messages/header/<slug:receiver>', MessageViewSet.as_view({ 'get' : 'messages_header'})),
+    path('api/notifications/header/<slug:username>', UserViewSet.as_view({ 'get' : 'notifications_header'})),
     path('api/messages/addMessage', MessageViewSet.as_view({ 'post' : 'messageAdd' })),
     path('api/projects/header/<int:id>', ProjectNotificationViewSet.as_view({ 'get' : 'notification_headerProject'})),
     path('api/dataset/header/<int:id>', DateSateNotificationViewSet.as_view({ 'get' : 'notification_headerDataset'})),
@@ -125,7 +138,22 @@ queries_url = [
     path('api/datasets/public/view/<slug:username>', PublicDataSetFilter.as_view()),
     path('api/dataset/<int:id>/unlabeled', UnlabeledDatasetFilter.as_view()),
     path('api/datasets/search/<slug:name>/user/<slug:username>', DatasetNameFilter.as_view()),
-    path('api/dataset/<int:id>/offers', DatasetOffersFilter.as_view())
+    path('api/dataset/<int:id>/offers', DatasetOffersFilter.as_view()),
+    path('api/posts/user/<slug:username>/page/<int:page>', PostsViewSet.as_view({ 'get' : 'user_posts' })),
+    path('api/questions/user/<slug:username>/page/<int:page>', PostsViewSet.as_view({ 'get' : 'user_questions' })),
+    path('api/post/update', PostsViewSet.as_view({ 'post' : 'update_post' })),
+    path('api/comment/update', CommentsViewSet.as_view({ 'post' : 'update_comment' })),
+    path('api/posts/feed/user/<slug:username>/page/<int:page>', PostsViewSet.as_view({ 'get' : 'posts_feed' })),
+    path('api/questions/feed/user/<slug:username>/page/<int:page>', PostsViewSet.as_view({ 'get' : 'questions_feed' })),
+    path('api/videos/feed/user/<slug:username>/page/<int:page>', PostsViewSet.as_view({ 'get' : 'videos_feed' })),
+    path('api/posts/group/<int:group>/user/<slug:username>/page/<int:page>', PostsViewSet.as_view({ 'get' : 'group_posts' })),
+    path('api/questions/group/<int:group>/user/<slug:username>/page/<int:page>', PostsViewSet.as_view({ 'get' : 'group_questions' })),
+    path('api/videos/group/<int:group>/user/<slug:username>/page/<int:page>', PostsViewSet.as_view({ 'get' : 'group_videos' })),
+    path('api/posts/groups/assigned', PostsViewSet.as_view({ 'post' : 'post_group_assigned' })),
+    path('api/followed/posts/user/<slug:username>/page/<int:page>', PostsViewSet.as_view({ 'get' : 'followed_posts' })),
+    path('api/followed/questions/user/<slug:username>/page/<int:page>', PostsViewSet.as_view({ 'get' : 'followed_questions' })),
+    path('api/followed/videos/user/<slug:username>/page/<int:page>', PostsViewSet.as_view({ 'get' : 'followed_videos' })),
+
 ]
 
 urlpatterns = router.urls + static_routing + pages_url + queries_url + updates_url

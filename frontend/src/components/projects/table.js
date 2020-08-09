@@ -23,7 +23,7 @@ class ProjectsTable extends Component {
 
     select_project(project_id) {
         console.log('in select')
-        this.props.selectProject(project_id, (response) => {
+        this.props.selectProject(project_id, () => {
             console.log('call back function triggered')
             window.location = homepage + '/project';
         });

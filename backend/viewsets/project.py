@@ -1,5 +1,6 @@
 from rest_framework import viewsets, permissions
 from rest_framework import generics
+from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.http import HttpResponse
@@ -12,6 +13,7 @@ from backend.serializers.project import *
 
 # import actions
 from backend.train import train
+from backend.actions.notifications import *
 from backend.actions.project import *
 from backend.actions.runs import *
 from backend.actions.amb import *
@@ -51,7 +53,6 @@ class ProjectViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'], name='Amb Create')
     def amb_create(self, request, *args, **kwargs):
         # extract request data
-        print (request.data)
         details = request.data['details']
         dataset = dataset_by_id(dataset_id=details['dataset'])
         user = get_user(username=details['user'])
@@ -127,6 +128,21 @@ class ProjectTeamViewSet(viewsets.ModelViewSet):
     }
     serializer_class = ProjectTeamSerializer
 
+    def create(self, request, *args, **kwargs):
+        notify_new_member(project_id=request.data['project'], username=request.data['user'], role=request.data['role'])
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    
+    def destroy(self, request, *args, **kwargs):
+        team_member = ProjectTeam.objects.get(pk=kwargs['pk'])
+        notify_delete_member(project=team_member.project, user=team_member.user)
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 class ProjectFilesViewSet(viewsets.ModelViewSet):
     queryset = ProjectFiles.objects.all()
     permission_classes = {
@@ -142,6 +158,13 @@ class ProjectFilesViewSet(viewsets.ModelViewSet):
         count = project_files_quantity(project_id)
         return Response({ 'count': count })
 
+    def destroy(self, request, *args, **kwargs):
+        user = User.objects.get(username=kwargs['username'])
+        instance = self.get_object()
+        notify_file_delete(instance.project, user.username, instance.name)
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
     # action which returns the content of given file
     # url: /api/file/[id]/content
     @action(detail=False)
@@ -154,8 +177,10 @@ class ProjectFilesViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['put'], name='Update File Content')
     def update_file_content(self, request, pk=None):
         file_id = request.data['id']
+        file = ProjectFiles.objects.get(pk=file_id)
         updated_content = request.data['content']
         update_file_content(file_id, updated_content)
+        file_edit(username=request.data['insert_by'], file_name=file.name, project=file.project)
         return Response({'status': 'user credentails set'})
 
     
@@ -167,8 +192,10 @@ class UploadFilesViewSet(generics.ListAPIView):
         files_quantity = int(request.data['files_quantity'])
         project = request.data['project']
         user = request.data['user']
-        upload_file(files_quantity=files_quantity, files_list=request.data, project_id=project, username=user)
+        notify_file_upload(project_id=project, username=user, quantity=files_quantity, files=request.data)
+        upload_file(files_quantity=files_quantity, files=request.data, project_id=project, username=user)
         return Response({'status': 'files uploaded'})
+        
 class CheckListViewSet(viewsets.ModelViewSet):
     queryset = ProjectCheckList.objects.all()
     permission_classes = {
@@ -176,49 +203,70 @@ class CheckListViewSet(viewsets.ModelViewSet):
     }
     serializer_class = ProjectCheckListSerializer 
 
-   #executor_task= models.ForeignKey(User, default=None, on_delete=models.CASCADE)
-    #project = models.ForeignKey(Project, default=None, on_delete=models.CASCADE)
-    #task=models.TextField(unique=False, blank=True, default='')
-    #complete=models.BooleanField(default=False)
-    #date=models.DateField(auto_now_add=True)
-    #time=models.TimeField(auto_now_add=True,null=True, blank=True)   
+    def create(self, request, *args, **kwargs):
+        notify_add_task(project_id=request.data['project'],username=request.data['username'],task=request.data['task'])
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    
     @action(detail=False)
     def checkList_header(self, request,  *args, **kwargs):
         query = []
         project = self.kwargs['id']
         groupProject = ProjectCheckList.objects.filter(project=project)     
         for oneOfGroup in groupProject:
+            user = '-'
+            if oneOfGroup.executor_task:
+                user = oneOfGroup.executor_task.username
             query.append({
-                'executor_task': oneOfGroup.executor_task.username,
-                 'task': oneOfGroup.task, 'complete': oneOfGroup.complete, 'date': oneOfGroup.date,'time': oneOfGroup.time
+                'id': oneOfGroup.id, 'executor_task': user, 'task': oneOfGroup.task, 
+                'complete': oneOfGroup.complete, 'date': oneOfGroup.date,'time': oneOfGroup.time
             })
         return Response(query)
     
-    @action(detail=True, methods=['post'], name='Amb Create')
+    @action(detail=True, methods=['post'], name='Toggle Complete')
     def changeComplete(self, request, *args, **kwargs):
         # extract request data
-        print (request.data)
         id = request.data['id']
+        executer = request.data['username']
         task=ProjectCheckList.objects.filter(id=id)[0]
-        task.complete=not task.complete
+        task.complete= not task.complete
+        task.save()
+        notify_task_complete(project=task.project, username=executer, task=task.task)
+        return Response({'status': 'the status of the task is update'})
+
+    @action(detail=True, methods=['post'], name='Update Task')
+    def update_task(self, request, *args, **kwargs):
+        # extract request data
+        id = request.data['id']
+        content = request.data['task']
+        executer = request.data['executor_task']
+        username = request.data['username']
+        task=ProjectCheckList.objects.get(id=id)
+        task.task = content
+        if executer != '-' and executer != None and task.executor_task != executer:
+            notify_task_assigned(project=task.project, username=username, task=task.task)
+        if executer == '-' or executer == None:
+            task.executor_task = None
+        else:
+            task.executor_task = User.objects.get(username=executer)
         task.save()      
         return Response({'status': 'the status of the task is update'})
    
-          
-
 class ProjectNotificationViewSet(viewsets.ModelViewSet):
     queryset = ProjectNotifcation.objects.all()
     permission_classes = {
         permissions.AllowAny
     }
     serializer_class = ProjectNotifcationSerializer
-            
-    
+
     @action(detail=False)
     def notification_headerProject(self, request,  *args, **kwargs):
         query = []
         project = self.kwargs['id']
-        groupSameProject = ProjectNotifcation.objects.filter(project=project)     
+        groupSameProject = ProjectNotifcation.objects.filter(project=project).order_by('-date', '-time')     
         for oneOfGroup in groupSameProject:
             query.append({
                 'content': oneOfGroup.content,'image': oneOfGroup.user.image,
@@ -226,15 +274,3 @@ class ProjectNotificationViewSet(viewsets.ModelViewSet):
                 'date': oneOfGroup.date, 'time': oneOfGroup.time
             })
         return Response(query)
-    # @action(detail=False)
-    #def notification_headerProject(self, request,  *args, **kwargs):
-     #   query = []
-      #  project = self.kwargs['id']
-       # groupSameProject = ProjectNotifcation.objects.filter(project=project)     
-        #for oneOfGroup in groupSameProject:
-         #   query.append({
-          #      'image': oneOfGroup.user.image, 'content': oneOfGroup.content,
-           #     'user': oneOfGroup.user, 'topic': oneOfGroup.topic, 'project': oneOfGroup.project,
-            #    'date': oneOfGroup.date, 'time': oneOfGroup.time
-            #})
-      #  return query

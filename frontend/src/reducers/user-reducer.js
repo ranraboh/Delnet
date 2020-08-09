@@ -1,5 +1,5 @@
 import { ADD_MESSAGES,GET_USER_DETAILS, USER_LOOKUP_SUCCESS, USER_LOOKUP_FAIL, UPLOAD_IMAGE, UPDATE_USER,
-   UPDATE_USER_IMAGE,SENDER_MESSAGES,RECEIVER_MESSAGES,CONTENT_MESSAGES,MESSAGES_HEADER} from '../actions/types.js'
+   UPDATE_USER_IMAGE,SENDER_MESSAGES,RECEIVER_MESSAGES,CONTENT_MESSAGES,MESSAGES_HEADER, NOTIFICATIONS_HEADER} from '../actions/types.js'
 import { media } from '../appconf.js'
 
 const initialState = {
@@ -15,7 +15,8 @@ const initialState = {
     receiverMessages:null,
     contentMessages:null,
     messagesHeader:null,
-    add_message:null
+    add_message:null,
+    notifications_header:null
     
 }
 export function userReducer(state = initialState, action) {
@@ -53,15 +54,11 @@ export function userReducer(state = initialState, action) {
         upload_image: media + action.payload.url
       }
     case SENDER_MESSAGES:
-      
-      console.log(action.payload)
-      return {
+    return {
         ...state,
         senderMessages: action.payload
     }
     case MESSAGES_HEADER:
-      console.log("shiranRan")
-      console.log(action.payload)
       return {
         ...state,
         messagesHeader: action.payload
@@ -79,6 +76,11 @@ export function userReducer(state = initialState, action) {
     case UPDATE_USER: 
       return {
         ...state
+      }
+    case NOTIFICATIONS_HEADER:
+      return {
+        ...state,
+        notifications_header: action.payload
       }
     default:
       return state

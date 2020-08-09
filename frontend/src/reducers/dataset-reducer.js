@@ -1,11 +1,11 @@
-import { GET_USER_DATASETS, CREATE_DATASET, DELETE_DATASET, SELECT_DATASET, GET_DATASET_TEAM, ADD_ITEM, ADD_LABEL, DELETE_LABEL, DATASET_ANALYZE_ACTIVE, DATASET_ANALYZE_NONACTIVE, GET_DATASET_ANALYSIS, DATASET_STATICS_ACTIVE, DATASET_STATICS_NONACTIVE, DATASET_CONTRIBUTIONS_ACTIVE, DATASET_CONTRIBUTIONS_NONACTIVE, DATASET_MODELS_GRAPH_ACTIVE, DATASET_MODELS_GRAPH_NONACTIVE, DATE_UPLOAD_GRAPH_ACTIVE, DATE_UPLOAD_GRAPH_NONACTIVE, GET_DATE_DISTRIBUTION, GET_USER_CONTRIBUTION, GET_DATASET_PROJECTS_PERFORMANCE, GET_UNLABLED_SMAPLES, GET_DATASET_OFFERS, GET_DATASETS_PUBLIC, GET_SEARCH_DATASETS, OFFER_ITEMS_ACTIVE, OFFER_ITEMS_NONACTIVE, TAG_SAMPELS_ACTIVE, TAG_SAMPLES_NONACTIVE } from '../actions/types.js';
+import { GET_USER_DATASETS, CREATE_DATASET, DELETE_DATASET, SELECT_DATASET, GET_DATASET_TEAM, ADD_ITEM, ADD_LABEL, DELETE_LABEL, DATASET_ANALYZE_ACTIVE, DATASET_ANALYZE_NONACTIVE, GET_DATASET_ANALYSIS, DATASET_STATICS_ACTIVE, DATASET_STATICS_NONACTIVE, DATASET_CONTRIBUTIONS_ACTIVE, DATASET_CONTRIBUTIONS_NONACTIVE, DATASET_MODELS_GRAPH_ACTIVE, DATASET_MODELS_GRAPH_NONACTIVE, DATE_UPLOAD_GRAPH_ACTIVE, DATE_UPLOAD_GRAPH_NONACTIVE, GET_DATE_DISTRIBUTION, GET_USER_CONTRIBUTION, GET_DATASET_PROJECTS_PERFORMANCE, GET_UNLABLED_SMAPLES, GET_DATASET_OFFERS, GET_DATASETS_PUBLIC, GET_SEARCH_DATASETS, OFFER_ITEMS_ACTIVE, OFFER_ITEMS_NONACTIVE, TAG_SAMPELS_ACTIVE, TAG_SAMPLES_NONACTIVE, DATASET_ADD_NOTIFICATION_ACTIVE, DATASET_ADD_NOTIFICATION_NONACTIVE, NOTIFICATION_DATASET_ACTIVE, NOTIFICATION_DATASET_NONACTIVE } from '../actions/types.js';
 import { GET_ITEMS_COUNT, GET_DATASETS_ITEMS_AMOUNT, DATASET_DETAILS_ACTIVE, DATASET_DETAILS_NONACTIVE, GET_LABELS_COUNT, GET_DATASET_LABELS, GET_DATA_ITEMS, DELETE_DATA_ITEM } from '../actions/types.js';
-import {UPDATE_DATASET, GET_NOTIFICATION_DATASET,COLLECTORS_TEAM_ACTIVE, COLLECTORS_TEAM_NONACTIVE, LABELS_SECTION_ACTIVE, LABELS_SECTION_NONACTIVE, ITEMS_SECTION_ACTIVE, ITEMS_SECTION_NONACTIVE, ADD_ITEM_ACTIVE,ADD_LABEL_ACTIVE , ADD_LABEL_NONACTIVE, ADD_ITEM_NONACTIVE, LABEL_DISTRIBUTION_ACTIVE, LABEL_DISTRIBUTION_NONACTIVE } from "../actions/types.js";
+import { UPDATE_DATASET,ADD_NOTIFICTION_DATASET, GET_NOTIFICATION_DATASET,COLLECTORS_TEAM_ACTIVE, COLLECTORS_TEAM_NONACTIVE, LABELS_SECTION_ACTIVE, LABELS_SECTION_NONACTIVE, ITEMS_SECTION_ACTIVE, ITEMS_SECTION_NONACTIVE, ADD_ITEM_ACTIVE,ADD_LABEL_ACTIVE , ADD_LABEL_NONACTIVE, ADD_ITEM_NONACTIVE, LABEL_DISTRIBUTION_ACTIVE, LABEL_DISTRIBUTION_NONACTIVE } from "../actions/types.js";
 
 
 const initialState = {
     user_datasets: null,
-    show_notification_datasets: null,
+    notifications: null,
     dataset_selected: {
         id: window.localStorage.getItem('dataset-id'),
         name: window.localStorage.getItem('dataset-name'),
@@ -43,19 +43,17 @@ const toggleInitialState = {
         label_distribution: false,
         dataset_projects: false,
         offer_items: false,
-        tag_samples: false
+        tag_samples: false,
+        add_notification: false,
+        notifications: false
     }
 }
 export function datasetsReducer(state = initialState, action) {
     switch(action.type) {
         case GET_NOTIFICATION_DATASET:
-            console.log("redusershiran")
-            console.log(action.payload)
-
-
             return {
                 ...state,
-                show_notification_datasets: action.payload
+                notifications: action.payload
             }
         case UPDATE_DATASET:
             console.log("action.payload--------------------")
@@ -193,12 +191,15 @@ export function datasetsReducer(state = initialState, action) {
                 search_datasets: action.payload
             }
         case GET_DATASETS_PUBLIC:
-        console.log('in reducer of dataset')
-        console.log(action.payload)
         return {
             ...state,
             public_datasets: action.payload,
         }
+        case ADD_NOTIFICTION_DATASET:
+            return {
+                ...state,
+                notifications: [action.payload].concat(state.notifications)
+            }
         case GET_DATASET_OFFERS:
         return {
             ...state,
@@ -432,22 +433,54 @@ export function datasetsToggleReducer(state = toggleInitialState, action) {
                 }
             }
 
-    case TAG_SAMPELS_ACTIVE: 
-        return {
-            ...state,
-            dataset_display: {
-                ...state.dataset_display,
-                tag_samples: true
+        case TAG_SAMPELS_ACTIVE: 
+            return {
+                ...state,
+                dataset_display: {
+                    ...state.dataset_display,
+                    tag_samples: true
+                }
             }
-        }
-    case TAG_SAMPLES_NONACTIVE:
-        return {
-            ...state,
-            dataset_display: {
-                ...state.dataset_display,
-                tag_samples: false
+        case TAG_SAMPLES_NONACTIVE:
+            return {
+                ...state,
+                dataset_display: {
+                    ...state.dataset_display,
+                    tag_samples: false
+                }
             }
-        }
+        case NOTIFICATION_DATASET_ACTIVE: 
+            return {
+                ...state,
+                dataset_display: {
+                    ...state.dataset_display,
+                    notifications: true
+                }
+            }
+        case NOTIFICATION_DATASET_NONACTIVE:
+            return {
+                ...state,
+                dataset_display: {
+                    ...state.dataset_display,
+                    notifications: false
+                }
+            }
+        case DATASET_ADD_NOTIFICATION_ACTIVE: 
+            return {
+                ...state,
+                dataset_display: {
+                    ...state.dataset_display,
+                    add_notification: true
+                }
+            }
+        case DATASET_ADD_NOTIFICATION_NONACTIVE:
+            return {
+                ...state,
+                dataset_display: {
+                    ...state.dataset_display,
+                    add_notification: false
+                }
+            }
        default:
             return state;
     }

@@ -10,8 +10,6 @@ class DataSetEdits extends Component {
     }
 
     render() {
-        console.log('render edit')
-        console.log(this.props.dataset_display)
         return (
         <div id="dataset-information-section" className="section-in-main">
             <div id="edit-header">
@@ -29,14 +27,8 @@ class DataSetEdits extends Component {
                         button_type="dark" icon="fa-plus" activate={ this.props.activateSection } hide={ this.props.hideSection } /> 
                     <DatasetMenuItem name="Offer Items" description="offer additional samples to enrich datasets" state={ this.props.dataset_display.offer_items } 
                         button_type="danger" icon="fa-plus" activate={ this.props.activateSection } hide={ this.props.hideSection } /> 
-                    <tr className="dataset-menu-row">
-                        <td>
-                            <button type="button" class="btn btn-outline-successs button-dataset-menu">
-                                <i className="fa fa-edit"></i>
-                            </button>
-                        </td>
-                        <td className="dataset-links">Add Notification</td>
-                    </tr>
+                    <DatasetMenuItem name="Add Notification" description="add new notification" state={ this.props.dataset_display.add_notification } 
+                        button_type="success" icon="fa-plus" activate={ this.props.activateSection } hide={ this.props.hideSection } /> 
                 </tbody>
                 </table>
             </div>

@@ -23,7 +23,6 @@ class TeamTable extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log('receive props')
         this.setState({
             project: nextProps.project_data
         })
@@ -31,14 +30,11 @@ class TeamTable extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        console.log(nextState)
-        console.log('should update')
         return true;
     }
 
     delete_handler(record_id) {
         this.props.deleteMember(record_id, () => {
-            console.log('now we gonna get project team')
             this.props.getProjectTeam(this.state.project.id)
         });
     }
@@ -51,8 +47,6 @@ class TeamTable extends Component {
     }
 
     render() {
-        console.log('render')
-        console.log(this.state)
         if (!this.state.project || !this.state.project.team) {
             return <h2>No Team</h2>
         }

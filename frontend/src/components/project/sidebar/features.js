@@ -27,7 +27,7 @@ class ProjectFeatures extends Component {
                         button_type="success" icon="fa-sitemap" activate={ this.props.activateSection } hide={ this.props.hideSection } />
                 <DatasetMenuItem name="Project Analysis" description="analyze and get tips how to maximize your project performence" state={ this.props.sections_status.analysis_active } 
                         button_type="danger" icon="fa-file" activate={ this.props.activateSection } hide={ this.props.hideSection } />
-                    <DatasetMenuItem name="Statics" description="display project statics" state={ this.props.sections_status.statics_active } 
+                <DatasetMenuItem name="Statics" description="display project statics" state={ this.props.sections_status.statics_active } 
                         button_type="warning" icon="fa-sticky-note" activate={ this.props.activateSection } hide={ this.props.hideSection } />
                     <tr className="dataset-menu-row">
                         <td>

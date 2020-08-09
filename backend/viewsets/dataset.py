@@ -55,19 +55,14 @@ class DatasetViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'], name='Update Dataset')
     def update_dataset(self, request, *args, **kwargs):
         # extract request data
-        print("check the backend of updateDatset-----------------")
         id = request.data['id']
-        print(request.data)
         name = request.data['name']
         description = request.data['description']
         dataset= Dataset.objects.get(id=id)
         dataset.name = name
         dataset.description = description
-        dataset.save()  
-        print(dataset)
+        dataset.save()      
         return Response({'status': 'the status of the dataset is update'})
-
-
 
 class DataLabelViewSet(viewsets.ModelViewSet):
     queryset = DataLabel.objects.all()
@@ -139,7 +134,6 @@ class DataItemViewSet(viewsets.ModelViewSet):
         user = request.data['insert_by']
         dataset = request.data['dataset']
         item = request.data['item']
-        print(label)
         # upload item to server and add item records into database
         if label == -1 or label == '-1':
             add_unlabeled(insert_by=user, dataset=dataset, image_url=item)
@@ -220,7 +214,7 @@ class DateSateNotificationViewSet(viewsets.ModelViewSet):
     def notification_headerDataset(self, request,  *args, **kwargs):
         query = []
         dataset = self.kwargs['id']
-        groupSameDataset = DatesetNotifcation.objects.filter(dataset=dataset)     
+        groupSameDataset = DatesetNotifcation.objects.filter(dataset=dataset).order_by('-date', '-time')     
         for oneOfGroup in groupSameDataset:
             query.append({
                 'image': oneOfGroup.user.image, 'content': oneOfGroup.content,

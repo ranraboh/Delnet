@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {CHANGE_TASK_COMPLETE,GET_CHECKLIST_NOT_DONE,GET_CHECKLIST_DONE,ADD_TASK, GET_TASK,GET_NOTIFICTION_PROJECT,ADD_NOTIFICTION_PROJECT,UPDATE_PROJECT , GET_USER_PROJECTS, CREATE_PROJECT, SELECT_PROJECT, GET_PROJECT_TEAM, ADD_MEMBER_TEAM, GET_PROJECT_STATICS } from './types.js'
+import {CHANGE_TASK_COMPLETE,GET_CHECKLIST_NOT_DONE,GET_CHECKLIST_DONE,ADD_TASK, GET_TASK,GET_NOTIFICTION_PROJECT,ADD_NOTIFICTION_PROJECT,UPDATE_PROJECT , GET_USER_PROJECTS, CREATE_PROJECT, SELECT_PROJECT, GET_PROJECT_TEAM, ADD_MEMBER_TEAM, GET_PROJECT_STATICS, CHECK_LIST_UPDATE_STATE, CHECKLIST_ABORT_UPDATE_STATE, UPDATE_TASK } from './types.js'
 
 /**
  * get set of all projects of given user
@@ -48,12 +48,17 @@ export const deleteProject = (project_id) => dispatch => {
 export const selectProject = (project_id, callback_function) => dispatch => {
     axios.get('/api/projects/' + project_id).then(response => {
         /* save data in browser storage */
+        window.localStorage.setItem('height', response.data.height)
+        window.localStorage.setItem('width', response.data.width)
         window.localStorage.setItem('project-id', response.data.id)
         window.localStorage.setItem('project-name', response.data.project_name)
         window.localStorage.setItem('description', response.data.description)
         window.localStorage.setItem('result', response.data.result)
         window.localStorage.setItem('dataset', response.data.dataset)
         window.localStorage.setItem('model_type', response.data.model_type)
+        window.localStorage.setItem('train_percentage', response.data.train_percentage)
+        window.localStorage.setItem('dev_percentage', response.data.dev_percentage)
+        window.localStorage.setItem('test_percentage', response.data.test_percentage)
         let type_description = ''
         if (response.data.model_type == 'c') {
             type_description = 'Automated Customizable Model'
@@ -91,7 +96,6 @@ export const getProjectTeam = (project_id) => dispatch => {
  */
 export const createMember = (member_record) => dispatch => {
     axios.post('/api/team/projects/', member_record).then(response => {
-        console.log(response);
         dispatch({
             type: ADD_MEMBER_TEAM,
             payload: response.data
@@ -137,7 +141,7 @@ export const getProjectStatics = (project_id, callback_function) => dispatch => 
 
 
 /**
- * get project statics-----------------------------------------------------------------------------------------
+ * get project statics
  * @param {*} project_id identification number of selected project
  */
 export const getTaskComplete = (project_id, callback_function) => dispatch => {
@@ -150,7 +154,7 @@ export const getTaskComplete = (project_id, callback_function) => dispatch => {
 }
 
 export const getTaskNotComplete = (project_id, callback_function) => dispatch => {
-    axios.get('/api/projectCheckList/notComplete/'+project_id).then(result => {
+    axios.get('/api/project/CheckList/notComplete/'+project_id).then(result => {
         dispatch({
             type: GET_CHECKLIST_NOT_DONE,
             payload: result.data
@@ -159,7 +163,6 @@ export const getTaskNotComplete = (project_id, callback_function) => dispatch =>
 }
 
 export const changeComplete = (project_id, callback_function) => dispatch => {
-    console.log("1:21")
     console.log(project_id)
     axios.post('/api/checkList/changeComplete', project_id).then(response => {
         dispatch({
@@ -169,14 +172,9 @@ export const changeComplete = (project_id, callback_function) => dispatch => {
     }).then(callback_function).catch(err => console.log(err))
 }
 
-/*----------------------------------------------------------------------------*/
-
 export const addNotificationpProject = (notification, callback_function) => dispatch => {
-    console.log("now1")
-        console.log("response")
     axios.post('/api/notifications/projects/', notification).then(response => {
-        console.log("now2")
-        console.log(response)
+        response.data.image = notification.image
         dispatch({
             type: ADD_NOTIFICTION_PROJECT,
             payload: response.data
@@ -187,9 +185,7 @@ export const addNotificationpProject = (notification, callback_function) => disp
 
 
 export const getNotification = (project_id, callback_function) => dispatch => {
-    console.log("arrive")
     axios.get('/api/projects/header/'+ project_id).then(response => {
-        console.log(response)
         dispatch({
             type: GET_NOTIFICTION_PROJECT,
             payload: response.data
@@ -198,11 +194,7 @@ export const getNotification = (project_id, callback_function) => dispatch => {
 }
 
 export const getTask = (project_id, callback_function) => dispatch => {
-    console.log("rannnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn29")
-    axios.get('/api/project/'+project_id+'/checkList').then(response => {
-        console.log("rannnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn29")
-
-        console.log(response)
+    axios.get('/api/project/' + project_id + '/checkList').then(response => {
         dispatch({
             type: GET_TASK,
             payload: response.data
@@ -212,14 +204,33 @@ export const getTask = (project_id, callback_function) => dispatch => {
 
 
 export const addTask = (project_id, callback_function) => dispatch => {
-    console.log("addTask-FrontAction")
-        console.log("response")
     axios.post('/api/checkList/', project_id).then(response => {
-        console.log("FrontAction2")
-        console.log(response)
         dispatch({
             type: ADD_TASK,
             payload: response.data
         })
     }).then(callback_function).catch(err => console.log(err))
+}
+
+export const updateTask = (task, callback_function) => dispatch => {
+    axios.post('/api/checkList/task/update', task).then(response => {
+        dispatch({
+            type: UPDATE_TASK,
+            payload: response.data
+        })
+    }).then(callback_function).catch(err => console.log(err))
+}
+
+export const updateState = (task) => dispatch => {
+    dispatch({ 
+        type: CHECK_LIST_UPDATE_STATE,
+        payload: task
+    });
+}
+
+export const abortUpdateState = () => dispatch => {
+    dispatch({ 
+        type: CHECKLIST_ABORT_UPDATE_STATE,
+        payload: null
+    });
 }

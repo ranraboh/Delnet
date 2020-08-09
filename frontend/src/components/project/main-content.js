@@ -59,6 +59,9 @@ class MainProject extends Component {
         let deploy_model = this.section(<DeployModel/>, this.props.sections_status.deploy_model_active)
         let project_analysis = this.section(<ProjectAnalysis />, this.props.sections_status.analysis_active)
         let test_model = this.section(<TestModel/>, this.props.sections_status.tests_active)
+        let notifications = this.section(<ShowNotification/>, this.props.sections_status.notifications_active)
+        let add_notification = this.section(<Notification/>, this.props.sections_status.add_notification_active)
+        let checklist = this.section(<ChecklistAll/>, this.props.sections_status.check_list_active)
         return (
             <div className="main-project">
                 <ProjectStats />
@@ -71,12 +74,9 @@ class MainProject extends Component {
                 { run_outcomes }
                 { model_layers }
                 { model_architecture }
-                <Notification/>
-                <ShowNotification/>
-                <AddTask/>
-                <CheckList/>
-                <ChecklistAll/>
-               
+                { notifications }
+                { add_notification }
+                { checklist }
                 { project_analysis }
                 { statics }
                 { deploy_model }

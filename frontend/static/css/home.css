@@ -582,18 +582,23 @@ SideBar
     left: -25px;
 }
 .group-item-1:hover {
+    cursor: pointer;
     background-color: #F39C12;
 }
 .group-item-2:hover {
+    cursor: pointer;
     background-color: #3498DB;
 }
 .group-item-3:hover {
+    cursor: pointer;
     background-color: #E74C3C;
 }
 .group-item-4:hover {
+    cursor: pointer;
     background-color: #A569BD;
 }
 .group-item-5:hover {
+    cursor: pointer;
     background-color: yellow;
 }
 
@@ -720,28 +725,43 @@ Main Section
 }
 .post-section {
     width: 100%;
-    height: 200px;
     background-color: white;
     -webkit-box-shadow: 2px 2px 2px 2px white;
     -moz-box-shadow: 2px 2px 2px 2px white;
     box-shadow: 2px 2px 2px 2px white;
     border-radius: 4px;
     border: 1px groove gray;
+    padding-bottom: 40px;
     margin-bottom: 20px;
 }
 .post-text {
     float: right;
     position: relative;
-    left: 20px;
+    left: 40px;
     width: 80%;
 }
-.post-section h5 {
+.post-text h6 {
     font-family: "Agency FB";
+    position: relative;
+    font-size: 18px;
+    text-align: left;
+    display: inline;
+    bottom: 10px;
+    color:rgb(175, 175, 175);
 }
-.post-section h3 {
+.post-text h3 {
     font-family: "Agency FB";
     font-weight: bold;
 }
+
+.post-section .post-content {
+    font-family: "Agency FB";
+    position: relative;
+    float: left;
+    left: 20px;
+    margin-right: 25px;
+}
+
 .post-bottom {
     position: relative;
     top: 15px;
@@ -765,7 +785,6 @@ Main Section
     left: 1px;
     width: 56px;
     height: 56px;
-    background-image: url('https://e00-marca.uecdn.es/assets/multimedia/imagenes/2019/11/19/15741584672222.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     -moz-border-radius: 70px;
@@ -788,4 +807,113 @@ Main Section
 .readmore-button:hover {
     background: transparent;
     color: red;
+}
+.readlater-button {
+    width: 115px;
+    height: 30px;
+    font-weight: bold;
+    font-family: "Agency FB";
+    background: #cb2d3e;
+    background: -webkit-linear-gradient(to right, #00BFFF, #0072ff); 
+    background: linear-gradient(to right, #00BFFF, #0072ff);
+    color: white;
+}
+.readlater-button:hover {
+    background: transparent;
+    color: #0072ff;
+}
+.comment {
+    position: relative;
+    top: 40px;
+    margin-left: 40px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    background-color: rgb(221, 220, 220);
+    width: 600px;
+    padding: 10px;
+    border-top: 1px double #0072ff;
+}
+
+.comments-hide {
+    display: none;
+}
+
+.comment h5 {
+    color:black;
+    font-size: 13px;
+}
+
+.comment h4 {
+    font-weight: bold;
+    font-size: 15px;
+}
+.comment-hole {
+    position: relative;
+    top: 48px;
+    left: 25px;
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    z-index: 5;
+    background-color: white;
+    border: 1px groove #0072ff;
+}
+.comment-user-image {
+    position: relative;
+    top: 1px;
+    left: 1px;
+    width: 46px;
+    height: 46px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    opacity: 0.9;
+}
+
+.comment-user-image:hover {
+    opacity: 1;
+    width: 56px;
+    height: 56px;
+}
+
+.comments-link:hover {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-weight: 100;
+    text-decoration: underline;
+}
+
+.comment-box {
+    padding-top: 20px;
+    padding-left: 25px;
+    margin-right: 15px;
+    display: inline;
+}
+
+.comments-link-inactive {
+    color: black;
+}
+.comments-link-inactive:hover {
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.comments-link-active {
+    color: #0072ff;
+    font-weight: bold;
+}
+.comments-link-active:hover {
+    color: #00bcd4;
+    cursor: pointer;
+}
+
+.comment-box .textbox-v1 {
+    width: 600px;
+}
+
+.comment-send-button {
+    position: relative;
+    top: 40px;
+    left: 105px;
 }

@@ -1,75 +1,71 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import {changeComplete,getTask} from '../../actions/projects'
-
-/*
-topic=models.TextField(unique=False, blank=True, default='')
-    user = models.ForeignKey(User, default=None, on_delete=models.CASCADE)
-    project = models.ForeignKey(Project, default=None, on_delete=models.CASCADE)
-    content=models.TextField(unique=False, blank=True, default='')
-    date=models.DateField(auto_now_add=True)
-    time=models.TimeField(auto_now_add=True,null=True, blank=True)   */
+import {changeComplete,getTask, updateState, abortUpdateState} from '../../actions/projects'
 
 class checkList extends Component {
     constructor(props) {
         super(props)
-        this.props.getTask(props.project)
         /* bind methods */
         this.toggleComplete=this.toggleComplete.bind(this);
+        this.update_handler = this.update_handler.bind(this)
     }
+
+    update_handler(record) {
+        this.props.updateState(record)
+    }
+
     toggleComplete(record){
-        /*record.complete=!record.complete*/
-        console.log("01:05")
-        console.log(this.props.changeComplete)
-        this.props.changeComplete({id:record.project}, () => {
+        this.props.changeComplete({id:record.id, username: this.props.username}, () => {
             this.props.getTask(this.props.project)
         })
     }
 
     render() {
-      
-        if(this.props.tasks==null){console.log("no");
-        return '';}
+        if(this.props.tasks==null)
+            return ''
         return (
-            <div  class="container">
-                <h1 className="register-title">Show The checkList</h1>              
+            <table className="table">
+                <thead>
+                    <tr className="table-v1-th">
+                        <th className="task-td">Task</th>
+                        <th>Date</th>
+                        <th>Executer</th>
+                        <th>Done</th>
+                        <th>Update</th>
+                    </tr>
+                </thead>
                 {
                     Object.values(this.props.tasks).map(function (record) {
                         return (
-                        <div className="row">
-                            <div className="col-8">
-                                <label id="gender-label" className=" col-form-label"><h4>the username that executor of the task:{record.executor_task}</h4></label> 
-                                <div class="col-sm-6">
-                                    <label id="gender-label" className=" col-form-label"><h4>The task is::{record.task}</h4></label> 
-                                </div>
-                               <div className="col-sm-6">
-                                <label onClick={()=>this.toggleComplete(record)} class="container">Done 
-                                <input type="checkbox"  checked={ record.complete==true } />
-                                <span class="checkmark"></span>
-                                </label>
-                                </div>                                  
-                                <div class="col-sm-6">
-                                <label id="gender-label" className="col-form-label"><h4>Date:{record.date}</h4></label> 
-                                </div>
-                                <div class="col-sm-6">
-                                <label id="gender-label" className=" col-form-label"><h4>Time:{record.time.substring(0,5)}</h4></label> 
-                                </div>
-                            </div>
-                        </div>)
-                    },this)
-                } 
-            
-             </div>
+                                <tbody>
+                                    {
+                                        <tr className="table-v1-row-nonhover">
+                                            <td className="task-td">{ record.task }</td>
+                                            <td>{ record.date }</td>
+                                            <td>{ (record.executor_task==null)?'-': record.executor_task }</td>
+                                            <td>
+                                                <label onClick={()=>this.toggleComplete(record)} class="container">Done 
+                                                    <input type="checkbox"  checked={ record.complete==true } />
+                                                    <span class="checkmark"></span>
+                                                </label>    
+                                            </td>   
+                                            <td>
+                                                <button type="button" class="btn btn-danger" onClick={ () => this.update_handler(record) }>Update</button>
+                                            </td>                                         
+                                        </tr>
+                                    }
+                                </tbody>)
+                        },this)
+                    } 
+                    </table>
         )
     }
 }
 
 
 const mapStateToProps = state => {
-    console.log("show111111111111111111111111111111")
     return {
-        tasks: state.projectReducer.tasks,
         project: state.projectReducer.project_selected.id,
         username: state.authentication.user
     }
@@ -82,7 +78,13 @@ const mapDispatchToProps = disaptch => {
         },
         changeComplete: (project, callback) => {
             disaptch(changeComplete(project, callback));
-        }
+        },
+        abortUpdateState: () => {
+            disaptch(abortUpdateState())
+        },
+        updateState: (task) => {
+            disaptch(updateState(task))
+        },
     }
 }
 
