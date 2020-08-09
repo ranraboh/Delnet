@@ -6,7 +6,7 @@ import { isUserExists } from '../../actions/users.js';
 import {validateEmail,checkURL,isFileImage,check_passward_theSame, check_password ,
     allLetter, typeOfNaN, lengthOfString,check_itsnot_empty } from "../../actions/validation";
 
-class AddMember extends Component {
+class EditMemberIn extends Component {
     constructor(props) {
         super(props)
         
@@ -19,8 +19,8 @@ class AddMember extends Component {
             },
             member: {
                 project: props.project_id,
-                user: '',
-                role: '',
+                user: props.username,
+                role: props.,
                 premissions: '1'
             },
         }
