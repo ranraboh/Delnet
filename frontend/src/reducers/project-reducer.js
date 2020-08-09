@@ -44,6 +44,15 @@ export function projectReducer(state = initialState, action) {
         ...state,
         taskComplete: action.payload
       };
+      case ADD_MEMBER_TEAM:
+        return {
+          ...state,
+          member_added: action.payload,
+          project_selected: {
+            ...state.project_selected,
+            team: state.team.concat([action.payload])
+          }
+        };
     case GET_CHECKLIST_NOT_DONE:
         return {
           ...state,
@@ -142,11 +151,6 @@ export function projectReducer(state = initialState, action) {
             ...state.project_selected,
             team: action.payload
           }
-        }
-        case ADD_MEMBER_TEAM: 
-        return {
-            ...state,
-            member_added: action.payload
         }
         case DELETE_MEMBER_TEAM:
           return {

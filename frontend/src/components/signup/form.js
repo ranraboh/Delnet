@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import { createUser } from '../../actions/users.js'
 import { homepage } from '../../appconf.js';
 
+import {validateEmail,checkURL,isFileImage,check_passward_theSame, check_password ,
+     allLetter, typeOfNaN, lengthOfString,check_itsnot_empty } from "../../actions/validation";
 
 class RegisterForm extends Component {
     constructor(props) {
@@ -39,63 +41,16 @@ class RegisterForm extends Component {
         this.male_button_change = this.male_button_change.bind(this);
         this.female_button_change = this.female_button_change.bind(this);
         /* this.check_Password = this.check_Password.bind(this); */
-         this.ValidateEmail=this.ValidateEmail.bind(this);
-         this.allLetter=this.allLetter.bind(this);
-         this.check_password=this.check_password.bind(this);
-         this.check_passward_theSame=this.check_passward_theSame.bind(this);
-         this.check_itsnot_empty=this.check_itsnot_empty.bind(this);
-         this.isFileImage=this.isFileImage.bind(this);
+         //this.ValidateEmail=this.ValidateEmail.bind(this);
+         //this.allLetter=this.allLetter.bind(this);
+         //this.check_password=this.check_password.bind(this);
+         //this.check_passward_theSame=this.check_passward_theSame.bind(this);
+        // this.check_itsnot_empty=this.check_itsnot_empty.bind(this);
+        // this.isFileImage=this.isFileImage.bind(this);
          this.restartErrors=this.restartErrors.bind(this);
+
     }
   
-
-    ValidateEmail(inputText){
-    var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    if(inputText.match(mailformat))
-    {return true;
-    }
-    
-        return false;
-    
-    }
-/*check about if its only string*/
-    allLetter(inputtxt)
-  {
-   var letters = /^[A-Za-z]+$/;
-   if(inputtxt.match(letters))
-     {
-      return true;
-     }
-   
-     return false;
-     
-  }
-  check_password(password,confirm_password){
-      if((password=='')||(password.length<5)){
-          return false;
-      }
-    
-      return true;
-  }
-  check_passward_theSame(password,confirm_password){
-    if(password!=confirm_password){
-        return false;
-    }
-    return true;
-
-  }
-  check_itsnot_empty(arg){
-      if(arg==''){
-          return false;
-      }
-      return true;
-  }
-   isFileImage(file) {
-    const acceptedImageTypes = ['image/gif', 'image/jpeg', 'image/png'];
-    return file && $.inArray(file['type'], acceptedImageTypes)
-    }
-  
-
 
     on_change(field, value) {
         console.log('on change')
@@ -105,7 +60,6 @@ class RegisterForm extends Component {
         this.setState({
             user
         })
-	
     }
 
 
@@ -139,77 +93,89 @@ class RegisterForm extends Component {
         console.log('register')
         let errors = this.state.errors
         let user = this.state.user;
-        
         this.restartErrors(errors);
-        if (!this.check_itsnot_empty(user['username'])) {
+        var bool=false
+        if (!check_itsnot_empty(user['username'])) {
             errors['username'] ="the name is empy ,enter name."
+            bool=true
         }
-        if (!this.check_itsnot_empty(user['firstname'])) {
+        if(allLetter(user['firstname'])){
+            errors['firstname'] ="Numbers must not contain only letters"
+            bool=true
+        }
+        if (!check_itsnot_empty(user['firstname'])) {
             errors['firstname'] ="your first name is empy ,enter name."
+            bool=true
         }
-        if (!this.check_itsnot_empty(user['lastname'])) {
+        if(allLetter(user['lastname'])){
+            errors['lastname'] ="Numbers must not contain only letters"
+            bool=true
+        }
+        if (!check_itsnot_empty(user['lastname'])) {
             errors['lastname'] ="your last name is empy ,enter name."
+            bool=true
         }
-        if(!this.check_password(user['password'])){
+        if(!check_password(user['password'])){
             errors['password']="the password must contain at least 6 letters."
             errors['confirm_password']=" need to change your passward."
+            bool=true
         }else{
-            if(!this.check_passward_theSame(user['password'],user['confirm_password'])){
+            if(!check_passward_theSame(user['password'],user['confirm_password'])){
                 errors['confirm_password']="Password mismatch, fix it. "
+                bool=true
+
             }
         }
-        if(!this.check_itsnot_empty(user['occupation'])){
+        if(!check_itsnot_empty(user['occupation'])){
             errors['occupation']="your occupation is empy ,enter occupation."
+            bool=true
         }
-        if(!this.ValidateEmail(user['email'])){
+        if(allLetter(user['occupation'])){
+            errors['occupation'] ="Numbers must not contain only letters"
+            bool=true
+        }
+        if(!validateEmail(user['email'])){
             errors['email']="There is an error in the email address,fix it please."
+            bool=true
+
         }
-        if(!this.isFileImage(user['image'])){
-           // errors['image']="Please enter a suitable image."
+        if(!check_itsnot_empty(user['email'])){
+            errors['email']="your email is empy ,enter email."
+            bool=true
+        }
+
+
+        if(!checkURL(user['image'])){
+            errors['image']="Please enter a suitable image."
+            console.log("shiranIMAGE")
+            bool=true
+
+        }
+        if(!check_itsnot_empty(user['image'])){
+            errors['image']="Please enter a suitable image."
+            console.log("shiran1937")
+            bool=true
+
         }
         this.setState({
             ...this.state,
             errors
         })
        
-        console.log('email');
-        console.log(this.ValidateEmail(user['email']));
-        console.log('firstname');
-        console.log(this.allLetter(user['firstname']));
-        console.log('lastname');
-        console.log(this.allLetter(user['lastname']));
-        console.log('occupation');
-        console.log(this.allLetter(user['occupation']));
-        console.log('passaword check if its good');
-       /* console.log(this.check_password_all(user['password'],user['confirm_password']));*/
-        /*check if emailits not empty*/
-        console.log('firstName is empty');
-        console.log(this.check_itsnot_empty(user['firstname']))
-        console.log('lastname is empty');
+    
+        if(bool){
+            console.log("shiran1937-----------------------------------------------------------------------------------")
+            return
+        }
 
-        console.log(this.check_itsnot_empty(user['lastname']))
-        console.log('occupation is empty');
-
-        console.log(this.check_itsnot_empty(user['occupation']))
-        console.log('username is empty');
-
-        console.log(this.check_itsnot_empty(user['username']))
-        console.log('image is empty');
-
-        console.log(this.isFileImage(user['image']));
-        if(user['image']==''){
         //    window.location = homepage + '/login';
             this.props.createUser(this.state.user, () => {
                 alert(' shiran the user added successfully, you are able to log in');
                 window.location = homepage + '/login';
             })
-        }
+        
 
-        /*this.props.createUser(this.state.user, () => {
-            console.log('callback..')
-            alert('the user added successfully, you are able to log in');
-            window.location = homepage + '/login';
-        })*/
+        
     }
 
     render() {

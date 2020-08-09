@@ -25,5 +25,8 @@ def update_image(username, image_url):
     user.image = image_url
     user.save()
 
+def user_is_exist(user):
+    return User.objects.filter(username=user).count()>0
+
 def users_quantity():
     return User.objects.count()

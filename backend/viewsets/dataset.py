@@ -52,6 +52,22 @@ class DatasetViewSet(viewsets.ModelViewSet):
         models = models_results(dataset_id)
         return Response(models)
 
+    @action(detail=True, methods=['post'], name='Update Dataset')
+    def update_dataset(self, request, *args, **kwargs):
+        # extract request data
+        print("check the backend of updateDatset-----------------")
+        id = request.data['id']
+        print(request.data)
+        name = request.data['name']
+        description = request.data['description']
+        dataset= Dataset.objects.get(id=id)
+        dataset.name = name
+        dataset.description = description
+        dataset.save()  
+        print(dataset)
+        return Response({'status': 'the status of the dataset is update'})
+
+
 
 class DataLabelViewSet(viewsets.ModelViewSet):
     queryset = DataLabel.objects.all()
@@ -74,6 +90,8 @@ class DataLabelViewSet(viewsets.ModelViewSet):
     def labels_dataset(self, request, *args, **kwargs):
         dataset_id = self.kwargs['id']
         return Response(labels_expand_data(dataset_id))
+        
+
 
 
 class DataItemViewSet(viewsets.ModelViewSet):

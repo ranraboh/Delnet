@@ -3,11 +3,17 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { updateProject } from '../../actions/projects'
 import { getUserDatasets } from '../../actions/dataset/get';
+import { ValidateEmail, allLetter, typeOfNaN, lengthOfString,check_itsnot_empty } from "../../actions/validation";
+
 
 class ProjectDetailsForm extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            errors: {
+                name: '',
+                description: ''                
+            },
             project: {
                 user: props.username,
                 id: props.project_data.id,
@@ -29,7 +35,10 @@ class ProjectDetailsForm extends Component {
         this.reset_handler = this.reset_handler.bind(this);
         this.on_dataset_select = this.on_dataset_select.bind(this);
     }
-
+    restartErrors(errors){
+        errors['name'] =''
+        errors['description'] =''
+    }
     on_dataset_select(e) {
         let value = e.target.value
         if (value == "-")
@@ -44,10 +53,51 @@ class ProjectDetailsForm extends Component {
     }
 
 
-    register_project() {
+    register_project(e) {
+        e.preventDefault();
+        let errors = this.state.errors
+        let user = this.state.project;
+        this.restartErrors(errors);
+        var bool=false
+
+
+        if ((!check_itsnot_empty(user['name']))) {
+            errors['name'] ="Please fill in the project name "
+            console.log(errors['name'])
+            bool=true
+        }
+            if(!lengthOfString(user['name'],30)){
+                errors['name'] ="It is possible to write up to 30 words, please be careful "
+                console.log(errors['name'])
+                bool=true
+
+            }
+        
+        if ((!check_itsnot_empty(user['description']))) {
+            errors['description'] ="the description  is empy ,enter description."
+            console.log(errors['description'])
+            bool=true
+
+
+        }
+         if(!lengthOfString(user['description'],200)){
+                errors['description'] ="It is possible to write up to 200 words, please be careful"
+                console.log(errors['description'])
+                bool=true
+
+            }
+            this.setState({
+                ...this.state,
+                errors
+            })
+        if(bool){
+             console.log("bool its true ,have error")
+             return
+         }   
+          //  if((errors['name'] ='')&&(errors['description'] ='')){
         this.props.updateProject(this.state.project, () => {
             alert('the details of project updated successfully')
-        }); 
+        }); //}
     }
 
     reset_handler() {
@@ -87,10 +137,13 @@ class ProjectDetailsForm extends Component {
                 </div>
                 <div className="col-6">
                     <div class="value">
-                        <input class="input-projects" type="text" name="project_name"
-                         value={ this.state.project.name } placeholder="Enter name of project"
-                            onChange={ (e) => this.on_change('name', e.target.value) } />
-                    </div>
+                            <input class={(this.state.errors.name == '')? 'input-projects' : 'input-projects form-control is-invalid'} 
+                            type="text" name="project_name" value={ this.state.project.name} placeholder="Enter name of project"
+                                onChange={ (e) => this.on_change('name', e.target.value) } />
+                                <div class="invalid-feedback">
+                                    { this.state.errors.name }
+                                </div>
+                        </div>
                 </div>
             </div>
             <div className="row row-form">
@@ -99,10 +152,14 @@ class ProjectDetailsForm extends Component {
                 </div>
                 <div className="col-6">
                     <div class="value">
-                        <textarea class="input-projects" rows="4" cols="50" name="project_description" value={ this.state.project.description }
-                          onChange={ (e) => this.on_change('description', e.target.value) }
-                          placeholder="Enter description of your project" />
-                    </div>
+                            <textarea class={(this.state.errors.description == '')? 'input-projects' : 'input-projects form-control is-invalid'} 
+                             rows="4" cols="50" name="project_description" value={ this.state.project.description }
+                             onChange={ (e) => this.on_change('description', e.target.value) }
+                             placeholder="Enter description of your project" />
+                                <div class="invalid-feedback">
+                                    { this.state.errors.description }
+                                </div>
+                        </div>
                 </div>
                 </div>
                 <div className="row row-form">
@@ -111,7 +168,7 @@ class ProjectDetailsForm extends Component {
                 </div>
                 <div className="col-6">
                     <div class="value">
-                        <input class="input-projects" name="project_result" value={ this.state.project.result }
+                        <input disabled class="input-projects" name="project_result" value={ this.state.project.result }
                           onChange={ (e) => this.on_change('result', e.target.value) }
                           placeholder="Enter success rate of your project" />
                     </div>

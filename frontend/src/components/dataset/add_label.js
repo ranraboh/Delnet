@@ -2,11 +2,18 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { addLabel } from '../../actions/dataset/manipulation';
+import { compose } from 'redux';
+import { ValidateEmail, allLetter, typeOfNaN, lengthOfString,check_itsnot_empty } from "../../actions/validation";
+
 
 class AddLabel extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            errors: {
+                name: '',
+                description: ''                
+            },
             dataset: this.props.dataset_data,
             label: {
                 name: '',
@@ -20,9 +27,45 @@ class AddLabel extends Component {
         this.on_change = this.on_change.bind(this);
         this.reset_handler = this.reset_handler.bind(this);
         this.add_label_handler = this.add_label_handler.bind(this);
+        this.restartErrors=this.restartErrors.bind(this);
     }
 
-    add_label_handler() {
+    restartErrors(errors){
+        errors['name'] =''
+        errors['description'] =''
+    }
+
+    add_label_handler(e) {
+        console.log("shiran23")
+        e.preventDefault();
+        let errors = this.state.errors
+       // let user = this.state.dataset;
+        let labelDataset = this.state.label;
+        this.restartErrors(errors);
+        console.log(labelDataset['name'])
+        if ((!check_itsnot_empty(labelDataset['name']))) {
+            console.log("shiran234")
+            errors['name'] ="Please fill in the project name "
+            console.log(errors['name'])
+        }
+            if(!lengthOfString(labelDataset['name'],30)){
+                errors['name'] ="It is possible to write up to 30 words, please be careful "
+                console.log(errors['name'])
+            }
+        
+        if ((!check_itsnot_empty(labelDataset['description']))) {
+            errors['description'] ="Please fill in the description."
+            console.log(errors['description'])
+        }
+         if(!lengthOfString(labelDataset['description'],200)){
+                errors['description'] ="It is possible to write up to 200 words, please be careful"
+                console.log(errors['description'])
+            }
+            this.setState({
+                ...this.state,
+                errors
+            })
+
         this.props.addLabel(this.state.label, () => {
             alert('label added successfully')
             this.reset_handler()
@@ -66,10 +109,14 @@ class AddLabel extends Component {
                     </div>
                     <div className="col-6">
                         <div class="value">
-                            <input class="input-projects" type="text" name="dataset_label"
-                                onChange={ (e) => this.on_change('name', e.target.value) }
-                                value={ this.state.label.name } placeholder="Enter the name of label" />
+                            <input class={(this.state.errors.name == '')? 'input-projects' : 'input-projects form-control is-invalid'} 
+                            type="text" name="dataset_label" value={ this.state.label.name } placeholder="Enter the name of label"
+                                onChange={ (e) => this.on_change('name', e.target.value) } />
+                                <div class="invalid-feedback">
+                                    { this.state.errors.name }
+                                </div>
                         </div>
+
                     </div>
                 </div>
                 <div className="row row-form">
@@ -78,9 +125,13 @@ class AddLabel extends Component {
                     </div>
                     <div className="col-6">
                         <div class="value">
-                            <textarea class="input-projects" rows="4" cols="50" name="dataset_description" value={ this.state.label.description }
-                            onChange={ (e) => this.on_change('description', e.target.value) }
-                            placeholder="Enter description of your label" />
+                            <textarea class={(this.state.errors.description == '')? 'input-projects' : 'input-projects form-control is-invalid'} 
+                             rows="4" cols="50" name="dataset_description" value={ this.state.label.description  }
+                             onChange={ (e) => this.on_change('description', e.target.value) }
+                             placeholder="Enter description of your label" />
+                                <div class="invalid-feedback">
+                                    { this.state.errors.description }
+                                </div>
                         </div>
                     </div>
                 </div>
