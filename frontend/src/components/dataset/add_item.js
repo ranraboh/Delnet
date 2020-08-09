@@ -3,12 +3,17 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { addDataItem, uploadItems } from '../../actions/dataset/manipulation';
 import { getDatasetLabels } from '../../actions/dataset/get';
+import { ValidateEmail, allLetter, typeOfNaN, lengthOfString,check_itsnot_empty,is_url,imageExists } from "../../actions/validation";
+
 
 class AddItem extends Component {
     constructor(props) {
         super(props)
         this.state = {
             dataset: this.props.dataset_data,
+            errors: {
+                item: ''                
+            },
             item: {
                 item: [],
                 label: null,
@@ -31,6 +36,11 @@ class AddItem extends Component {
 
         /* get dataset labels */
         this.props.getDatasetLabels(this.state.item.dataset)
+        this.restartErrors=this.restartErrors.bind(this);
+
+    }
+    restartErrors(errors){
+        errors['item'] =''
     }
 
     update_image_list = (event) => {
@@ -94,7 +104,28 @@ class AddItem extends Component {
         })
     }
 
-    add_item_handler() {
+    add_item_handler(e) {
+        console.log("shiran00")
+        e.preventDefault();
+        let errors = this.state.errors
+        
+        let stateItem = this.state.item;
+        this.restartErrors(errors);
+        if(!imageExists(stateItem['item'])){
+            console.log("shiran00")
+            errors['item'] ="The URL is invalid"
+            console.log(errors['item'])
+        }
+        if(!check_itsnot_empty(stateItem['item'])){
+            console.log("shiran00")
+            errors['item'] ="the Image url is empty"
+            console.log(errors['item'])
+        }
+        this.setState({
+            ...this.state,
+            errors
+        })
+
         if (this.state.option == 0) {
             console.log(this.state.item)
             this.props.uploadItems(this.state.item, () => {
@@ -169,10 +200,14 @@ class AddItem extends Component {
                                 <input multiple type="file" id="img" name="img" accept="image/*"  
                                 onChange= { this.update_image_list } />
                             ) : (
-                                <input class="input-projects" type="text" name="dataset_item"
-                                    onChange={ (e) => this.on_change('item', e.target.value) }
-                                    value={ this.state.item.item } placeholder="Enter image url" />
-                                )
+                                <div>
+                            <input class={(this.state.errors.item == '')? 'input-projects' : 'input-projects form-control is-invalid'} 
+                            type="text" name="dataset_item" value={ this.state.item.item } placeholder="Enter image url"
+                                onChange={ (e) => this.on_change('item', e.target.value) } />
+                                <div class="invalid-feedback">
+                                    { this.state.errors.item }
+                                </div>
+                                </div> )
                             }
                             </div>
                     </div>

@@ -101,6 +101,7 @@ export const createUser = (user, callback_function) => {
     .catch(err => console.log(err))
 }
 export const updateUser = (user, callback_function) => dispatch => {
+    console.log("shiran5\888888888888888888888888888888888888888")
     axios.put('/api/users/update', user).then(result => {
         result.request = user
         dispatch({

@@ -14,6 +14,7 @@ class ProjectsTable extends Component {
     }
 
     delete_project(project_id, project_name) {
+        //shiran
         if (confirm('are you sure you want to delete the project ' + project_name)) { 
             this.props.deleteProject(project_id);
             window.location = homepage + '/projects'

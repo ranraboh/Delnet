@@ -98,6 +98,8 @@ queries_url = [
     path('api/project/<int:id>/files', ProjectFilesFilter.as_view()),
     path('api/project/<int:id>/layers', ProjectViewSet.as_view({ 'get' : 'get_layers'})),
     path('api/layers/save', ProjectViewSet.as_view({ 'post' : 'save_layers' })),
+    path('api/dataset/update', DatasetViewSet.as_view({ 'post' : 'update_dataset' })),
+
     path('api/file/<int:id>/content', ProjectFilesViewSet.as_view({ 'get' : 'file_content'})),
     path('api/file/content', ProjectFilesViewSet.as_view({ 'put' : 'update_file_content'})),
     path('api/run/model', ProjectRunsViewSet.as_view({ 'post' : 'run_model' })),
@@ -131,6 +133,8 @@ queries_url = [
     path('api/projects/header/<int:id>', ProjectNotificationViewSet.as_view({ 'get' : 'notification_headerProject'})),
     path('api/dataset/header/<int:id>', DateSateNotificationViewSet.as_view({ 'get' : 'notification_headerDataset'})),
     path('api/project/<int:id>/checkList', CheckListViewSet.as_view({ 'get' : 'checkList_header'})),
+    path('api/user/<slug:username>/exist', UserViewSet.as_view({ 'get' : 'user_exist'})),
+
     path('api/datasets/public/view/<slug:username>', PublicDataSetFilter.as_view()),
     path('api/dataset/<int:id>/unlabeled', UnlabeledDatasetFilter.as_view()),
     path('api/datasets/search/<slug:name>/user/<slug:username>', DatasetNameFilter.as_view()),

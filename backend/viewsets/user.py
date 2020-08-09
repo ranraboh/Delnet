@@ -8,6 +8,8 @@ from backend.submodels.user import *
 from backend.submodels.project import ProjectNotifcation
 from backend.submodels.dataset import DatesetNotifcation
 from ..serializers.user import *
+from backend.actions.user import*
+
 import json
 
 
@@ -57,6 +59,14 @@ class UserViewSet(viewsets.ModelViewSet):
         count = users_quantity()
         content = {'quantity': count}
         return Response(content)
+
+    @action(detail=False)
+    def user_exist(self, request,  *args, **kwargs):
+        user = self.kwargs['username']
+        
+        return Response({
+            "is_exist":user_is_exist(user)
+        })
 
 class ImageViewSet(generics.ListAPIView):
     queryset = UploadImage.objects.all()

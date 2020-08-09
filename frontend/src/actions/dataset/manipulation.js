@@ -1,4 +1,4 @@
-import {ADD_NOTIFICTION_DATASET, ADD_UNLABLED_SMAPLES, FOLLOW_DATASET, UNFOLLOW_DATASETADD_NOTIFICTION_DATASET, CREATE_DATASET, DELETE_DATASET, SELECT_DATASET, ADD_ITEM, ADD_LABEL, DELETE_LABEL, DELETE_DATA_ITEM } from '../types.js'
+import {UPDATE_DATASET,ADD_NOTIFICTION_DATASET, ADD_UNLABLED_SMAPLES, FOLLOW_DATASET, UNFOLLOW_DATASETADD_NOTIFICTION_DATASET, CREATE_DATASET, DELETE_DATASET, SELECT_DATASET, ADD_ITEM, ADD_LABEL, DELETE_LABEL, DELETE_DATA_ITEM } from '../types.js'
 import axios from 'axios'
 
 /**
@@ -136,6 +136,7 @@ export const addNotificationDataset = (notification, callback_function) => dispa
     }).then(callback_function)
 }
 
+
 /**
  * delete an unlabeled item or sample of praticular dataset
  * @param {*} dataitem_id 
@@ -155,6 +156,18 @@ export const followDataset = (follow_record, callback_function) => dispatch => {
         return dispatch({
             type: FOLLOW_DATASET,
             payload: response.data
+        })
+    }).then(callback_function).catch(err => console.log(err))
+}
+
+export const updateDataset = (dataset, callback_function) => dispatch => {
+    console.log("shiran-----------------------------------------")
+    console.log(dataset)
+
+    axios.post('/api/dataset/update', dataset).then(response => {
+        return dispatch({
+            type: UPDATE_DATASET,
+            payload: dataset
         })
     }).then(callback_function).catch(err => console.log(err))
 }
