@@ -1,4 +1,4 @@
-import { DEPLOY_MODEL_ACTIVE, DEPLOY_MODEL_NONACTIVE } from '../actions/types.js'
+import { DEPLOY_MODEL_ACTIVE, DEPLOY_MODEL_NONACTIVE, ADD_NOTIFICATION_ACTIVE, ADD_NOTIFICATION_NONACTIVE } from '../actions/types.js'
 import { LAYERS_DISPLAY_ACTIVE, LAYERS_DISPLAY_NONACTIVE } from '../actions/types.js'
 import { ARCHITECTURE_DISPLAY_ACTIVE, ARCHITECTURE_DISPLAY_NONACTIVE } from '../actions/types.js'
 import { RUN_MODEL_ACTIVE, RUN_MODEL_NONACTIVE } from '../actions/types.js'
@@ -13,22 +13,23 @@ import { PROJECT_DIAGRAMS_ACTIVE, PROJECT_DIAGRAMS_NONACTIVE } from '../actions/
 import { PROJECT_STACTICS_ACTIVE, PROJECT_STACTICS_NONACTIVE } from '../actions/types.js'
 import { PROJECT_ANALYSIS_ACTIVE, PROJECT_ANALYSIS_NONACTIVE } from '../actions/types.js'
 import { PROJECT_TESTS_ACTIVE, PROJECT_TESTS_NONACTIVE } from '../actions/types.js'
-
 const initialState = {
     general_details_active: false,
     project_team_active: false,
     model_files_active: false,
-    run_outcomes_active: true,
+    run_outcomes_active: false,
     analysis_active: false,
     tests_active: false,
     diagrams_active: false,
-    statics_active: true,
+    statics_active: false,
     check_list_active: false,
     access_dataset_active: false,
     run_model_active: true,
     deploy_model_active: false,
     layers_active: false,
-    architecture_active: false
+    architecture_active: false,
+    add_notification_active: false,
+    notifications_active: false
 }
 export function projectSectionsReducer(state = initialState, action) {
     switch (action.type) {
@@ -162,6 +163,37 @@ export function projectSectionsReducer(state = initialState, action) {
             ...state,
             model_files_active: false
         };
+    case ADD_NOTIFICATION_ACTIVE:
+        return {
+            ...state,
+            add_notification_active: true
+        };
+    case ADD_NOTIFICATION_NONACTIVE:
+        return {
+            ...state,
+            add_notification_active: false
+        };
+    case PROJECT_NOTIFICATIONS_ACTIVE:
+        return {
+            ...state,
+            notifications_active: true
+        };
+    case PROJECT_NOTIFICATIONS_NONACTIVE:
+        return {
+            ...state,
+            notifications_active: false
+        };
+    case CHECK_LIST_ACTIVE:
+        return {
+            ...state,
+            check_list_active: true
+        };
+    case CHECK_LIST_NONACTIVE:
+        return {
+            ...state,
+            check_list_active: false
+        };
+    
     default:
       return state
   }

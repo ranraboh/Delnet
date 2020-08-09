@@ -1,4 +1,4 @@
-import { UPLOAD_MODEL_FILES, GET_PROJECT_FILES, SELECT_FILE, GET_FILE_CONTENT, UPDATE_FILE_CONTENT } from '../types.js'
+import { UPLOAD_MODEL_FILES, GET_PROJECT_FILES, SELECT_FILE, GET_FILE_CONTENT, UPDATE_FILE_CONTENT, DELETE_FILE } from '../types.js'
 import axios from 'axios'
 
 /**
@@ -67,4 +67,13 @@ export const updateFileContent = (file, callback_function) => dispatch => {
             payload: result.data
         })
     }).then(callback_function)
+}
+
+export const deleteFile = (file_id, user , callback_function) => dispatch => {
+    axios.delete('/api/projects/files/' + file_id + "/user/" + user).then(response => {
+        return dispatch({
+            type: DELETE_FILE,
+            payload: response.data
+        })
+    }).then(callback_function).catch(err => console.log(err))
 }

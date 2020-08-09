@@ -1,8 +1,7 @@
 import React, { Component, useReducer } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { getProjectFiles, selectFile } from '../../actions/project/files.js';
-import { homepage } from '../../appconf.js';
+import { getProjectFiles, selectFile, deleteFile } from '../../actions/project/files.js';
 
 class ProjectsFilesTable extends Component {
     constructor(props) {
@@ -16,6 +15,12 @@ class ProjectsFilesTable extends Component {
         this.select_file = this.select_file.bind(this);
     }
 
+    delete_file(file_id) {
+        this.props.deleteFile(file_id, this.props.username ,() =>{
+            this.props.getProjectFiles(this.props.project_data.id)
+        })
+    }
+
     select_file(file_id) {
         this.props.selectFile(file_id)
     }
@@ -24,7 +29,6 @@ class ProjectsFilesTable extends Component {
         if (!this.props.project_data.files) {
             return <h2>No Files</h2>
         }
-        console.log(this.props.project_data.files)
         return (
             <div id="files-table">
                 <table className="table">
@@ -42,19 +46,19 @@ class ProjectsFilesTable extends Component {
                             this.props.project_data.files.map((file, index) => 
                                 <tr className="table-text files-table-row">
                                     <td>
-                                    <div className={ "icon-container icon-container-" + this.state.colors[index] }>
-                                        <p>{ file.name[0].toUpperCase() }</p>
-                                    </div>
-                                    </td>
-                                    <td className="files-table-column">{ file.name }</td>
-                                    <td className="files-table-column">{ file.type }</td>
-                                    <td className="files-table-column">{ file.size }</td>
-                                    <td className="files-table-column">
+                                        <div className={ "icon-container icon-container-" + this.state.colors[index] }>
+                                            <p>{ file.name[0].toUpperCase() }</p>
+                                        </div>
+                                        </td>
+                                        <td className="files-table-column">{ file.name }</td>
+                                        <td className="files-table-column">{ file.type }</td>
+                                        <td className="files-table-column">{ file.size }</td>
+                                        <td className="files-table-column">
                                         <button className="btn btn-primary" onClick={ () => this.select_file(file.id) }>
                                             edit
                                         </button> 
                                         &nbsp;
-                                        <button className="btn btn-danger" onClick={ () => this.delete_file(file_id) }>
+                                        <button className="btn btn-danger" onClick={ () => this.delete_file(file.id) }>
                                             delete
                                         </button>
                                     </td>
@@ -74,7 +78,6 @@ const mapStateToProps = state => {
     }
 }
 
-
 const mapDispatchToProps = dispatch => {
     return {
         getProjectFiles: (project_id) => {
@@ -82,8 +85,10 @@ const mapDispatchToProps = dispatch => {
         },
         selectFile: (file_id) => {
             dispatch(selectFile(file_id))
+        },
+        deleteFile: (file_id, username, callback) => {
+            dispatch(deleteFile(file_id, username, callback))
         }
     }
 }
-
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectsFilesTable);

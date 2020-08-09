@@ -142,7 +142,7 @@ class PersonalDetails extends Component {
                                 <div class="invalid-feedback">
                                     { this.state.errors.username }
                                 </div>
-                                <label className="label-v1">Usernamell</label>
+                                <label className="label-v1">Username</label>
                          </div>
                         </div>
                     </div>

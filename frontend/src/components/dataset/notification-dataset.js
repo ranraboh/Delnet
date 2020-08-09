@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-
 import { addNotificationDataset } from '../../actions/dataset/manipulation'
 import { datasetPage } from '../../appconf.js';
+import { getUserDetails } from '../../actions/users.js'
 
 
 class AddNotification extends Component {
@@ -15,50 +15,60 @@ class AddNotification extends Component {
                 topic: '',
 				user: this.props.username,
                 dataset: this.props.dataset_data.id,
-                content: ''
+                content: '',
+                image: this.props.image
             }
         }
         this.send_action = this.send_action.bind(this);
         this.on_change = this.on_change.bind(this);
+        if (this.state.dataset.image == undefined)
+            this.props.getUserDetails(this.props.username)
     }
-  
-
-
-
-
-    on_change(field, value) {
+    
+    UNSAFE_componentWillReceiveProps(nextProps) {
         let dataset = this.state.dataset;
-        dataset[field] = value;
-
+        dataset['image'] = nextProps.image
         this.setState({
             ...this.state,
             dataset
         })
-	
     }
 
+    on_change(field, value) {
+        let dataset = this.state.dataset;
+        dataset[field] = value;
+        this.setState({
+            ...this.state,
+            dataset
+        })
+    }
 
     send_action(e) {
         e.preventDefault();
-        let dataset = this.state.dataset;
-    
-      
-      
         this.props.addNotificationDataset(this.state.dataset, () => {
-            console.log("whyyyyyyyyyyyyy")
-            alert(' the user send notifcation successfully');
-            window.location = datasetPage;
-               
+            this.setState({
+                ...this.state,
+                dataset: {
+                    topic: '',
+                    user: this.props.username,
+                    dataset: this.props.dataset_data.id,
+                    content: ''
+                }
+            }, () => {
+                alert('the notification has been sent');
+            })
         })
-         
-        
     }
 
     render() {
         return (
             <div className="section-in-main">
+                <div className="header-section-v2">
+                    <h1 className="dataset-header-title dataset-header-blue">
+                        Add Notification
+                    </h1>
+                </div>
             <div class="card-body">
-                <h1 className="register-title">Add Dataset</h1>
                 <form method="POST">
                     <div class="form-row m-b-55">
                     <div className="name">Topic:</div>
@@ -69,7 +79,7 @@ class AddNotification extends Component {
                         </div>
                     </div>
                     <div class="form-row m-b-55">
-                    <div className="name">content:</div>
+                    <div className="name">Content:</div>
                         <div class="value">
                              <div class="col-sm">
                             <textarea  rows="10" cols="20" value={ this.state.dataset.content } className="textbox-v1" onChange={ (e)=> this.on_change('content', e.target.value) }></textarea>
@@ -89,17 +99,18 @@ class AddNotification extends Component {
 const mapStateToProps = state => {
     return {
         username: state.authentication.user,
-        dataset_data: state.datasetsReducer.dataset_selected
-        
+        dataset_data: state.datasetsReducer.dataset_selected,
+        image: state.userReducer.image,
     }
 }
 
 const mapDispatchToProps = disaptch => {
     return {
         addNotificationDataset: (dataset, callback) => {
-            console.log(dataset)
-            console.log(callback)
             disaptch(addNotificationDataset(dataset, callback));
+        },
+                getUserDetails: (username) => {
+            disaptch(getUserDetails(username))
         }
     }
 }

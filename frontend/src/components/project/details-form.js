@@ -15,11 +15,15 @@ class ProjectDetailsForm extends Component {
                 description: props.project_data.description,
                 result: props.project_data.result,
                 dataset: props.project_data.dataset,
-                type: props.project_data.type_description
+                type: props.project_data.model_type,
+                width: props.project_data.width,
+                height: props.project_data.height,
+                train_percentage: props.project_data.train_percentage,
+                dev_percentage: props.project_data.dev_percentage,
+                test_percentage: props.project_data.test_percentage,
             },
             user_datasets: props.user_datasets
         }
-
         /* send requests for crucial data from backend  */
         this.props.getUserDatasets(this.state.project.user)
 
@@ -82,6 +86,9 @@ class ProjectDetailsForm extends Component {
         return (
         <div id="project-form-internal">
             <div className="row row-form">
+                    <p className="project-form-field text-blue">General Details</p>
+            </div>
+            <div className="row row-form">
                 <div className="col-2">
                     <p className="project-form-field">Project Name</p>
                 </div>
@@ -106,16 +113,7 @@ class ProjectDetailsForm extends Component {
                 </div>
                 </div>
                 <div className="row row-form">
-                <div className="col-2">
-                    <p className="project-form-field">Success Rate</p>
-                </div>
-                <div className="col-6">
-                    <div class="value">
-                        <input class="input-projects" name="project_result" value={ this.state.project.result }
-                          onChange={ (e) => this.on_change('result', e.target.value) }
-                          placeholder="Enter success rate of your project" />
-                    </div>
-                </div>
+                    <p className="project-form-field text-blue">Settings</p>
                 </div>
                 <div className="row row-form">
                 <div className="col-2">
@@ -136,14 +134,78 @@ class ProjectDetailsForm extends Component {
                 </div>
                 <div className="col-6">
                     <div class="value">
-                        <p className="project-form-field">{ this.state.project.type } </p>
+                        <select name="project_dataset" className="input-projects" onChange={ this.on_dataset_select }>
+                            <option value="u" selected={ this.state.project.type == 'u' }>User Upload Model</option>
+                            <option value="c" selected={ this.state.project.type == 'c' }>Customizable Model</option>
+                            <option value="k" selected={ this.state.project.type == 'k' }>Well-known Model</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div className="row row-form">
+                <div className="col-2">
+                    <p className="project-form-field">Image Size</p>
+                </div>
+                <div className="col-3">
+                    <div class="value">
+                        <div class="input-group-desc">
+                        <input class="input-projects" type="text" name="height" value={ this.state.project.height }
+                                onChange={ (e) => this.on_change('height', e.target.value) } />
+                                <label class="label--desc">height</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="input-group-desc">
+                    <input class="input-projects" type="text" name="width" value={ this.state.project.width }
+                            onChange={ (e) => this.on_change('width', e.target.value) } />
+                        <label class="label--desc">width</label>
+                    </div>
+                </div>
+                </div>
+                <div className="row row-form">
+                <div className="col-2">
+                    <p className="project-form-field">Data Partition</p>
+                </div>
+                <div className="col-2">
+                    <div class="value">
+                        <div class="input-group-desc">
+                            <input class="input-projects" type="text" name="train_percentage" value={ this.state.project.train_percentage }
+                                onChange={ (e) => this.on_change('train_percentage', e.target.value) } />
+                            <label class="label--desc">train set</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="input-group-desc">
+                    <input class="input-projects" type="text" name="dev_percentage" value={ this.state.project.dev_percentage }
+                            onChange={ (e) => this.on_change('dev_percentage', e.target.value) } />
+                        <label class="label--desc">dev set</label>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="input-group-desc">
+                    <input class="input-projects" type="text" name="test_percentage" value={ this.state.project.test_percentage }
+                            onChange={ (e) => this.on_change('test_percentage', e.target.value) } />
+                        <label class="label--desc">test set</label>
+                    </div>
+                </div>
+                </div>
+                <div className="row row-form">
+                <div className="col-2">
+                    <p className="project-form-field">Success Rate</p>
+                </div>
+                <div className="col-6">
+                    <div class="value">
+                        <input disabled class="input-projects" name="project_result" value={ this.state.project.result }
+                          onChange={ (e) => this.on_change('result', e.target.value) }
+                          placeholder="Enter success rate of your project" />
                     </div>
                 </div>
                 </div>
                 {/* Possible profile operations */}
                 <div id="project-details-operations">
-                    <button type="button" className="button-v1 button-v1-blue button-v1-small" onClick={ this.register_project }
-                        >Update</button>
+                    <button type="button" className="button-v1 button-v1-blue button-v1-small" onClick={ this.register_project }>Update</button>
                     <button type="button" className="button-v1 button-v1-red button-v1-small">Reset</button>
                 </div>
         </div>
@@ -171,3 +233,4 @@ const mapDispatchToProps = dispatch => {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectDetailsForm);
+

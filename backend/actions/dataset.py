@@ -15,6 +15,8 @@ import torch.nn
 import numpy as np
 import os
 
+def get_dataset(id):
+    return Dataset.objects.get(pk=id)
 
 # returns all the dataset with view permission
 def public_dataset():

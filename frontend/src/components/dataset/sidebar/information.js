@@ -26,14 +26,8 @@ class DataSetInfo extends Component {
                         button_type="success" icon="fa-tag" activate={ this.props.activateSection } hide={ this.props.hideSection } />
                     <DatasetMenuItem name="Items Section" description="display the data-items associate with this dataset" state={ this.props.dataset_display.items_section } 
                         button_type="danger" icon="fa-table" activate={ this.props.activateSection } hide={ this.props.hideSection } />    
-                    <tr className="dataset-menu-row">
-                        <td>
-                            <button type="button" class="btn btn-outline-warning button-dataset-menu">
-                                <i className="fa fa-edit"></i>
-                            </button>
-                        </td>
-                        <td className="dataset-links">Notifications</td>
-                    </tr>
+                    <DatasetMenuItem name="Notifications" description="view dataset updates and notifications" state={ this.props.dataset_display.notifications } 
+                        button_type="dark" icon="fa-table" activate={ this.props.activateSection } hide={ this.props.hideSection } />   
                 </tbody>
                 </table>
             </div>

@@ -13,6 +13,8 @@ import { PROJECT_DIAGRAMS_ACTIVE, PROJECT_DIAGRAMS_NONACTIVE } from '../types.js
 import { PROJECT_STACTICS_ACTIVE, PROJECT_STACTICS_NONACTIVE } from '../types.js'
 import { PROJECT_ANALYSIS_ACTIVE, PROJECT_ANALYSIS_NONACTIVE } from '../types.js'
 import { PROJECT_TESTS_ACTIVE, PROJECT_TESTS_NONACTIVE } from '../types.js'
+import { ADD_NOTIFICATION_ACTIVE, ADD_NOTIFICATION_NONACTIVE } from '../types.js'
+
 
 export const activateSection = (section) => dispatch => {
     dispatch({ 
@@ -27,7 +29,6 @@ export const hideSection = (section) => dispatch => {
     });
 }
 export const activate_map_actiontype = (section) => {
-    console.log(section)
     switch(section) {
         case 'General Details':
             return PROJECT_DETAILS_ACTIVE;
@@ -61,6 +62,8 @@ export const activate_map_actiontype = (section) => {
             return ARCHITECTURE_DISPLAY_ACTIVE;
         case 'Check List':
             return CHECK_LIST_ACTIVE;
+        case 'Add Notification':
+            return ADD_NOTIFICATION_ACTIVE;
         default:
             return '';
     }
@@ -100,6 +103,8 @@ export const hide_map_actiontype = (section) => {
             return ARCHITECTURE_DISPLAY_NONACTIVE;
         case 'Check List':
             return CHECK_LIST_NONACTIVE;
+        case 'Add Notification':
+            return ADD_NOTIFICATION_NONACTIVE;
         default:
             return '';
     }

@@ -1,11 +1,18 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import { connect } from 'react-redux';
+import { getGroups } from '../../actions/posts/get'
 import Profile from './profile.js'
 import LatestProject from './latestproject.js';
 import Community from './community.js';
 import Groups from './groups.js'
 
 class Sidebar extends Component {
+    constructor(props) {
+        super(props)
+        this.props.getGroups()
+    }
+
     render() {
         return (
             <div id="sidebar-section">
@@ -23,9 +30,22 @@ class Sidebar extends Component {
 
                 {/* Groups */}
                 <h5 className="category-title">Groups</h5>
-                <Groups />
+                <Groups groups={ this.props.groups } />
             </div>
         );
     }
 }
-export default Sidebar;
+const mapStateToProps = state => {
+    return {
+        groups: state.postsReducer.groups,
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        getGroups: () => {
+            dispatch(getGroups())
+        },
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Sidebar);

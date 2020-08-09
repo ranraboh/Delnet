@@ -1,7 +1,7 @@
 import { DATASET_DETAILS_ACTIVE, DATASET_DETAILS_NONACTIVE, DATASET_ANALYZE_NONACTIVE, DATASET_ANALYZE_ACTIVE , OFFER_ITEMS_ACTIVE, TAG_SAMPELS_ACTIVE, OFFER_ITEMS_NONACTIVE, TAG_SAMPLES_NONACTIVE } from '../types.js';
 import { COLLECTORS_TEAM_ACTIVE, COLLECTORS_TEAM_NONACTIVE, LABELS_SECTION_ACTIVE, LABELS_SECTION_NONACTIVE, ITEMS_SECTION_ACTIVE, ITEMS_SECTION_NONACTIVE, ADD_ITEM_ACTIVE,ADD_LABEL_ACTIVE , ADD_LABEL_NONACTIVE, ADD_ITEM_NONACTIVE } from "../types";
 import { DATASET_STATICS_ACTIVE, DATASET_STATICS_NONACTIVE, DATASET_CONTRIBUTIONS_ACTIVE, DATASET_CONTRIBUTIONS_NONACTIVE, LABEL_DISTRIBUTION_ACTIVE, LABEL_DISTRIBUTION_NONACTIVE, DATE_UPLOAD_GRAPH_ACTIVE, DATE_UPLOAD_GRAPH_NONACTIVE, DATASET_MODELS_GRAPH_ACTIVE, DATASET_MODELS_GRAPH_NONACTIVE} from "../types";
-
+import { DATASET_ADD_NOTIFICATION_ACTIVE, DATASET_ADD_NOTIFICATION_NONACTIVE, NOTIFICATION_DATASET_ACTIVE, NOTIFICATION_DATASET_NONACTIVE } from '../types'
 
 /****************************************
  * toggle dataset sections
@@ -44,12 +44,14 @@ export const activate_map_actiontype = (section) => {
             return DATE_UPLOAD_GRAPH_ACTIVE
         case 'Models Results':
             return DATASET_MODELS_GRAPH_ACTIVE
-         case 'Notifiction':
-            return NOTIFICTION_DATASET_ACTIVE   
+         case 'Notifications':
+            return NOTIFICATION_DATASET_ACTIVE   
         case 'Offer Items':
             return OFFER_ITEMS_ACTIVE
         case 'Tag Samples':
             return TAG_SAMPELS_ACTIVE
+        case 'Add Notification':
+            return DATASET_ADD_NOTIFICATION_ACTIVE
         default:
             return '';
     }
@@ -82,12 +84,14 @@ export const hide_map_actiontype = (section) => {
             return DATE_UPLOAD_GRAPH_NONACTIVE
         case 'Models Results':
             return DATASET_MODELS_GRAPH_NONACTIVE
-        case 'Notifiction':
-            return NOTIFICTION_DATASET_NONACTIVE      
+        case 'Notifications':
+            return NOTIFICATION_DATASET_NONACTIVE      
         case 'Offer Items':
             return OFFER_ITEMS_NONACTIVE
         case 'Tag Samples':
             return TAG_SAMPLES_NONACTIVE
+        case 'Add Notification':
+            return DATASET_ADD_NOTIFICATION_NONACTIVE
         default:
             return '';
     }

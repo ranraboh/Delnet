@@ -18,6 +18,11 @@ class Project(models.Model):
     dataset = models.ForeignKey(Dataset, default=None, on_delete=models.CASCADE, blank=True, null=True)
     model_type = models.CharField(max_length=1, choices=MODEL_TYPE, default='u')
     best_model_saved = models.FloatField(default=0)    
+    height = models.IntegerField(default=64)
+    width = models.IntegerField(default=64)
+    train_percentage = models.IntegerField(default=70)
+    dev_percentage = models.IntegerField(default=20)
+    test_percentage = models.IntegerField(default=10)
 
     def user_upload(self):
         return self.model_type == 'u'
@@ -54,7 +59,7 @@ class ProjectNotifcation(models.Model):
 
 
 class ProjectCheckList(models.Model):
-    executor_task= models.ForeignKey(User, default=None, on_delete=models.CASCADE)
+    executor_task= models.ForeignKey(User, default=None, blank=True,null=True, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, default=None, on_delete=models.CASCADE)
     task=models.TextField(unique=False, blank=True, default='')
     complete=models.BooleanField(default=False)

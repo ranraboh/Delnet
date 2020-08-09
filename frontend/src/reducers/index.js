@@ -7,10 +7,11 @@ import { datasetsReducer, datasetsToggleReducer } from './dataset-reducer.js';
 import { projectSectionsReducer } from './project-sections.js';
 import { ambReducer } from "./amb.js";
 import { modelReducer } from './model.js';
+import { postsReducer } from './posts.js';
 
 
 /* combine into single reducer function */
 export default combineReducers({
     authentication, userReducer, projectReducer, profileReducer, datasetsReducer, datasetsToggleReducer, 
-    projectSectionsReducer, ambReducer, modelReducer
+    projectSectionsReducer, ambReducer, modelReducer, postsReducer
 })

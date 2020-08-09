@@ -29,14 +29,6 @@ class DataSetGraphs extends Component {
                         button_type="success" icon="fa-line-chart" activate={ this.props.activateSection } hide={ this.props.hideSection } />
                 <DatasetMenuItem name="Models Results" description="projects results graph" state={ this.props.dataset_display.dataset_projects } 
                         button_type="dark" icon="fa-bar-chart" activate={ this.props.activateSection } hide={ this.props.hideSection } />   
-                    <tr className="dataset-menu-row">
-                        <td>
-                            <button type="button" class="btn btn-outline-primary button-dataset-menu">
-                                <i className="fa fa-edit"></i>
-                            </button>
-                        </td>
-                        <td className="dataset-links">Statics</td>
-                    </tr>
                 </tbody>
                 </table>
             </div>

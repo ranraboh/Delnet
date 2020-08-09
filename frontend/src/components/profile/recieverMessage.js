@@ -6,7 +6,6 @@ import {getReceiverMessages} from '../../actions/users'
 class recieverMessage extends Component {
     constructor(props) {
         super(props)
-        console.log(props.username)
         this.props.getReceiverMessages(props.username)
     }
    

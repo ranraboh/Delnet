@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Menu from '../home/menu.js';
-import Upper from '../home/upper/header.js';
+import Menu from '../home/menu';
+import Upper from '../home/upper/header';
 import { homepage } from '../../appconf.js';
+import CommunityMain from './main'
+import CommunitySidebar from './sidebar'
 
 class CommunityPage extends Component {
     constructor(props) {
@@ -21,7 +23,9 @@ class CommunityPage extends Component {
         return (
             <div>
                 <Menu active="community" />
-                <Upper />    
+                <Upper />   
+                <CommunitySidebar/>
+                <CommunityMain/> 
             </div>
         )
     }
@@ -31,7 +35,7 @@ class CommunityPage extends Component {
 const mapStateToProps = state => {
     return {
         loggedIn: state.authentication.loggedIn,
-        username: state.authentication.user
+        username: state.authentication.user,
     }
 }
 

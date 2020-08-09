@@ -1,4 +1,4 @@
-import {ADD_UNLABLED_SMAPLES, FOLLOW_DATASET, UNFOLLOW_DATASETADD_NOTIFICTION_DATASET, CREATE_DATASET, DELETE_DATASET, SELECT_DATASET, ADD_ITEM, ADD_LABEL, DELETE_LABEL, DELETE_DATA_ITEM } from '../types.js'
+import {ADD_NOTIFICTION_DATASET, ADD_UNLABLED_SMAPLES, FOLLOW_DATASET, UNFOLLOW_DATASETADD_NOTIFICTION_DATASET, CREATE_DATASET, DELETE_DATASET, SELECT_DATASET, ADD_ITEM, ADD_LABEL, DELETE_LABEL, DELETE_DATA_ITEM } from '../types.js'
 import axios from 'axios'
 
 /**
@@ -57,7 +57,6 @@ export const selectDataset = (dataset_id, callback_function) => dispatch => {
  */
 export const deleteDataItem = (dataitem_id, callback_function) => dispatch => {
     axios.delete('/api/dataitems/' + dataitem_id + '/').then(response => {
-        console.log(response);
         return dispatch({
             type: DELETE_DATA_ITEM,
             payload: response.data
@@ -85,7 +84,6 @@ export const deleteLabel = (datalabel_id, callback_function) => dispatch => {
  */
 export const addLabel = (datalabel, callback_function) => dispatch => {
     axios.post('/api/datalabels/', datalabel).then(response => {
-        console.log(response);
         return dispatch({
             type: ADD_LABEL,
             payload: response.data
@@ -130,10 +128,10 @@ export const uploadItems = (items_list, callback_function) => dispatch => {
 }
 export const addNotificationDataset = (notification, callback_function) => dispatch => {
     axios.post('/api/dataset/Notification/', notification).then(response => {
-        console.log("shhhhhhhhhhhh")
-        console.log(response)
+        response.data.image = notification.image
         dispatch({
             type: ADD_NOTIFICTION_DATASET,
+            payload: response.data
         })
     }).then(callback_function)
 }

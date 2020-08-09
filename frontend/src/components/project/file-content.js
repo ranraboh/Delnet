@@ -90,8 +90,10 @@ class FileContent extends Component {
                         <p/>
                         <div>
                             Content:
-                            <textarea class="input-projects" rows="8" cols="70" name="dataset_description"
+                            <pre>
+                            <textarea class="input-projects preformatted" rows="8" cols="70" name="dataset_description"
                                 value={ this.state.file.content } onChange={ (e) => this.on_change('content', e.target.value) } />
+                            </pre>
                         </div>
                         <button type="button" class="btn btn-primary" onClick={ this.update_file_content }>Update</button>&nbsp;	
                         <button type="button" class="btn btn-danger">Reset</button>

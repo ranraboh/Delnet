@@ -157,7 +157,6 @@ export const getDatasetProjects = (dataset_id) => dispatch => {
 
 
 export const getNotificationDataset = (dataset, callback_function) => dispatch => {
-    console.log("arrive2")
     axios.get('/api/dataset/header/' + dataset).then(result => {
         console.log(result)
         dispatch({
