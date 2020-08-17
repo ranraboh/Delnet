@@ -61,22 +61,13 @@ class SelectedLayer extends Component {
     convolution_selected() {
         this.setState({
             ...this.state,
-            layer: init_linear_layer(this.state)
-        }, () => {
-            this.props.updateLayer(this.state.layer)
-        })
-    }
-
-    convolution_selected() {
-        this.setState({
-            ...this.state,
             layer: init_convolution_layer(this.state)
         }, () => {
             this.props.updateLayer(this.state.layer)
         })
     }
 
-    batch_norm_selected() {
+    flatten_selected() {
         this.setState({
             ...this.state,
             layer: init_flatten_layer(this.state)
@@ -85,7 +76,7 @@ class SelectedLayer extends Component {
         })
     }
 
-    dropout_selected() {
+    batch_norm_selected() {
         this.setState({
             ...this.state,
             layer: init_batch_norm(this.state)
@@ -94,7 +85,7 @@ class SelectedLayer extends Component {
         })
     }
 
-    pool_selected() {
+    dropout_selected() {
         this.setState({
             ...this.state,
             layer: init_dropout(this.state)

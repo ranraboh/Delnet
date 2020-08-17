@@ -19,7 +19,7 @@ class DataSetGraphs extends Component {
             <div id="profile">
                 <table class="table">
                 <tbody>
-                <DatasetMenuItem name="Analysis Dataset" description="analyze your dataset" state={ this.props.dataset_display.analyze } 
+                <DatasetMenuItem name="Dataset Analysis" description="dataset performance analysis" state={ this.props.dataset_display.analyze } 
                         button_type="primary" icon="fa-area-chart" activate={ this.props.activateSection } hide={ this.props.hideSection } />
                 <DatasetMenuItem name="Team Contributions" description="display team members contributions" state={ this.props.dataset_display.user_contributions } 
                         button_type="info" icon="fa-pie-chart" activate={ this.props.activateSection } hide={ this.props.hideSection } />

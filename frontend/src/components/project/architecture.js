@@ -6,12 +6,21 @@ import ModelArchitercture from '../automated/architecture/architecture';
 class ProjectArchitercture extends Component {
     constructor(props) {
         super(props)
+        this.state = {
+            error_message: {
+                k: 'you have chosen well-known model mode project but you didnt select specific model yet.',
+                c: 'you havent declare your customizable architecture for your project',
+                u: 'you havent upload any model code file'
+            }
+        }
 
         /* load layers of model */
         this.props.loadLayers(this.props.project.id)       
     }
 
     render() {
+        if (this.props.layers == null)
+            return ''
         return (
             <div className="model-architecture-wrapper">
                 <div className="section-in-main">
@@ -23,7 +32,14 @@ class ProjectArchitercture extends Component {
                             chart display visually the model architecture 
                         </h2>
                     </div>
-                    <ModelArchitercture layers={ this.props.layers } />
+                    {
+                        (this.props.layers.length == 0)?
+                        <div className="text-message text-blue">
+                            {
+                                this.state.error_message[this.props.project.model_type]
+                            }
+                        </div>:<ModelArchitercture layers={ this.props.layers } />
+                    }
                 </div>
             </div>
         )

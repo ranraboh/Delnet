@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { updateProject } from '../../actions/projects'
+import { updateProject, getNotification, selectProject } from '../../actions/projects'
 import { getUserDatasets } from '../../actions/dataset/get';
 import { ValidateEmail, allLetter, typeOfNaN, lengthOfString,check_itsnot_empty } from "../../actions/validation";
 
@@ -27,6 +27,7 @@ class ProjectDetailsForm extends Component {
                 train_percentage: props.project_data.train_percentage,
                 dev_percentage: props.project_data.dev_percentage,
                 test_percentage: props.project_data.test_percentage,
+                username: props.username
             },
             user_datasets: props.user_datasets
         }
@@ -38,11 +39,25 @@ class ProjectDetailsForm extends Component {
         this.register_project = this.register_project.bind(this);
         this.reset_handler = this.reset_handler.bind(this);
         this.on_dataset_select = this.on_dataset_select.bind(this);
+        this.select_type = this.select_type.bind(this);
     }
+
+    select_type(e) {
+        this.setState({
+            ...this.state,
+            project: {
+                ...this.state.project,
+                type: e.target.value
+            }
+        }) 
+    }
+
     restartErrors(errors){
         errors['name'] =''
         errors['description'] =''
     }
+
+
     on_dataset_select(e) {
         let value = e.target.value
         if (value == "-")
@@ -101,6 +116,8 @@ class ProjectDetailsForm extends Component {
           //  if((errors['name'] ='')&&(errors['description'] ='')){
         this.props.updateProject(this.state.project, () => {
             alert('the details of project updated successfully')
+            this.props.selectProject(this.state.project.id)
+            this.props.getNotification(this.state.project.id)
         }); //}
     }
 
@@ -191,7 +208,7 @@ class ProjectDetailsForm extends Component {
                 </div>
                 <div className="col-6">
                     <div class="value">
-                        <select name="project_dataset" className="input-projects" onChange={ this.on_dataset_select }>
+                        <select name="project_dataset" className="input-projects" onChange={ this.select_type }>
                             <option value="u" selected={ this.state.project.type == 'u' }>User Upload Model</option>
                             <option value="c" selected={ this.state.project.type == 'c' }>Customizable Model</option>
                             <option value="k" selected={ this.state.project.type == 'k' }>Well-known Model</option>
@@ -261,10 +278,13 @@ class ProjectDetailsForm extends Component {
                 </div>
                 </div>
                 {/* Possible profile operations */}
-                <div id="project-details-operations">
-                    <button type="button" className="button-v1 button-v1-blue button-v1-small" onClick={ this.register_project }>Update</button>
-                    <button type="button" className="button-v1 button-v1-red button-v1-small">Reset</button>
-                </div>
+                {
+                    (this.props.premissions < 4)?'':
+                    <div id="project-details-operations">
+                            <button type="button" className="button-v1 button-v1-blue button-v1-small" onClick={ this.register_project }>Update</button>
+                            <button type="button" className="button-v1 button-v1-red button-v1-small">Reset</button>
+                    </div>
+                }
         </div>
         );
     }
@@ -275,6 +295,7 @@ const mapStateToProps = state => {
         username: state.authentication.user,
         project_data: state.projectReducer.project_selected,
         user_datasets: state.datasetsReducer.user_datasets,
+        premissions: state.projectReducer.project_selected.premissions
     }
 }
 
@@ -285,6 +306,12 @@ const mapDispatchToProps = dispatch => {
         },
         getUserDatasets: (username) => {
             dispatch(getUserDatasets(username))
+        },
+        selectProject: (project_id, callback) => {
+            dispatch(selectProject(project_id, callback))
+        },
+        getNotification: (project_id, callback) => {
+            dispatch(getNotification(project_id, callback))
         }
      }
 }

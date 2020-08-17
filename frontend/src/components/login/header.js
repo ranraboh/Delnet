@@ -7,14 +7,15 @@ class Header extends Component {
                 <div id="header">
                     <div id="header-content" className="blue-shadow">
                         <ul id="header-menu">
-                            <li>> Home</li>
-                            <li>> Services</li>
-                            <li>> Contact Us</li>
-                            <li>> Sign Up</li>
+                            <li><a href="#upper">> Home</a></li>
+                            <li><a href="#services">> Services</a></li>
+                            <li><a href="#contact">> Contact Us</a></li>
+                            <li><a href="#sign-up-block">> Sign Up</a></li>
                         </ul>
+                        <a href="#sign-up-block">
                         <button id="login-menu" type="button" className="btn btn-outline-warning">
                             <i className="fa fa-lock" aria-hidden="true"></i>  Log In
-                        </button>
+                        </button></a>
                     </div>
                     <div id="main-text">
                         <h1 id="site-name">delnet</h1>

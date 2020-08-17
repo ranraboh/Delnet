@@ -10,7 +10,7 @@ class Dataset(models.Model):
     user = models.ForeignKey(User, default=None, on_delete=models.CASCADE)
     create_date = models.DateField(auto_now_add=True)
     public_view = models.BooleanField(default=True)
-    public_use = models.BooleanField(default=True)
+    enable_offer = models.BooleanField(default=True)
 
 # represent a label of particular dataset
 # contains infromation such as the relevant dataset, label name insertion date, description and so on. 

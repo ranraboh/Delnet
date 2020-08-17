@@ -88,6 +88,33 @@ body {
     position: relative;
     top: -10px;
 }
+#dataset-icon-section {
+    width:290px;
+    height:250px;
+    position: relative;
+    right: 10px;
+    top: -10px;
+}
+.card-big-data {
+    background-image:
+    linear-gradient(0deg, #a1ffc5, rgba(255,200,0,0.2)),
+    url("https://miro.medium.com/max/1200/1*MLwsGzegxKWBKgxDk49wVA.jpeg");
+    background-position-x: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    box-shadow: 1px 1px 1px black;
+    margin-bottom: 25px;
+}
+.card-big-data:hover {
+    background-image:
+    linear-gradient(0deg, #9affdb, rgba(255,200,0,0.2)),
+    url("https://miro.medium.com/max/1200/1*MLwsGzegxKWBKgxDk49wVA.jpeg");
+}
+.card-big-data:active {
+    background-image:
+    linear-gradient(0deg, #cb99c5 , rgba(255,200,0,0.2)),
+    url("https://miro.medium.com/max/1200/1*MLwsGzegxKWBKgxDk49wVA.jpeg");
+}
 .card-sea {
     background-image:
     linear-gradient(0deg, #ffffc4, rgba(255,200,0,0.2)),
@@ -159,6 +186,15 @@ body {
     padding-bottom: 0px;
     position: relative;
     right: 20px;
+}
+
+#dataset-visiter-section {
+    float: right;
+    width: 100%;
+    margin-bottom: 20px;
+    position: relative;
+    right: 20px;
+    bottom: 30px;
 }
 
 /* Table */
@@ -856,6 +892,43 @@ Project Section
     font-family: "Poppins", sans-serif;
     background: #ffffff;
 }
+.runs-set .metric-item {
+    border-radius: 7px;
+    box-shadow: 10px -10px 10px -6px #fa5a5a,
+                -10px 10px 6px 0px #fa5a5a;
+    margin: 25px 5px 0;
+    padding: 30px 25px;
+    position: relative;
+    font-family: "Poppins", sans-serif;
+    background: #525252;
+    color: rgb(255, 210, 210);
+    width: 220px;
+}
+
+.runs-set .data-item {
+    border-radius: 7px;
+    box-shadow: 10px -10px 10px -6px #fa5a5a,
+                -10px 10px 6px 0px #fa5a5a;
+    margin: 25px 5px 0;
+    padding: 30px 25px;
+    position: relative;
+    font-family: "Poppins", sans-serif;
+    background: #525252;
+    color: rgb(255, 210, 210);
+    width: 220px;
+    text-align: left;
+}
+
+.runs-set .data-item h6 {
+    text-align: left;
+}
+
+.text-data-item {
+    position: relative;
+    top: 30px;
+    font-family: "Poppins", sans-serif;
+}
+
 .runs-set .run-item:hover .regular-text {
     display: none;
 }
@@ -1332,6 +1405,14 @@ Data Sets
     font-family: "Poppins", sans-serif;
     font-size: 18px;    
 }
+
+.message-text {
+    margin-right: 50px;
+    position: relative;
+    left: 15px;
+    font-family: "Poppins", sans-serif;
+    font-size: 18px;    
+}
 .unlabeled-image {
     width: 300px;
     height: 250px;
@@ -1343,9 +1424,45 @@ Data Sets
     animation-duration: 2s;
     opacity: 0.8;
 }
+.zoom-offer-image {
+    width: 250px;
+    height: 230px;
+    position: relative;
+    left: 50px;
+    margin-top: 50px;
+    border-radius: 5px;
+    animation-name: fade-in;
+    animation-duration: 2s;
+}
+.offer-image {
+    width: 150px;
+    height: 140px;
+    position: relative;
+    margin-top: 40px;
+    margin-left: 60px;
+    margin-right: 60px;
+    border-radius: 5px;
+    animation-name: fade-in;
+    animation-duration: 2s;
+    opacity: 1;
+    z-index: 10;
+    -moz-box-shadow: 0 0 10px #000000;
+    -webkit-box-shadow: 0 0 10px #000000;
+    box-shadow: 0 0 10px #000000;
+}
+.offer-image:hover {
+	-webkit-transform: rotate(15deg) scale(1.4);
+	transform: rotate(10deg) scale(1.4);
+	-webkit-transition: .3s ease-in-out;
+    transition: .3s ease-in-out;
+    border-radius: 10px;
+    -moz-box-shadow: 0 0 7px #0072ff;
+    -webkit-box-shadow: 0 0 7px #0072ff;
+    box-shadow: 0 0 7px #0072ff;
+}
 .append-button {
-    width: 110px;
-    height: 60px;
+    width: 300px;
+    height: 40px;
     font-weight: bold;
     font-family: "Agency FB";
     background: #36D1DC;  /* fallback for old browsers */
@@ -1353,7 +1470,7 @@ Data Sets
     background: linear-gradient(to right, #5B86E5, #36D1DC); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */    
     color: white;
     position: relative;
-    right: 10px;
+    right:90px;
 }
 .append-button:hover {
     background: transparent;
@@ -1361,26 +1478,32 @@ Data Sets
     border: 1px groove blue;
 }
 .purple-append-button {
-    width: 400px;
+    width: 200px;
     height: 40px;
     font-weight: bold;
     font-size: 15px;
-    background: #3494E6;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #EC6EAD, #3494E6);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #EC6EAD, #3494E6); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */         
+    background: #f7ff00;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #db36a4, #f7ff00);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #db36a4, #f7ff00); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */    
+    border: 1px groove red;
     color: white;
-    position: relative;
-    right: 150px;
 }
 .purple-append-button:hover {
     background: transparent;
-    color: purple;
-    border: 1px groove purple;
+    color: #db36a4;
+    border: 1px groove #db36a4;
 }
 .label-options {
-    margin-top: 15px;
-    margin-left: 220px;
+    margin-top: 60px;
     font-size: 22px;
+    position: relative;
+    right: 20px;
+}
+.label-options-tag {
+    margin-top: 20px;
+    font-size: 22px;
+    position: relative;
+    left: 45%;
 }
 .unlabeled-image:hover {
     opacity: 1;
@@ -1623,6 +1746,11 @@ Automated Model Builder
     height: 200px;
     font-family: "Poppins", sans-serif;
 }
+.prebuild-project-image {
+    width: 200px;
+    height: 140px;
+    font-family: "Poppins", sans-serif;
+}
 .layer-row .icon-container {
     position: relative;
     left: 40px;
@@ -1831,6 +1959,10 @@ Automated Model Builder
     border-top: 1px double red;
     padding-top: 15px;
 }
+.concern-layer {
+    border-top: 1px double #0072ff;
+    padding-top: 15px;
+}
 
 .layers-error-box {
     margin-top: 80px;
@@ -1870,6 +2002,13 @@ Automated Model Builder
     font-size: 14px;
     font-weight: 100;
     text-align: left;
+}
+.files-instructions {
+    position: relative;
+    top: -10px;
+    left: 10px;
+    font-size: 17px;
+    font-family: "Agency FB";
 }
 
 /* statics */
@@ -1934,6 +2073,11 @@ Automated Model Builder
 .deploy-results-record {
     margin-bottom: 10px;
 }
+#upload-model-section {
+    position: relative;
+    left: 5%;
+    margin-bottom: 20px;
+}
 .project-analysis-text {
     position: relative;
     left: 15px;
@@ -1971,6 +2115,41 @@ Automated Model Builder
     left: 18%;
     height: 150px;
     background-color: #52d7fc;
+}
+
+#image-get-item {
+    position: fixed;
+    left: 18%;
+    width: 400px;
+    top: -90px;
+    height: 450px;
+    background-color: #3b3b3b;
+}
+
+#form-get-item {
+    position: fixed;
+    left: 48%;
+    width: 600px;
+    top: -90px;
+    height: 450px;
+    background-color: #fff;
+}
+
+.inner-form-get-item {
+    position: relative;
+    left: 20px;
+    bottom: 50px;
+}
+
+.image-get-item {
+    width: 300px;
+    height: 350px;
+    position: relative;
+    top: 25px;
+    left: 25px;
+    -moz-box-shadow: 0 0 10px #000000;
+    -webkit-box-shadow: 0 0 10px #000000;
+    box-shadow: 0 0 10px #000000;
 }
 
 #post-header-modal h1 {
@@ -2142,4 +2321,43 @@ Automated Model Builder
     unicode-bidi: embed;
     font-family: monospace;
     white-space: pre;
+}
+
+.link-dataset:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+#accuracy-graph {
+    position: relative;
+    margin-bottom: 30px;
+}
+.link-analysis-unactivate {
+    font-family: "Poppins", sans-serif;
+}
+.link-analysis-activate {
+    font-weight: bold;
+    font-family: "Poppins", sans-serif;
+}
+.link-analysis-activate:hover, .link-analysis-unactivate:hover {
+    font-weight: bold;
+    cursor: pointer;
+}
+#distribution-classes {
+    position: relative;
+    left: 10px;
+}
+#metric-representation-selection {
+    position: relative;
+    bottom: 270px;
+    left: 50px;
+}
+.container-best-runs {
+    margin-bottom: 25px;
+}
+.card-outcomes {
+    height: 50px;
+}
+.run-parameters-view {
+    overflow-y: scroll;
+    height: 200px;
 }

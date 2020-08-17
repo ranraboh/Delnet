@@ -1,7 +1,7 @@
 import React, { Component, useReducer } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { getUserDatasets, getDatasetTeam } from '../../actions/dataset/get';
+import { getUserDatasets, getPremissions } from '../../actions/dataset/get';
 import { selectDataset } from '../../actions/dataset/manipulation'
 import { homepage } from '../../appconf.js';
 
@@ -13,15 +13,14 @@ class DataSetsUser extends Component {
     }
 
     select_dataset(dataset_id) {
-        console.log('in select')
-        console.log(dataset_id)
-        this.props.selectDataset(dataset_id, (response) => {
-            window.location = homepage + '/dataset';
+        this.props.selectDataset(dataset_id, () => {
+            this.props.getPremissions(dataset_id, this.props.username, () => {
+                window.location = homepage + '/dataset';
+            })
         });
     }
 
     render() {
-        console.log(this.props.user_datasets)
         if (!this.props.user_datasets) {
             return (<h2>No Datasets</h2>)
         }
@@ -77,6 +76,9 @@ const mapDispatchToProps = dispatch => {
         },
         selectDataset: (dataset_id, callback) => {
             dispatch(selectDataset(dataset_id, callback))
+        },
+        getPremissions: (dataset_id, username, callback) => {
+            dispatch(getPremissions(dataset_id, username, callback))
         }
     }
 }

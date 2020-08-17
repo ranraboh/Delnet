@@ -18,7 +18,7 @@ class KnownModels(models.Model):
     description = models.TextField()
     image = models.TextField()
     def __str__(self):
-        return self.known_model
+        return self.name
 
 # used to store the results for each run in the system.
 # the project team can evaluate their algorithm performance and 

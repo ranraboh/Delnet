@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import TrainTable from './train-table.js';
-import DevResults from './dev-table.js';
-import RunFeatures from './featues.js';
-import SpecificRunCharts from './s-chart.js'; 
-import TotalResults from './total.js';
+import TrainTable from './train-table';
+import DevResults from './dev-table';
+import RunFeatures from './featues';
+import TotalResults from './total';
+import RunAnalysis from '../analysis/run'
 
 class SpecificRunResults extends Component {
     constructor(props) {
@@ -12,8 +12,8 @@ class SpecificRunResults extends Component {
         this.state = {
             username: this.props.user,
             selected_section: 0,
-            sections: [ 'Features', 'Train Set', 'Dev Set', 'Total Results' ],
-            full_sections: [ 'Features', 'Train Set Results', 'Validation Set Results', 'Total Results' ]
+            sections: [ 'Features', 'Train Set', 'Dev Set', 'Total Results', 'Analysis' ],
+            full_sections: [ 'Features', 'Train Set Results', 'Validation Set Results', 'Total Results', 'Run Analysis' ]
 
         }
 
@@ -45,6 +45,7 @@ class SpecificRunResults extends Component {
         let train_results = this.section(<TrainTable/>, this.state.selected_section == 1 )
         let dev_results = this.section(<DevResults/>, this.state.selected_section == 2 )
         let total_results = this.section(<TotalResults/>, this.state.selected_section == 3)
+        let run_analysis = this.section(<RunAnalysis/>, this.state.selected_section == 4)
         if (this.props.run.id === null || this.props.run.id === undefined)
             return '';
         console.log('s-result')
@@ -65,6 +66,7 @@ class SpecificRunResults extends Component {
                     { train_results }
                     { dev_results }
                     { total_results }
+                    { run_analysis }
                 </div>
             </div>
         )

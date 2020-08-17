@@ -52,13 +52,17 @@ class ModelTrain(tnn.Module,):
         train_size = len(self.train_set)
         total_loss, total_accuracy = 0, 0
         batches_epoch = math.ceil(train_size / self.batch_size)
+        print ("training ......")
 
         for epoch in range(self.epochs):
             accuracy_epoch = 0
             loss_epoch = 0
             for index, data in enumerate(self.train_loader):
+                print (index)
                 # extract sample and it's label
                 x, y =  data[0], data[1].cuda()
+                if x.shape[0] == 1:
+                    continue
 
                 # run feed forward process and predict the labels of current batch
                 self.optimizer.zero_grad()
@@ -97,6 +101,8 @@ class ModelTrain(tnn.Module,):
             for i, data in enumerate(loader):
                 # extract sample and it's label
                 x, y =  data[0], data[1].cuda()
+                if x.shape[0] == 1:
+                    continue
 
                 # run feed forward process and predict the labels of current batch
                 output = self.model(x)

@@ -81,7 +81,6 @@ class senderMessage extends Component {
                          </div>
                         </div>
                     </div>
-                   
                 </div>
                 </form>
             </div>

@@ -2,9 +2,11 @@ from backend.actions.computations import *
 import re
 import torch
 import torch.nn
+import numpy as np
 
 class LayersExtractor():
-    def __init__(self):
+    def __init__(self, project):
+        self.project = project
         self.modules = [
             (torch.nn.Conv1d, 'Convolution'),
             (torch.nn.Conv2d, 'Convolution'),
@@ -52,7 +54,7 @@ class LayersExtractor():
         }
 
         self.functions = [
-            'view', 'reshape', 'permute'
+            'view', 'reshape', 'permute', 'flatten'
         ]
 
         self.activations = {
@@ -104,6 +106,8 @@ class LayersExtractor():
         map = { }
         for key, layer in modules.items():
             # if it contains layers let call it recursively to get params and weights
+            if key == 'downsample':
+                continue
             if type(layer) in [
                 torch.nn.modules.container.Container,
                 torch.nn.modules.container.Sequential
@@ -124,7 +128,7 @@ class LayersExtractor():
 
     def buildLayersArchitecture(self, modules):
         layers = []
-        prev = {'output': [3, 64, 64]}
+        prev = {'output': [3, self.project.height, self.project.width]}
         reshape = None
         index = 1
         for module in modules:
@@ -132,11 +136,18 @@ class LayersExtractor():
                 prev = layers[-1]
             layer = self.layer_data(module, prev)
             if layer is None:
-                if module['type'] in ['view' , 'reshape', 'permute']:
+                print (module['type'])
+                if module['type'] in self.functions:
                     reshape = module['type']
                 else:
                     reshape = None
                 continue
+            if layer['type'] == 'Linear' and len(layer['input']) > 1 and np.prod(layer['input']) == layer["parameters"]["in_features"]:
+                prev = self.flatten('Flatten', prev)
+                layer['input'] = prev['output']
+                prev['id'] = index
+                layers.append(prev)
+                index = index + 1
             layer['reshape'] = reshape
             reshape = None
             layer['id'] = index
@@ -181,7 +192,7 @@ class LayersExtractor():
         return None
 
     def linearModule(self, name, module, prev_module):
-        print (module.bias)
+        print (module)
         return {
             'name': name,
             'type': 'Linear',
@@ -210,6 +221,9 @@ class LayersExtractor():
             'pooling_type': type,
             'parameters': {
                 'kernel_size': module.kernel_size,
+                'padding': module.padding,
+                'dilation': module.dilation,
+                'stride': module.stride,
                 'type': type
             },
 

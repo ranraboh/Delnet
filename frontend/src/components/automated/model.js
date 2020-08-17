@@ -22,7 +22,7 @@ class AmbModelGenerator extends Component {
             type: 'Customizable'
         }, () => {
             alert('the model created successfully')
-            window.location = homepage + 'projects'
+            window.location = homepage + '/projects'
         })
     }
 
@@ -37,7 +37,7 @@ class AmbModelGenerator extends Component {
                         this sections display extnesively the layers of the model and their features and parameters
                     </h2>
                 </div>
-            <ModelLayers save_handler={ this.save_handler } />
+            <ModelLayers save_handler={ this.save_handler } enable_modifications={true} />
         </div>
         );
     }
@@ -55,10 +55,11 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        createAutomatedModel: (request) => {
-            dispatch(createAutomatedModel(request))
+        createAutomatedModel: (request, callback) => {
+            dispatch(createAutomatedModel(request, callback))
         }
     }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AmbModelGenerator);
+1

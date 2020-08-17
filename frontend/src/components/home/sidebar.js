@@ -6,6 +6,7 @@ import Profile from './profile.js'
 import LatestProject from './latestproject.js';
 import Community from './community.js';
 import Groups from './groups.js'
+import RunningSection from './running'
 
 class Sidebar extends Component {
     constructor(props) {
@@ -20,10 +21,6 @@ class Sidebar extends Component {
                 <h5 class="category-title">Profile</h5>
                 <Profile />
 
-                {/* Latest Project */}
-                <h5 class="category-title">Latest Project</h5>
-                <LatestProject />
-
                 {/* Community */}
                 <h5 class="category-title">Community</h5>
                 <Community />
@@ -31,6 +28,10 @@ class Sidebar extends Component {
                 {/* Groups */}
                 <h5 className="category-title">Groups</h5>
                 <Groups groups={ this.props.groups } />
+
+                {/* Running */}
+                <h5 className="category-title">Running</h5>
+                <RunningSection/>
             </div>
         );
     }

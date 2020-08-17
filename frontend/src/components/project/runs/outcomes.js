@@ -104,6 +104,9 @@ class RunOutcomes extends Component {
                         )
                     }
                 </div>
+                <div className="text-message text-blue">
+                    { (this.props.runs.length == 0)?'you or your team members had never trained your model yet ' :'' }
+                </div>
             </div>
         </section>
         )

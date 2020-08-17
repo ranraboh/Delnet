@@ -112,7 +112,7 @@ HEADER
     display: inline;
     padding: 20px;
 }
-#header-menu li:hover {
+#header-menu a:hover {
     color: #ff91af;
 }
 #main-text {
@@ -393,19 +393,29 @@ Contact
 #contact-form {
     position: relative;
     top: 50px;
+    left: 15%;
+}
+.row-contact-form {
+    margin-bottom: 10px;
 }
 .contact-field {
     font-weight: bold;
     color: black;
     font-family: "Agency FB";
+    position: relative;
+    left: 50px;
 }
 .contact-textbox {
     width: 650px;
 }
 #contact-message {
-    width: 700px;
+    width: 800px;
+    left: 100px;
 }
 #contact-button {
+    position: relative;
+    top: 20px;
+    right: 200px;
     width: 250px;
     height: 60px;
 }

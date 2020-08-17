@@ -7,9 +7,9 @@ class DevResults extends Component {
         super(props)
         let pages_quantity = 0;
         if (props.dev != null) {
-            pages_quantity = parseInt(props.dev.length / 3) - 1
+            pages_quantity = parseInt(Math.ceil(props.dev.length + 1 / 3)) - 1
         } else {
-            this.props.getDevResult(this.state.run_id)
+            this.props.getDevResult(props.selected_run.id)
         }
         this.state = {
             username: this.props.user,
@@ -84,7 +84,7 @@ class DevResults extends Component {
                         this.props.dev.slice(start, end).map((result) => 
                             <tr className="table-v1-row">
                                 <div className={ "icon-container icon-container-" + this.getColorByAccuracy(result.accuracy_rate) }> 
-                                    <p>{ result.epoch + 1 }</p>
+                                    <p>{result.epoch }</p>
                                 </div>
                                 <td className={"text-" + this.getColorByAccuracy(result.accuracy_rate) }>{ 
                                     (Math.round(result.accuracy_rate * 10000) / 100) + "%" 

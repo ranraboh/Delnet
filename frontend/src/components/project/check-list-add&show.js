@@ -112,7 +112,7 @@ class checklistAll extends Component {
                 </button> 
                 </div>   
                 {
-                    (this.state.status.add || this.props.update != null)?<AddTaskChecklist/>:''
+                    (this.state.status.add || this.props.update != null)?<AddTaskChecklist add={true}/>:''
                 }       
             </div>
         )

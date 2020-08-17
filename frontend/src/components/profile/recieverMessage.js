@@ -12,8 +12,6 @@ class recieverMessage extends Component {
 
 
     render() {
-        console.log("shiran malka")
-        console.log(this.props.receiverMessages);
         if(this.props.receiverMessages==null)return '';
         return (
             <div id="personal-details">

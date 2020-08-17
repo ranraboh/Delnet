@@ -112,8 +112,6 @@ class ModelAnalyzer():
                 layers_status = ParameterModify.INCREASE_VALUE_HR
             elif layers_quantity < 70 * self.underfitting_rate:
                 layers_status = ParameterModify.INCREASE_VALUE
-
-        ######## need to determine dimension status according parameter size    
         dimension_status = layers_status
 
         # evaluate model structure status
@@ -149,9 +147,6 @@ class ModelAnalyzer():
         return batch_norm
     
     def dropout(self):
-        ### for now i ignore the amount of times dropout used.
-        ### not sure if i can evalaute it in any case
-
         # returns the number of times dropout appeared        
         dropout = dropout_exists(self.layers)
         # set initial status 
@@ -270,7 +265,6 @@ class ModelAnalyzer():
         type_status = ActivationsFactor.REASONABLE_TYPE
         
         # overuse relu activations function can lead to dead relu phenomenon
-        ### actually i can check if it reach dead relu, maybe later on 
         if get_activation_value('Relu', activations_rate) > 0.5 and activations_rate['Relu'] > 5:
             try_use = [ 'LeakyRelu', 'PRelu' ]
             type_status = ActivationsFactor.OVERUSE_RELU

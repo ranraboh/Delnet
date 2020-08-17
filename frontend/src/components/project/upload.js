@@ -38,17 +38,11 @@ class UploadModelFiles extends Component {
         });
     }
 
-    componentWillMount() {
-        console.log(this.props.loggedIn)
-        if (this.props.loggedIn === false || this.props.loggedIn === 'false')
-            window.location = homepage + '/login'
-    }
-
     render() {
         return (
-            <div id="upload-model-section container">
+            <div id="upload-model-section" className="container">
                 <div className="row">
-                    <div className="col-2">
+                    <div className="col-4">
                         <h2 className="text">Files</h2>
                     </div>
                     <div className="col-4">

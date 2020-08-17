@@ -129,3 +129,27 @@ class ProjectKnownModelsViewSet(viewsets.ModelViewSet):
     }
     serializer_class = ProjectKnownModelsSerializer
 
+    # map project to popular model
+    # /api/project/popular/
+    @action(detail=True, methods=['post'], name='Deploy Model')
+    def project_popular_model(self, request):
+        # read request info
+        project = project_by_id(project_id=request.data['project'])
+        known_model = KnownModels.objects.get(pk=request.data['known_model'])
+        old_maps = ProjectKnownModel.objects.filter(project=project)
+        for old_map in old_maps:
+            old_map.delete()
+
+        # deploy requested trained model
+        ProjectKnownModel.objects.create(project=project, known_model=known_model)
+        return Response({'status': 'the project has been mapped to the popular model successfully'})
+
+    @action(detail=False)
+    def get_popular_model(self, request, *args, **kwargs):
+        project_id = self.kwargs['project']
+        project = project_by_id(project_id=project_id)
+        known_model =ProjectKnownModel.objects.filter(project=project)
+        if known_model.count() == 0:
+            return Response({ 'exist': False })
+        else:
+            return Response({ 'exist': True, 'known_model_id': known_model[0].known_model.id, 'name': known_model[0].known_model.name, 'description': known_model[0].known_model.description, 'image': known_model[0].known_model.image   })

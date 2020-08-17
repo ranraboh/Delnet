@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { homepage } from '../../../appconf.js';
 import { runModel, addRunRecord, getLossTypes, getOptimizerTypes  } from '../../../actions/project/model.js'
 import { testModel } from '../../../actions/project/model';
+import { is } from "../../../actions/validation";
+
 
 class RunModel extends Component {
     constructor(props) {
@@ -58,9 +60,9 @@ class RunModel extends Component {
     on_change(field, value, type) {
         let parameters = this.state.parameters;
         if (type == 'float')
-            parameters[field] = parseFloat(value);
+            parameters[field] = value;
         else if (type == 'int')
-            parameters[field] = parseInt(value);
+            parameters[field] = value;
         else 
             parameters[field] = value
         this.setState({
@@ -72,9 +74,9 @@ class RunModel extends Component {
     on_optim_change(field, value, type) {
         let optimizer = this.state.parameters.optimizer;
         if (type == 'float')
-            optimizer[field] = parseFloat(value);
+            optimizer[field] = value;
         else if (type == 'int')
-            optimizer[field] = parseInt(value);
+            optimizer[field] = value;
         else 
             optimizer[field] = value
         console.log(optimizer[field])
@@ -88,6 +90,16 @@ class RunModel extends Component {
     }
 
     run_model() {
+        if (this.props.premissions < 2) {
+            this.setState({
+                ...this.state,
+                is_error:true,
+                error_message: 'your are not authorized to perform this action'
+            })
+            return
+        }
+        if (this.state.parameters.batch_size)
+        console.log("continue")
         this.setState({
             ...this.state,
             start_test: true
@@ -135,7 +147,13 @@ class RunModel extends Component {
     }
 
     display_status_message() {
-        if (this.state.is_error == true) {
+        if (this.props.premissions < 2 && this.state.is_error == true) {
+            return (
+                <h4 className="project-analysis-text text-purple">
+                    { "you are not authorized to train the model " }
+                </h4>
+            )
+        } else if (this.state.is_error == true) {
             return (
                 <h4 className="project-analysis-text text-purple">
                     { "the server has encountered an error in training your model, check out tests option for extra information " }
@@ -289,7 +307,8 @@ const mapStateToProps = state => {
         project_data: state.projectReducer.project_selected,
         run_added: state.modelReducer.run_added,
         optimizers: state.modelReducer.optimizers,
-        loss_types: state.modelReducer.loss_types
+        loss_types: state.modelReducer.loss_types,
+        premissions: state.projectReducer.project_selected.premissions
     }
 }
 

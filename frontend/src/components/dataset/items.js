@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { getDataItems } from '../../actions/dataset/get';
+import { getDataItems, getDatasetLabels, getNotificationDataset } from '../../actions/dataset/get';
 import { deleteDataItem } from '../../actions/dataset/manipulation';
+import GetItem from './get_item';
+import { getItemSectionActivate } from '../../actions/dataset/sections'
 
 class ItemsSection extends Component {
     constructor(props) {
@@ -13,25 +15,34 @@ class ItemsSection extends Component {
             current_page: 1,
             items_per_page: 6,
             props_gained: false,
-            labels_colors: {}
+            labels_colors: {},
         }
         this.page_change_handler = this.page_change_handler.bind(this);
         this.next_link = this.next_link.bind(this);
         this.previous_link = this.previous_link.bind(this);
         this.delete_item = this.delete_item.bind(this);
-        if (!this.state.dataset.items[this.current_page])
-            this.props.getDataItems(this.state.current_page, this.state.dataset.id);
+        this.get_item_handler = this.get_item_handler.bind(this);
+        if (this.state.dataset.items == null || this.state.dataset.items.length == 0) {
+            this.props.getDatasetLabels(this.state.dataset.id, () => {
+                this.props.getDataItems(this.state.current_page, this.state.dataset.id);
+            })
+        }
     }
 
     delete_item(dataitem_id) {
-        this.props.deleteDataItem(dataitem_id, () => {
+        this.props.deleteDataItem(dataitem_id, this.props.username ,() => {
             this.props.getDataItems(this.state.current_page, this.state.dataset.id);
+            this.props.getNotificationDataset(this.state.dataset.id)
         })
     }
 
+    get_item_handler(item) {
+        console.log('activate...')
+        console.log(item)
+        this.props.getItemSectionActivate(item);
+    }
+
     next_link() {
-        console.log(this.state.current_page)
-        console.log(this.state.pages)
         if (this.state.current_page < this.state.pages) {
             this.state.current_page = this.state.current_page + 1;
             this.props.getDataItems(this.state.current_page, this.state.dataset.id);
@@ -52,12 +63,9 @@ class ItemsSection extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.dataset_data.labels != null) {
-            console.log(nextProps.dataset_data.labels)
             nextProps.dataset_data.labels.map((label) => {
                 this.state.labels_colors[label.name] = label.color;
             })
-            console.log('labels colors')
-            console.log(this.state.labels_colors)
         }
         let pages_amount = Math.ceil(nextProps.dataset_data.pages / this.state.items_per_page)
         this.setState({
@@ -93,10 +101,6 @@ class ItemsSection extends Component {
     componentDidMount() {        
         if (!this.state.dataset || this.state.props_gained == false) 
             return;
-        
-        console.log(document.getElementById('page-' + this.state.current_page))
-        console.log('after mount')
-
         if (this.state.current_page == 1)
             document.getElementById('previous-link').className = 'page-link disabled';
         if (this.state.current_page == this.state.pages)
@@ -104,16 +108,20 @@ class ItemsSection extends Component {
     }
 
     render() {
-        console.log('render')
-        console.log(this.state.dataset.labels)
         if (!this.state.dataset || this.state.props_gained == false || this.state.pages < 1 || this.state.dataset.labels == null) {
+            this.props.getDatasetLabels(this.state.dataset.id, () => {
+                this.props.getDataItems(this.state.current_page, this.state.dataset.id);
+            })
             return( 
             <div className="section-in-main">
                 <h1 className="dataset-header-title dataset-header-blue">
                     Items Section
                 </h1>
                 <p/>
-                <h6>dataset items is empty</h6>
+                <h4 className="dataset-graph-intro text-blue">
+                    dataset is empty and doesn't contains any samples. <br/>
+                    you can insert new items through add item tab
+                </h4>
             </div>
             )
         }
@@ -126,6 +134,9 @@ class ItemsSection extends Component {
                     </h1>
                 </div>
                 <nav>
+                    {
+                        (this.props.get_item != null)?<GetItem item={ this.props.get_item.item } label={ this.props.get_item.label.name } />:''
+                    }
                     <ul class="pagination">
                         <li class="page-item button-outline-danger">
                             <a id="previous-link" className="page-link" onClick={ this.previous_link }>Previous</a>
@@ -153,7 +164,7 @@ class ItemsSection extends Component {
                     <div className="row">
                     {
                         this.state.dataset.items[this.state.current_page].map((record, index) => 
-                            <div class="col-md-4 col-xs-12" onClick={ () => this.select_run(run.id) }>
+                            <div class="col-md-4 col-xs-12">
                                 <div class="single-item">
                                     <div className="photo-frame">
                                         <img class="item-photo" src={ '../' + record.item } href={ '../' + record.item } />
@@ -164,7 +175,7 @@ class ItemsSection extends Component {
                                     <h6><a className="text">Date: { record.insert_date }</a></h6>
                                     <div id="items-buttons">
                                     <button type="button" class="btn btn-danger btn-sm" onClick={ () => this.delete_item(record.id) }><i class="fa fa-close"></i></button>&nbsp;	
-                                    <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i></button>
+                                    <button type="button" class="btn btn-primary btn-sm" onClick={ () => this.get_item_handler(record) }><i class="fa fa-plus"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -182,6 +193,7 @@ const mapStateToProps = state => {
         dataset_data: state.datasetsReducer.dataset_selected,
         username: state.authentication.user,
         pages: state.datasetsReducer.dataset_selected.pages,
+        get_item: state.datasetsToggleReducer.dataset_display.get_item
     }
 }
 
@@ -191,8 +203,17 @@ const mapDispatchToProps = dispatch => {
         getDataItems: (page_id, dataset_id) => {
             dispatch(getDataItems(page_id, dataset_id));
         },
-        deleteDataItem: (detaitem_id, callback) => {
-            dispatch(deleteDataItem(detaitem_id, callback));
+        deleteDataItem: (detaitem_id, username, callback) => {
+            dispatch(deleteDataItem(detaitem_id, username, callback));
+        },
+        getDatasetLabels: (dataset_id, callback) => {
+            dispatch(getDatasetLabels(dataset_id, callback))
+        },
+        getNotificationDataset: (dataset) => {
+            dispatch(getNotificationDataset(dataset));
+        },
+        getItemSectionActivate: (item) => {
+            dispatch(getItemSectionActivate(item))
         }
     }
 }

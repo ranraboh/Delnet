@@ -2,14 +2,13 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { createProject, createMember } from '../../actions/projects.js'
-import { ValidateEmail, allLetter, typeOfNaN, lengthOfString,check_itsnot_empty } from "../../actions/validation";
+import { lengthOfString,check_itsnot_empty } from "../../actions/validation";
 
 
 class ProjectsCreate extends Component {
     constructor(props) {
         super(props)
         this.state = {
-
             errors: {
                 user: '',
                 project_name: '',
@@ -28,6 +27,7 @@ class ProjectsCreate extends Component {
         this.register_project = this.register_project.bind(this);
         this.reset_handler = this.reset_handler.bind(this);
     }
+    
     restartErrors(errors){
         errors['user'] =''
         errors['project_name'] =''
@@ -39,32 +39,23 @@ class ProjectsCreate extends Component {
         let errors = this.state.errors
         let user = this.state.project;
         this.restartErrors(errors);
-
         if ((!check_itsnot_empty(user['project_name']))) {
             errors['project_name'] ="Please fill in the project name "
-            console.log(errors['project_name'])
         }
-            if(!lengthOfString(user['project_name'],30)){
-                errors['project_name'] ="It is possible to write up to 30 words, please be careful "
-                console.log(errors['project_name'])
-            }
-        
+        if(!lengthOfString(user['project_name'],30)){
+            errors['project_name'] ="It is possible to write up to 30 words, please be careful "
+        }
         if ((!check_itsnot_empty(user['description']))) {
             errors['description'] ="Please fill in the description."
-            console.log(errors['description'])
-
         }
          if(!lengthOfString(user['description'],200)){
-                errors['description'] ="It is possible to write up to 200 words, please be careful"
-                console.log(errors['description'])
-            }
-            this.setState({
-                ...this.state,
-                errors
-            })
-
+            errors['description'] ="It is possible to write up to 200 words, please be careful"
+        }
+        this.setState({
+            ...this.state,
+            errors
+        })
         this.props.createProject(this.state.project, (result) => {
-            console.log(this.props.project_created)
             this.props.createMember({
                 project: this.props.project_created.id,
                 user: this.state.project.user,
@@ -97,10 +88,6 @@ class ProjectsCreate extends Component {
     }
 
     render() {
-        let errors = this.state.errors
-        console.log("now check-----------------------------")
-        console.log(errors['description'])
-        console.log(errors['project_name'])
         return (
         <div id="projects-create">
             <div className="row row-form">
@@ -108,7 +95,6 @@ class ProjectsCreate extends Component {
                     <p className="project-form-field">Project Name</p>
                 </div>
                 <div className="col-6">
-                   
                     <div class="value">
                             <input class={(this.state.errors.project_name == '')? 'input-projects' : 'input-projects form-control is-invalid'} 
                             type="text" name="project_name" value={ this.state.project.project_name } placeholder="Enter name of project"
@@ -152,8 +138,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         createMember: (member) => {
-            console.log('inside map')
-            console.log(member)
             dispatch(createMember(member));
         },
         createProject: (project, callback) => {

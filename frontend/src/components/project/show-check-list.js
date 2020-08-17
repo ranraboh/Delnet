@@ -16,6 +16,10 @@ class checkList extends Component {
     }
 
     toggleComplete(record){
+        if (this.props.premissions < 3) {
+            alert("you are not authorized to perform this action")
+            return
+        }
         this.props.changeComplete({id:record.id, username: this.props.username}, () => {
             this.props.getTask(this.props.project)
         })
@@ -24,6 +28,9 @@ class checkList extends Component {
     render() {
         if(this.props.tasks==null)
             return ''
+        if (this.props.tasks.length == 0) {
+            return <h4 className="message-text text-blue">No Tasks</h4>
+        }
         return (
             <table className="table">
                 <thead>
@@ -32,7 +39,10 @@ class checkList extends Component {
                         <th>Date</th>
                         <th>Executer</th>
                         <th>Done</th>
-                        <th>Update</th>
+                        {
+                            (this.props.premissions < 3)?'':
+                            <th>Update</th>
+                        }
                     </tr>
                 </thead>
                 {
@@ -45,14 +55,17 @@ class checkList extends Component {
                                             <td>{ record.date }</td>
                                             <td>{ (record.executor_task==null)?'-': record.executor_task }</td>
                                             <td>
-                                                <label onClick={()=>this.toggleComplete(record)} class="container">Done 
+                                                <label onClick={()=>this.toggleComplete(record)} class="container"> 
                                                     <input type="checkbox"  checked={ record.complete==true } />
                                                     <span class="checkmark"></span>
                                                 </label>    
                                             </td>   
-                                            <td>
-                                                <button type="button" class="btn btn-danger" onClick={ () => this.update_handler(record) }>Update</button>
-                                            </td>                                         
+                                            {
+                                                (this.props.premissions < 3)?'':
+                                                <td>
+                                                    <button type="button" class="btn btn-danger" onClick={ () => this.update_handler(record) }>Update</button>
+                                                </td>
+                                            }                                         
                                         </tr>
                                     }
                                 </tbody>)
@@ -67,7 +80,8 @@ class checkList extends Component {
 const mapStateToProps = state => {
     return {
         project: state.projectReducer.project_selected.id,
-        username: state.authentication.user
+        username: state.authentication.user,
+        premissions: state.projectReducer.project_selected.premissions
     }
 }
 

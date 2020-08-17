@@ -28,23 +28,23 @@ def dataset_by_id(dataset_id):
     return Dataset.objects.filter(id=dataset_id)[0]
 
 # upload the project dataset into memory 
-def load_dataset(dataitems, labels):
+def load_dataset(dataitems, labels, height, width):
     dataset = []
     for item in dataitems:
         image = pil.open(item.item)
-        image = image.resize((64, 64))
+        image = image.resize((height, width))
         plt.imshow(image)
         image_data = torch.as_tensor(np.asarray(image), dtype=torch.float).permute(2, 1, 0).cuda()
         dataset.append((image_data, labels[item.label.name]))
     return dataset
 
 # convert from image into model input sample format
-def image_to_sample(image):
+def image_to_sample(image, height, width):
     image = pil.open(image)
-    image = image.resize((64, 64))
+    image = image.resize((height, width))
     plt.imshow(image)
     image_data = torch.as_tensor(np.asarray(image), dtype=torch.float).permute(2, 1, 0).cuda()    
-    return image_data.view(1, 3, 64, 64)
+    return image_data.view(1, 3, height, width)
 
 # load labels records of project dataset
 def labels_dictionary(dataset_id):
@@ -56,7 +56,7 @@ def labels_dictionary(dataset_id):
 
 # load items records of project dataset
 def items_records(dataset_id):
-    return DataItem.objects.filter(dataset_id=dataset_id)
+    return DataItem.objects.filter(dataset_id=dataset_id).order_by('-id')
 
 # returns the number of items for praticular dataset
 def compute_items_quantity(dataset_id):
@@ -89,6 +89,8 @@ def upload_unlabeled_list(insert_by, dataset, items_quantity, items_list):
 
 # upload new image-item into server and add corresponding record into database
 def add_item(label, insert_by, dataset, image_url):
+    if image_url.startswith('media'):
+        image_url = 'http://localhost:8000/' + image_url
     label = DataLabel.objects.filter(id=label)[0]
     user = User.objects.filter(username=insert_by)[0]
     dataset = Dataset.objects.filter(id=dataset)[0]
@@ -178,10 +180,8 @@ def models_results(dataset_id):
 def models_count(dataset_id):
     return models_results(dataset_id).count()
 
-
 def get_dataset_projects(dataset_id):
     return Project.objects.filter(dataset=dataset_id)
-
 
 # get dataset identification of given project
 def get_project_dataset(project_id):
@@ -203,7 +203,7 @@ def dataset_labels_offers(dataset_id):
     return list(chain(*labels_offers))
 
 def get_items_label_name(dataset_id, label_name):
-    return DataItem.objects.exclude(dataset=dataset_id).filter(label__name__contains=label_name)
+    return DataItem.objects.exclude(dataset=dataset_id).exclude(dataset__enable_offer=False).filter(label__name__contains=label_name)
 
 def follow_dictionary(username):
     dict = {}

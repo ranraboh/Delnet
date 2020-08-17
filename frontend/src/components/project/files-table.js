@@ -27,7 +27,10 @@ class ProjectsFilesTable extends Component {
 
     render() {
         if (!this.props.project_data.files) {
-            return <h2>No Files</h2>
+            return ''
+        }
+        if (this.props.project_data.files.length == 0) {
+            return <h4 className="message-text text-blue">There are no files that has been uploaded by the project team.</h4>
         }
         return (
             <div id="files-table">
@@ -38,7 +41,10 @@ class ProjectsFilesTable extends Component {
                             <th scope="col">Name</th>
                             <th scope="col">Type</th>
                             <th scope="col">Size</th>
-                            <th scope="col">Actions</th>
+                            {   
+                                (this.props.premissions < 3)?'':
+                                <th scope="col">Actions</th>
+                            }
                         </tr>
                     </thead>
                     <tbody>
@@ -53,15 +59,17 @@ class ProjectsFilesTable extends Component {
                                         <td className="files-table-column">{ file.name }</td>
                                         <td className="files-table-column">{ file.type }</td>
                                         <td className="files-table-column">{ file.size }</td>
-                                        <td className="files-table-column">
-                                        <button className="btn btn-primary" onClick={ () => this.select_file(file.id) }>
-                                            edit
-                                        </button> 
-                                        &nbsp;
-                                        <button className="btn btn-danger" onClick={ () => this.delete_file(file.id) }>
-                                            delete
-                                        </button>
-                                    </td>
+                                        {
+                                            (this.props.premissions < 3)?'':
+                                            <td className="files-table-column">
+                                                <button className="btn btn-primary" onClick={ () => this.select_file(file.id) }>
+                                                    edit
+                                                </button> &nbsp;
+                                                <button className="btn btn-danger" onClick={ () => this.delete_file(file.id) }>
+                                                    delete
+                                                </button>
+                                            </td>
+                                    }
                                 </tr>)
                         } 
                     </tbody>
@@ -74,7 +82,8 @@ class ProjectsFilesTable extends Component {
 const mapStateToProps = state => {
     return {
         project_data: state.projectReducer.project_selected,
-        username: state.authentication.user
+        username: state.authentication.user,
+        premissions: state.projectReducer.project_selected.premissions
     }
 }
 

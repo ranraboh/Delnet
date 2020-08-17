@@ -68,9 +68,6 @@ class TrainTable extends Component {
             return '';
         let start = this.state.page * this.state.records_in_page;
         let end = start + 3;
-        console.log(this.state.pages_quantity)
-        console.log(end)
-        console.log(this.props.train)
         return (
             <table id="train-table" className="table">
                 <thead>
@@ -85,7 +82,7 @@ class TrainTable extends Component {
                         this.props.train.slice(start, end).map((result) => 
                             <tr className="table-v1-row">
                                 <div className={ "icon-container icon-container-" + this.getColorByAccuracy(result.accuracy_rate) }> 
-                                    <p>{ result.epoch + 1 }</p>
+                                    <p>{ result.epoch }</p>
                                 </div>
                                 <td className={"text-" + this.getColorByAccuracy(result.accuracy_rate) }>{ 
                                     (Math.round(result.accuracy_rate * 10000) / 100) + "%" 

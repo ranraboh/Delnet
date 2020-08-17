@@ -36,30 +36,27 @@ class AddLabel extends Component {
     }
 
     add_label_handler(e) {
-        console.log("shiran23")
         e.preventDefault();
+        if (this.props.premissions < 4) {
+            alert("you are not authorized to add new labels")
+            return;
+        }
         let errors = this.state.errors
-       // let user = this.state.dataset;
         let labelDataset = this.state.label;
         this.restartErrors(errors);
         console.log(labelDataset['name'])
         if ((!check_itsnot_empty(labelDataset['name']))) {
-            console.log("shiran234")
             errors['name'] ="Please fill in the project name "
-            console.log(errors['name'])
         }
             if(!lengthOfString(labelDataset['name'],30)){
                 errors['name'] ="It is possible to write up to 30 words, please be careful "
-                console.log(errors['name'])
             }
         
         if ((!check_itsnot_empty(labelDataset['description']))) {
             errors['description'] ="Please fill in the description."
-            console.log(errors['description'])
         }
          if(!lengthOfString(labelDataset['description'],200)){
                 errors['description'] ="It is possible to write up to 200 words, please be careful"
-                console.log(errors['description'])
             }
             this.setState({
                 ...this.state,
@@ -152,6 +149,7 @@ const mapStateToProps = state => {
     return {
         username: state.authentication.user,
         dataset_data: state.datasetsReducer.dataset_selected,
+        premissions: state.datasetsReducer.dataset_selected.premissions,
     }
 }
 

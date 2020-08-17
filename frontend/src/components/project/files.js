@@ -74,18 +74,26 @@ class ModelFiles extends Component {
                        You are able to insert new files, update your files and so on.
                     </h2>
                 </div>
-                <div id="change-image-type-selection">
-                    <span>
-                        <input type="radio" name="change-options" className="radio-button-v1 radio-button-v1-blue"
-                            checked={ this.state.selected_option != 1 } />
-                        <label className="radio-button-v1-label" for={ this.state.options[0] } onClick={ this.files_selection }>{ this.state.options[0] }</label>&nbsp;	&nbsp;	
-                    </span>
-                    <span>
-                        <input type="radio" name="change-options" className="radio-button-v1 radio-button-v1-purple"
-                            checked={ this.state.selected_option == 1 } />
-                        <label className="radio-button-v1-label" for={ this.state.options[1] } onClick={ this.upload_selection }>{ this.state.options[1] }</label>
-                    </span>
-                </div>
+                {
+                    (this.props.premissions < 3)?'':
+                    <div id="change-image-type-selection">
+                        <span>
+                            <input type="radio" name="change-options" className="radio-button-v1 radio-button-v1-blue"
+                                checked={ this.state.selected_option != 1 } />
+                            <label className="radio-button-v1-label" for={ this.state.options[0] } onClick={ this.files_selection }>{ this.state.options[0] }</label>&nbsp;	&nbsp;	
+                        </span>
+                        <span>
+                            <input type="radio" name="change-options" className="radio-button-v1 radio-button-v1-purple"
+                                checked={ this.state.selected_option == 1 } />
+                            <label className="radio-button-v1-label" for={ this.state.options[1] } onClick={ this.upload_selection }>{ this.state.options[1] }</label>
+                        </span>
+                    </div>
+                }
+                <h4 className="files-instructions">Instructions for uploading model files:</h4>
+                <ul className="files-instructions">
+                    <li>the main code file of your model implementation should be called model.py</li>
+                    <li>your model class should be named as class Model</li>
+                </ul>
                 { upload_section }
                 { files_list }
                 { file_content }
@@ -100,6 +108,7 @@ const mapStateToProps = state => {
         loggedIn: state.authentication.loggedIn,
         username: state.authentication.user,
         selected_file: state.projectReducer.file_selected,
+        premissions: state.projectReducer.project_selected.premissions
     }
 }
 

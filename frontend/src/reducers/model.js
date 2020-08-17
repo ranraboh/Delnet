@@ -1,5 +1,5 @@
 import { ADD_RUN_RECORD, RUN_MODEL, GET_LOSS_TYPES, GET_OPTIMIZER_TYPES, GET_RUN_RESULT_TRAIN, GET_RUN_RESULT_DEV, SELECT_RUN, GET_PROJECT_RUNS, CLEAR_RUN, GET_UNFINISHED_RUNS, GET_LABELS_METRICS, GET_F1_RESULT, DEPLOY_MODEL, TEST_MODEL } from '../actions/types.js'
-import { GET_CONFUSION_MATRIX, GET_RECALL_RESULT, GET_PRECISION_RESULT } from '../actions/types.js';
+import { RESET_TEST_RESULTS, GET_CONFUSION_MATRIX, GET_RECALL_RESULT, GET_PRECISION_RESULT } from '../actions/types.js';
 
 const initialState = {
     run_added: null,
@@ -45,35 +45,39 @@ export function modelReducer(state = initialState, action) {
                 loss_types: action.payload
             }
         case GET_RUN_RESULT_TRAIN:
-            new_state = {
+            let train_runs = action.payload
+            train_runs.map((record) => {
+                record.accuracy_percent = record.accuracy_rate * 100;
+                record.epoch = record.epoch + 1
+            })
+            train_runs[train_runs.length - 1].epoch = "T"
+            return {
                 ...state,
                 selected_run: {
                     ...state.selected_run,
                     results: {
                         ...state.selected_run.results,
-                        train: action.payload
+                        train: train_runs
                     }
                 }
             }
-            new_state.selected_run.results.train.map((record) => {
-                record.accuracy_percent = record.accuracy_rate * 100;
-            })
-            return new_state
         case GET_RUN_RESULT_DEV:
-            new_state = {
+            let dev_runs = action.payload
+            dev_runs.map((record) => {
+                record.accuracy_percent = record.accuracy_rate * 100;
+                record.epoch = record.epoch + 1
+            })
+            dev_runs[dev_runs.length - 1].epoch = "T"
+            return {
                 ...state,
                 selected_run: {
                     ...state.selected_run,
                     results: {
                         ...state.selected_run.results,
-                        dev: action.payload
+                        dev: dev_runs
                     }
                 }
             }
-            new_state.selected_run.results.dev.map((record) => {
-                record.accuracy_percent = record.accuracy_rate * 100;
-            })
-            return new_state
         case SELECT_RUN:
             let data = action.payload[0]
             return {
@@ -177,6 +181,11 @@ export function modelReducer(state = initialState, action) {
             return {
                 ...state,
                 test: action.payload
+            }
+        case RESET_TEST_RESULTS:
+            return {
+                ...state,
+                test: null
             }
         default:
             return state;

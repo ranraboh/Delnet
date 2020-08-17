@@ -1,17 +1,22 @@
-import { GET_USER_DATASETS, CREATE_DATASET, DELETE_DATASET, SELECT_DATASET, GET_DATASET_TEAM, ADD_ITEM, ADD_LABEL, DELETE_LABEL, DATASET_ANALYZE_ACTIVE, DATASET_ANALYZE_NONACTIVE, GET_DATASET_ANALYSIS, DATASET_STATICS_ACTIVE, DATASET_STATICS_NONACTIVE, DATASET_CONTRIBUTIONS_ACTIVE, DATASET_CONTRIBUTIONS_NONACTIVE, DATASET_MODELS_GRAPH_ACTIVE, DATASET_MODELS_GRAPH_NONACTIVE, DATE_UPLOAD_GRAPH_ACTIVE, DATE_UPLOAD_GRAPH_NONACTIVE, GET_DATE_DISTRIBUTION, GET_USER_CONTRIBUTION, GET_DATASET_PROJECTS_PERFORMANCE, GET_UNLABLED_SMAPLES, GET_DATASET_OFFERS, GET_DATASETS_PUBLIC, GET_SEARCH_DATASETS, OFFER_ITEMS_ACTIVE, OFFER_ITEMS_NONACTIVE, TAG_SAMPELS_ACTIVE, TAG_SAMPLES_NONACTIVE, DATASET_ADD_NOTIFICATION_ACTIVE, DATASET_ADD_NOTIFICATION_NONACTIVE, NOTIFICATION_DATASET_ACTIVE, NOTIFICATION_DATASET_NONACTIVE } from '../actions/types.js';
+import { GET_USER_DATASETS, CREATE_DATASET, DELETE_DATASET, SELECT_DATASET, GET_DATASET_TEAM, ADD_ITEM, ADD_LABEL, DELETE_LABEL, DATASET_ANALYZE_ACTIVE, DATASET_ANALYZE_NONACTIVE, GET_DATASET_ANALYSIS, DATASET_STATICS_ACTIVE, DATASET_STATICS_NONACTIVE, DATASET_CONTRIBUTIONS_ACTIVE, DATASET_CONTRIBUTIONS_NONACTIVE, DATASET_MODELS_GRAPH_ACTIVE, DATASET_MODELS_GRAPH_NONACTIVE, DATE_UPLOAD_GRAPH_ACTIVE, DATE_UPLOAD_GRAPH_NONACTIVE, GET_DATE_DISTRIBUTION, GET_USER_CONTRIBUTION, GET_DATASET_PROJECTS_PERFORMANCE, GET_UNLABLED_SMAPLES, GET_DATASET_OFFERS, GET_DATASETS_PUBLIC, GET_SEARCH_DATASETS, OFFER_ITEMS_ACTIVE, OFFER_ITEMS_NONACTIVE, TAG_SAMPELS_ACTIVE, TAG_SAMPLES_NONACTIVE, DATASET_ADD_NOTIFICATION_ACTIVE, DATASET_ADD_NOTIFICATION_NONACTIVE, NOTIFICATION_DATASET_ACTIVE, NOTIFICATION_DATASET_NONACTIVE, GET_USER_FOLLOWING_DATASETS, GET_SELECTED_LABELS, GET_ITEM_HIDE, GET_ITEM_ACTIVATE, GET_DATASET_HEADER, ADD_DATASET_MEMBER, DELETE_DATASET_MEMBER } from '../actions/types.js';
 import { GET_ITEMS_COUNT, GET_DATASETS_ITEMS_AMOUNT, DATASET_DETAILS_ACTIVE, DATASET_DETAILS_NONACTIVE, GET_LABELS_COUNT, GET_DATASET_LABELS, GET_DATA_ITEMS, DELETE_DATA_ITEM } from '../actions/types.js';
 import { UPDATE_DATASET,ADD_NOTIFICTION_DATASET, GET_NOTIFICATION_DATASET,COLLECTORS_TEAM_ACTIVE, COLLECTORS_TEAM_NONACTIVE, LABELS_SECTION_ACTIVE, LABELS_SECTION_NONACTIVE, ITEMS_SECTION_ACTIVE, ITEMS_SECTION_NONACTIVE, ADD_ITEM_ACTIVE,ADD_LABEL_ACTIVE , ADD_LABEL_NONACTIVE, ADD_ITEM_NONACTIVE, LABEL_DISTRIBUTION_ACTIVE, LABEL_DISTRIBUTION_NONACTIVE } from "../actions/types.js";
+import { bindActionCreators } from 'redux';
 
 
 const initialState = {
     user_datasets: null,
     notifications: null,
+    following_datasets: null,
     dataset_selected: {
         id: window.localStorage.getItem('dataset-id'),
         name: window.localStorage.getItem('dataset-name'),
         description: window.localStorage.getItem('description'),
         create_date: window.localStorage.getItem('dataset-create-date'),
         user: window.localStorage.getItem('dataset-user'),
+        premissions: window.localStorage.getItem('dataset-premissions'),
+        public_view: window.localStorage.getItem("dataset-public-view"),
+        enable_offer: window.localStorage.getItem("dataset-enable-offer"),
         team: null,
         labels: null,
         labels_quantity: null,
@@ -20,13 +25,14 @@ const initialState = {
         analysis: null,
         offers: null,
         unlabeled: null,
+        header: null,
     },
     user_contribution: null,
     date_distribution: null,
     dataset_projects: null,
     search_datasets: null,
     public_datasets: null,
-
+    selected_labels: null
 }
 const toggleInitialState = {
     dataset_display: {
@@ -45,7 +51,8 @@ const toggleInitialState = {
         offer_items: false,
         tag_samples: false,
         add_notification: false,
-        notifications: false
+        notifications: false,
+        get_item: null
     }
 }
 export function datasetsReducer(state = initialState, action) {
@@ -55,12 +62,17 @@ export function datasetsReducer(state = initialState, action) {
                 ...state,
                 notifications: action.payload
             }
+        case GET_DATASET_HEADER:
+            return {
+                ...state,
+                dataset_selected: {
+                    ...state.dataset_selected,
+                    header: action.payload
+                }
+            }
         case UPDATE_DATASET:
-            console.log("action.payload--------------------")
             window.localStorage.setItem('description',action.payload.description)
             window.localStorage.setItem('name',action.payload.name)
-
-            console.log(action.payload)
             return {
                 ...state,
                 dataset_selected: {
@@ -73,6 +85,11 @@ export function datasetsReducer(state = initialState, action) {
             return {
                 ...state,
                 user_datasets: action.payload
+            }
+        case GET_SELECTED_LABELS:
+            return {
+                ...state,
+                selected_labels: action.payload
             }
         case GET_DATASET_TEAM:
             return {
@@ -106,6 +123,11 @@ export function datasetsReducer(state = initialState, action) {
             return {
                 ...state,
                 datasets_items_quantity: action.payload   
+            }
+        case GET_USER_FOLLOWING_DATASETS:
+            return {
+                ...state,
+                following_datasets: action.payload
             }
         case GET_LABELS_COUNT:
             return {
@@ -148,22 +170,72 @@ export function datasetsReducer(state = initialState, action) {
         case DELETE_DATA_ITEM:
             return {
                 ...state,
-                dataitem_delete: action.payload
+                dataitem_delete: action.payload,
+                dataset_selected: {
+                    ...state.dataset_selected,
+                    header: {
+                        ...state.dataset_selected.header,
+                        items: state.dataset_selected.header.items - 1
+                    }
+                }
             }
         case DELETE_LABEL:
             return {
                 ...state,
-                datalabel_delete: action.payload
+                datalabel_delete: action.payload,
+                dataset_selected: {
+                    ...state.dataset_selected,
+                    header: {
+                        ...state.dataset_selected.header,
+                        labels: state.dataset_selected.header.labels - 1
+                    }
+                }
+            }
+        case ADD_DATASET_MEMBER:
+            return {
+                ...state,
+                dataset_selected: {
+                    ...state.dataset_selected,
+                    header: {
+                        ...state.dataset_selected.header,
+                        collectors: state.dataset_selected.header.collectors + 1
+                    }
+                }
+            }
+        case DELETE_DATASET_MEMBER:
+            return {
+                ...state,
+                dataset_selected: {
+                    ...state.dataset_selected,
+                    header: {
+                        ...state.dataset_selected.header,
+                        collectors: state.dataset_selected.header.collectors - 1
+                    }
+                }
             }
         case ADD_LABEL:
             return {
                 ...state,
-                datalabel_added: action.payload
+                datalabel_added: action.payload,
+                dataset_selected: {
+                    ...state.dataset_selected,
+                    header: {
+                        ...state.dataset_selected.header,
+                        labels: state.dataset_selected.header.labels + 1
+                    }
+                }
             }
         case ADD_ITEM:
             return {
                 ...state,
-                dataitem_added: action.payload
+                dataitem_added: action.payload,
+                dataset_selected: {
+                    ...state.dataset_selected,
+                    header: {
+                        ...state.dataset_selected.header,
+                        items: state.dataset_selected.header.items + action.payload.items_quantity
+                    }
+                }
             }
         case GET_DATASET_ANALYSIS:
             return {
@@ -221,7 +293,6 @@ export function datasetsReducer(state = initialState, action) {
             return state;
     }
 }
-
 export function datasetsToggleReducer(state = toggleInitialState, action) {
         switch(action.type) {
         case DATASET_DETAILS_ACTIVE: 
@@ -479,6 +550,22 @@ export function datasetsToggleReducer(state = toggleInitialState, action) {
                 dataset_display: {
                     ...state.dataset_display,
                     add_notification: false
+                }
+            }
+        case GET_ITEM_ACTIVATE:
+            return {
+                ...state,
+                dataset_display: {
+                    ...state.dataset_display,
+                    get_item: action.payload
+                }
+            }
+        case GET_ITEM_HIDE:
+            return {
+                ...state,
+                dataset_display: {
+                    ...state.dataset_display,
+                    get_item: null
                 }
             }
        default:

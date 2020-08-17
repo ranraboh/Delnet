@@ -1,7 +1,7 @@
 import React, { Component, useReducer } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { deleteProject, getUserProjects, selectProject } from '../../actions/projects.js';
+import { deleteProject, getUserProjects, selectProject, getPremissions } from '../../actions/projects.js';
 import { homepage } from '../../appconf.js';
 
 class ProjectsTable extends Component {
@@ -14,7 +14,6 @@ class ProjectsTable extends Component {
     }
 
     delete_project(project_id, project_name) {
-        //shiran
         if (confirm('are you sure you want to delete the project ' + project_name)) { 
             this.props.deleteProject(project_id);
             window.location = homepage + '/projects'
@@ -22,10 +21,10 @@ class ProjectsTable extends Component {
     }
 
     select_project(project_id) {
-        console.log('in select')
         this.props.selectProject(project_id, () => {
-            console.log('call back function triggered')
-            window.location = homepage + '/project';
+            this.props.getPremissions(project_id, this.props.username, () => {
+                window.location = homepage + '/project';
+            })
         });
     }
 
@@ -53,7 +52,7 @@ class ProjectsTable extends Component {
                                     <td>{ project.description }</td>
                                     <td>
                                         <button className="btn btn-outline-primary table-button"  onClick={ () => this.select_project(project.id) }>
-                                            edit
+                                            view
                                         </button> 
                                         &nbsp;
                                         <button className="btn btn-outline-danger table-button" onClick={ () => this.delete_project(project.id, project.project_name) }>
@@ -88,7 +87,10 @@ const mapDispatchToProps = dispatch => {
         },
         selectProject: (id, callback) => {
             dispatch(selectProject(id, callback))
-        }
+        },
+        getPremissions: (id, username, callback) => {
+            dispatch(getPremissions(id, username, callback))
+        },
     }
 }
 

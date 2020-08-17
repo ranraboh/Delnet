@@ -429,3 +429,57 @@ class ModelError(Enum):
     the application has encountered an error during training process,
     the error message is: 
     """
+    LAYERS_FILE_UNSET = """
+    you haven't set an architercture for your project,
+    first you need to define your model structure in model layers tab
+    and then you can train your customizable model.
+    """ 
+    IMAGE_SIZE_ERROR = """
+    image size that have been set is invalid, it must be an integer positive number.
+    you are able to change it through general details tab
+    """
+    PARTITIONS_ERROR = """
+    partitions that have been set is invalid, the values should sum up to 1.
+    you are able to change it through general details tab
+    """
+    KNOWN_MODEL_UNSELECTED = """
+    you have chosen well-known model mode project but you didn't select
+    specific model yet. 
+    """
+    GOOD_SETTINGS = """
+    the settings you have set are valid and has not exceptions
+    """
+    NAME_ERROR_CREATION = """
+    syntax error - there is a name error detected in model initialization.
+    """
+    NAME_ERROR_RUN = """
+    syntax error - there is a name error detected in model training.
+    """
+    MODULE_NOT_FOUND = """
+    module not found: the import statement has troubles trying to load a module
+    you have imported an element that cannot be found.
+    """
+    TYPE_ERROR = """
+    type error - there is a type mismatch between the value the module expect to gain and
+    the value that has been assigned.
+    """
+    UNEXPECTED_KEYWORD = """
+    a module in your model implementation have gained an unexpected keyword arguemnt
+    named as
+    """
+    NO_FILES = """
+    you haven't upload any code files and implementaton of your model yet.
+    upload the files and test your model validity afterward.
+    """
+    NO_MAIN_FILE = """
+    the main code file of your model implementation should be called model.py,
+    rename or reupload your file with the aformentioned name.
+    """
+    MODEL_CLASS_UNDEFINED = """
+    your model class should be named as class Model,
+    please follow this instruction and reupload your model code files.
+    """
+    NOT_ENOUGH_SAMPLES = """
+    according to the division rule of the dataset into three disjoint sets that you have set,
+    the dataset has insufficient number of samples such that one of them is empty set.
+    """

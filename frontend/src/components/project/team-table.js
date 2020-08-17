@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { getProjectTeam, selectProject } from '../../actions/projects.js';
 import { deleteMember } from '../../actions/projects.js';
+import AddMember from './add-member.js'
 
 class TeamTable extends Component {
     constructor(props) {
@@ -15,11 +16,12 @@ class TeamTable extends Component {
                 description: props.project_data.description,
                 result: props.project_data.result,
                 team: props.project_data.team
-            }
+            },
+            update_user: null,
         }
-        console.log(this.state.project)
         if (!this.state.project.team)
             this.props.getProjectTeam(this.state.project.project_id);
+        this.update_user = this.update_user.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -34,21 +36,42 @@ class TeamTable extends Component {
     }
 
     delete_handler(record_id) {
-        this.props.deleteMember(record_id, () => {
-            this.props.getProjectTeam(this.state.project.id)
-        });
+        this.setState({
+            ...this.state,
+            update_user: null
+        }, () => {
+            this.props.deleteMember(record_id, () => {
+                this.props.getProjectTeam(this.props.project_data.id)
+            });
+        })
     }
-    update_user(project_id) {
-        console.log('in select')
-        this.props.selectProject(project_id, (response) => {
-            console.log('call back function triggered')
-            window.location = homepage + '/project';
-        });
+
+    update_user(record) {
+        if (this.state.update_user == record) {
+            this.setState({
+                ...this.state,
+                update_user: null
+            })
+        } else {
+        this.setState({
+            ...this.state,
+            update_user: null
+        }, () => {
+            this.setState({
+                ...this.state,
+                update_user: record
+            })
+        })
+        }
+
     }
 
     render() {
         if (!this.state.project || !this.state.project.team) {
-            return <h2>No Team</h2>
+            return ''
+        }
+        if (this.state.project.team.length == 0) {
+            return <h4 className="message-text text-blue">There are no team members for this project</h4>
         }
         return (
             <div id="table">
@@ -59,7 +82,10 @@ class TeamTable extends Component {
                             <th scope="col">Member</th>
                             <th scope="col">Role</th>
                             <th scope="col">Join Date</th>
-                            <th scope="col">Actions</th>
+                            {
+                                (this.props.premissions < 4)?'':
+                                <th scope="col">Actions</th>
+                            }
                         </tr>
                     </thead>
                     <tbody>
@@ -72,20 +98,27 @@ class TeamTable extends Component {
                                     <td className="team-table-column">{ record.firstname + " " + record.lastname }</td>
                                     <td className="team-table-column">{ record.role }</td>
                                     <td className="team-table-column">{ record.join_date }</td>
-                                    <td className="team-table-column">
-                                        <button className="btn btn-outline-primary table-button" >onClick={ () => this.update_user(project.user) }>
-                                            edit
-                                        </button> 
-                                        &nbsp;
-                                        <button className="btn btn-outline-warning table-button" 
-                                            onClick={ () => this.delete_handler(record.id) } >
-                                            delete
-                                        </button>
-                                    </td>
+                                    {
+                                        (this.props.premissions < 4)?'':
+                                        <td className="team-table-column">
+                                            <button className="btn btn-outline-primary table-button" onClick={ () => this.update_user(record) }>
+                                                edit
+                                            </button> 
+                                            &nbsp;
+                                            <button className="btn btn-outline-warning table-button" 
+                                                onClick={ () => this.delete_handler(record.id) } >
+                                                delete
+                                            </button>
+                                        </td>
+                                    }
                                 </tr>)
                         } 
                     </tbody>
                 </table>
+                {
+                    (this.state.update_user != null)?
+                        <AddMember update={ true } id={ this.state.update_user.id } user={ this.state.update_user.user } role= { this.state.update_user.role } presmissions={ this.state.update_user.presmissions } getProjectTeam={this.props.getProjectTeam} />:''
+                }
             </div>
         );
     }
@@ -94,7 +127,8 @@ class TeamTable extends Component {
 const mapStateToProps = state => {
     return {
         project_data: state.projectReducer.project_selected,
-        username: state.authentication.user
+        username: state.authentication.user,
+        premissions: state.projectReducer.project_selected.premissions
     }
 }
 

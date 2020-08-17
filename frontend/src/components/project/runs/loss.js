@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import { getTrainResult, getDevResult } from '../../../actions/project/model.js';
 import BarChart from '../../graph/bar.js';
 import MultiBarChart from '../../graph/multibar.js';
-  
+import LineChart from '../../graph/line.js';
+
 class LossGraph extends Component {
     constructor(props) {
         super(props)
@@ -41,7 +42,7 @@ class LossGraph extends Component {
         })  
         return (
             <div className="run-chart">
-                <MultiBarChart data={ [this.props.train, this.props.dev] } display="epoch" value="loss" min={0} max={maximum_value + 1}
+                <LineChart data={ [this.props.train, this.props.dev] } display="epoch" value="loss" min={0} max={maximum_value + 1}
                     categories= { ['Train Set', 'Dev Set'] } />
             </div>
         )

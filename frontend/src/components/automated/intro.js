@@ -33,7 +33,7 @@ class IntroModelBuilder extends Component {
                         <div class="col-md-4 service_icon">
                             <div class="single_service">
                                 <h5>x</h5>
-                                <h3><a href="#">Frieldly Interface</a></h3>
+                                <h3><a href="#">Friendly Interface</a></h3>
                                 <p>Declare what the structure of your model should 
                                 be like without dwelling on the implementations.</p>
                             </div>
@@ -54,10 +54,12 @@ class IntroModelBuilder extends Component {
                         <div class="col-lg-6 home-about-right no-padding">
                             <h2>Build a neural network in three simple steps</h2>
                             <h5>
-                                We are here to listen from you deliver exellence
+                                through a friendly and advanced interface.
                             </h5>
                             <p>
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Ut enim ad minim. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor.
+                                Step 1: General details about the project <br/>
+                                Step 2: Model Settings <br/>
+                                Step 3: Define the model architecture\layers <br/> 
                             </p>
                             </div>
                         </div>

@@ -9,7 +9,7 @@ function LayerItem(props) {
     if (props.params == null)
         return ''
     return (
-        <div className={ (!isValid)?"warning-layer row layer-row" : (props.error)?"error-layer row layer-row": "row layer-row" }>
+        <div className={ (!isValid)?"warning-layer row layer-row" : (props.error)?"error-layer row layer-row":(props.concern)?"concern-layer row layer-row":"row layer-row" }>
                 <div className="col-4">
                     <div className={ "icon-container icon-container-" + color }>
                         <p>{ props.id }</p>
@@ -52,8 +52,11 @@ function LayerItem(props) {
                         } else {
                             if (param.type == 'choose') 
                                 return <h5>{ param.name + " : " + param.options[props.layer[param.id]] }</h5>
-                            else
+                            else{
+                                if (param.name == "Input Features" && props.layer.parameters != null && 'in_features' in props.layer.parameters)
+                                    return <h5>{ param.name + ' : ' + props.layer.parameters['in_features'] } </h5>
                                 return <h5>{ param.name + ' : ' + display_size(props.layer[param.id]) }</h5>
+                            }
                         }
                     }):''
                 }

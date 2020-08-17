@@ -4,8 +4,6 @@ import { connect } from 'react-redux';
 class RunFeatures extends Component {
     constructor(props) {
         super(props)
-        console.log('features')
-        console.log(this.props)
     }
 
     render() {

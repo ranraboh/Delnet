@@ -18,11 +18,26 @@ class DatasetProjectsGraph extends Component {
     render() {
         if (this.props.projects == null)
             return ''
+        if (this.props.projects.length == 0) {
+            return <div className="section-in-main">
+            <h1 className="dataset-header-title dataset-header-blue">
+                Dataset Projects
+            </h1>
+            <p/>
+            <h4 className="dataset-graph-intro">
+                this section shows the projects that are using this dataset <br/> 
+                and compares the projects success rate <br/> 
+            </h4>
+            <h4 className="dataset-graph-intro text-blue">
+                there are no projects that are using this dataset yet. <br/>
+            </h4>
+        </div>
+        }
         return (
             <div className="section-in-main">
                 <div className="header-section-v2">
                     <h1 className="dataset-header-title dataset-header-blue">
-                        Projects Dataset
+                        Dataset Projects
                     </h1>
                 </div>
                 <h4 className="dataset-graph-intro">

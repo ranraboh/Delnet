@@ -4,16 +4,18 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import MiniSection from '../home/mini.js';
 import { connect } from 'react-redux';
-import { getItemsCount, getDatasetTeam } from '../../actions/dataset/get';
+import { getDatasetHeader } from '../../actions/dataset/get';
 
 class Stats extends Component {
     constructor(props) {
         super(props)
-        this.props.getItemsCount(this.props.dataset_data.id)
-        this.props.getDatasetTeam(this.props.dataset_data.id)
+        this.props.getDatasetHeader(this.props.dataset_data.id)
     }
 
     render() {
+
+        if (this.props.dataset_data == null || this.props.dataset_data.header == null)
+            return ''
         return (
         <div id="activeness-section">
         <div className="row">
@@ -22,9 +24,9 @@ class Stats extends Component {
             <MiniSection size="4" style="purple" category="Creator" value={ this.props.dataset_data.user } icon="fa-user" />
         </div>
         <div className="row">
-            <MiniSection size="4" style="danger" category="Items" value={ this.props.dataset_data.items_quantity } icon="fa-database" />
-            <MiniSection size="4" style="success" category="Labels" value={ this.props.dataset_data.labels_quantity } icon="fa-tag" />
-            <MiniSection size="4" style="warning" category="Collectors" value={ this.props.dataset_data.team_size } icon="fa-users" />
+            <MiniSection size="4" style="danger" category="Items" value={ this.props.dataset_data.header.items } icon="fa-database" />
+            <MiniSection size="4" style="success" category="Labels" value={ this.props.dataset_data.header.labels } icon="fa-tag" />
+            <MiniSection size="4" style="warning" category="Collectors" value={ this.props.dataset_data.header.collectors } icon="fa-users" />
         </div>
         </div>
         
@@ -44,8 +46,8 @@ const mapDispatchToProps = dispatch => {
         getItemsCount: (dataset_id) => {
             dispatch(getItemsCount(dataset_id))
         },
-        getDatasetTeam: (dataset_id) => {
-            dispatch(getDatasetTeam(dataset_id))
+        getDatasetHeader: (dataset_id) => {
+            dispatch(getDatasetHeader(dataset_id))
         }
     }
 }

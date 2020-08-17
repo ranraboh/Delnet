@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import {getSenderMessages} from '../../actions/users'
+import { getSenderMessages } from '../../actions/users'
 
 class senderMessage extends Component {
     constructor(props) {
@@ -10,8 +10,6 @@ class senderMessage extends Component {
         this.props.getSenderMessages(props.username)
     }
    
-
-
     render() {
        
         console.log(this.props.senderMessages);
