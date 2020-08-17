@@ -36,9 +36,12 @@ class MainProfileContent extends Component {
         let personal_details_section = this.section(<PersonalDetails/>, 'Personal Details', this.props.personal_details_active)
         let change_password_section = this.section(<ChangePassword/>, 'Change Password', this.props.change_password_active)
         let change_image_section = this.section(<ChangeImage/>, 'Change Image', this.props.change_image_active)
-        let change_sender_massages = this.section(<RecieverMessage/>, 'Sender Messages ', this.props.active_sender_message)
-        let change_reciver_massages = this.section(<SenderMessage/>, 'Reciever Messages', this.props.active_reciever_message)
-        let change_content_massages = this.section(<WriteMessage/>, 'Content Messages', this.props.active_content_message)
+        
+        let change_sender_massages = this.section(<RecieverMessage/>, 'Received Messages ', this.props.active_sender_message)
+        let change_reciver_massages = this.section(<SenderMessage/>, 'Messages Sent', this.props.active_reciever_message)
+        let change_content_massages = this.section(<WriteMessage/>, 'Sending Messages', this.props.active_content_message)
+
+
         return (
             <div className="main-section">
                 { activeness_section }

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { addTask, getProjectTeam, updateTask, getTask } from '../../actions/projects.js'
 import { projectPage } from '../../appconf.js';
+import { ValidateEmail, allLetter, typeOfNaN, lengthOfString,check_itsnot_empty } from "../../actions/validation";
 
 
 
@@ -12,6 +13,10 @@ class AddTask extends Component {
         /* initialize user details */
         if (this.props.update != null) {
             this.state = {
+                errors: {
+                    executor_task: '',
+                    task: ''                
+                },
                 task: {
                     id: this.props.update.id,
                     executor_task: this.props.update.executor_task,
@@ -21,6 +26,10 @@ class AddTask extends Component {
             }
         } else {
             this.state = {
+                errors: {
+                    executor_task: '',
+                    task: ''                
+                },
                 task: {
                     executor_task: null,
                     project: props.project_id.id,
@@ -28,11 +37,16 @@ class AddTask extends Component {
                 }
             }
         }
+        this.restartErrors=this.restartErrors.bind(this);
         this.add_task_action = this.add_task_action.bind(this);
         this.on_change = this.on_change.bind(this);
         this.on_member_select = this.on_member_select.bind(this)
         if (this.props.team == null)
             this.props.getProjectTeam(this.state.task.project)
+    }
+    restartErrors(errors){
+        errors['executor_task'] =''
+        errors['task'] =''
     }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
@@ -82,8 +96,42 @@ class AddTask extends Component {
 
 
     add_task_action(e) {
+
+      
         e.preventDefault();
+        let errors = this.state.errors
+       // let user = this.state.dataset;
         let task = this.state.task
+        this.restartErrors(errors);
+        var bool=false
+        if ((!check_itsnot_empty(task['executor_task']))) {
+            console.log("shiran234")
+            errors['executor_task'] ="Please fill in the executor task "
+            console.log(errors['executor_task'])
+            bool=true
+        }
+         
+        
+        if ((!check_itsnot_empty(task['task']))) {
+            errors['task'] ="Please fill in the task content."
+            console.log(errors['task'])
+            bool=true
+
+        }
+         if(!lengthOfString(task['task'],400)){
+                errors['task'] ="It is possible to write up to 400 words, please be careful"
+                console.log(errors['task'])
+                bool=true
+
+            }
+            this.setState({
+                ...this.state,
+                errors
+            })
+            if(bool){
+                return
+            }
+       
         task.username = this.props.username
         if (this.props.update == null) {
             this.props.addTask(task, () => {
@@ -113,20 +161,33 @@ class AddTask extends Component {
                     <div class="form-row m-b-55">
                     <div className="name">task assigned to: </div>
                         <div class="value">
-                            <select name="project_dataset" className="textbox-v1" onChange={ this.on_member_select }>
-                                <option value="-">-----</option>
-                                { team_options }
-                            </select>   
-                        </div>
+                            <select class={(this.state.errors.executor_task == '')? 'input-projects' : 'input-projects form-control is-invalid'} 
+                              name="executor_task" value={ this.state.task.executor_task  }
+                             onChange={ (e) => this.on_change('executor_task', e.target.value) }>
+                                 <option value="-">-----</option>
+                                { team_options }</select>
+                                <div class="invalid-feedback">
+                                    { this.state.errors.executor_task }
+                                </div>
+                        </div> 
+
                     </div>
                     <div class="form-row m-b-55">
-                    <div className="name">:</div>
+                    <div className="name">Task content:</div>
                         <div class="value">
+                        
                         <div class="col-sm">
-                            <textarea rows="3" cols="100" value={ this.state.task.task } className="textbox-v1" onChange={ (e)=> this.on_change('task', e.target.value)} ></textarea>
+                            <textarea class={(this.state.errors.task == '')? 'input-projects' : 'input-projects form-control is-invalid'} 
+                             rows="3" cols="100" name="task" value={  this.state.task.task   }
+                             onChange={ (e) => this.on_change('task', e.target.value) }
+                             placeholder="Enter task content please" />
+                                <div class="invalid-feedback">
+                                    { this.state.errors.task }
+                                </div>
                         </div>
                         </div>
-                    </div>
+                        </div>
+
                     
                     <div>
                         <button class="btn register-button" onClick={ this.add_task_action }>{ (this.props.update == null)? 'Add Task' : 'Update Task' }</button>

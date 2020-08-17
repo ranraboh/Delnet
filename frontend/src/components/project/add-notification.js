@@ -2,12 +2,18 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { addNotificationpProject } from '../../actions/projects.js'
 import { getUserDetails } from '../../actions/users.js'
+import { ValidateEmail, allLetter, typeOfNaN, lengthOfString,check_itsnot_empty } from "../../actions/validation";
+
 
 class AddNotification extends Component {
     constructor(props) {
         super(props);
         /* initialize user details */
         this.state = {
+            errors: {
+                topic: '',
+                content: ''                
+            },
             notification: {
                 topic: '',
 				user: this.props.username,
@@ -18,9 +24,13 @@ class AddNotification extends Component {
         }
         this.send_action = this.send_action.bind(this);
         this.on_change = this.on_change.bind(this);
-
+        this.restartErrors=this.restartErrors.bind(this);
         if (this.state.notification.image == undefined)
             this.props.getUserDetails(this.props.username)
+    }
+    restartErrors(errors){
+        errors['topic'] =''
+        errors['content'] =''
     }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
@@ -43,11 +53,51 @@ class AddNotification extends Component {
     }
 
     send_action(e) {
-        e.preventDefault();
         if (this.props.premissions < 2) {
             alert("you are not authorized to add new notifications")
             return
         }
+        e.preventDefault();
+       
+        let errors = this.state.errors
+        let notification = this.state.notification;
+        this.restartErrors(errors);
+        var bool=false
+        if (!check_itsnot_empty(notification['topic'])) {
+            errors['topic'] ="the topic is empy ,enter topic please."
+            console.log(errors['topic'])
+            bool=true
+        }
+        if(!lengthOfString(notification['topic'],200)){
+            errors['topic'] ="It is possible to write up to 200 words, please be careful."
+            console.log(errors['topic'])
+            bool=true
+        }
+        if (!check_itsnot_empty(notification['content'])) {
+            errors['content'] ="the content  is empy ,enter please."
+            bool=true
+        }
+        if(!lengthOfString(notification['content'],500)){
+            errors['content'] ="It is possible to write up to 500 words, please be careful."
+            console.log(errors['content'])
+            bool=true
+        }
+        
+        this.setState({
+            ...this.state,
+            errors
+        })
+       
+    
+        if(bool){
+            console.log("shiran1937-----------------------------------------------------------------------------------")
+            return
+        }
+
+
+
+      
+      
         this.props.addNotificationpProject(this.state.notification, () => {
             this.setState({
                 ...this.state,
@@ -82,7 +132,12 @@ class AddNotification extends Component {
                     <div className="name">Topic:</div>
                         <div class="value">
                              <div class="col-sm">
-                                <input value={ this.state.notification.topic } className="textbox-v1" onChange={ (e)=> this.on_change('topic', e.target.value)} ></input>
+                            <input class={(this.state.errors.topic == '')? 'input--style-5' : 'input--style-5 form-control is-invalid'} 
+                            type="text" name="topic" value={ this.state.notification.topic }
+                                onChange={ (e) => this.on_change('topic', e.target.value) } />
+                                <div class="invalid-feedback">
+                                    { this.state.errors.topic }
+                                </div>                   
                             </div>
                         </div>
                     </div>
@@ -90,7 +145,12 @@ class AddNotification extends Component {
                     <div className="name">Content:</div>
                         <div class="value">
                             <div class="col-sm">
-                                <textarea rows="10" cols="50"  value={ this.state.notification.content } className="textbox-v1" onChange={ (e)=> this.on_change('content', e.target.value)} ></textarea>
+                            <textarea class={(this.state.errors.content == '')? 'input-projects' : 'input-projects form-control is-invalid'} 
+                             rows="10" cols="50" name="content" value={ this.state.notification.content   }
+                             onChange={ (e) => this.on_change('content', e.target.value) } />
+                                <div class="invalid-feedback">
+                                    { this.state.errors.content }
+                                </div>                      
                             </div>
                         </div>
                     </div>
