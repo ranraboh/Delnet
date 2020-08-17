@@ -21,9 +21,9 @@ class ActiveSection extends Component {
         let personal_details = this.category('Personal Details', this.props.personal_details_active, this.props.hidePersonalDetails)  
         let change_password = this.category('Change Password', this.props.change_password_active, this.props.hideChangePassword)        
         let change_image = this.category('Change Image', this.props.change_image_active, this.props.hideChangeImage)
-        let change_sender = this.category('Sender Messages ', this.props.active_sender_message, this.props.hideSenderMessage)
-        let change_reciever = this.category('Recuver Messages', this.props.active_reciever_message, this.props.hideRecieveMessage)
-        let change_content = this.category('Content Messages', this.props.active_content_message, this.props.hideContentMessage) 
+        let change_sender = this.category('Received Messages ', this.props.active_sender_message, this.props.hideSenderMessage)
+        let change_reciever = this.category('Messages Sent', this.props.active_reciever_message, this.props.hideRecieveMessage)
+        let change_content = this.category('Write Messages ', this.props.active_content_message, this.props.hideContentMessage) 
         return (
             <div id="actives-section">
                 { activeness_section }

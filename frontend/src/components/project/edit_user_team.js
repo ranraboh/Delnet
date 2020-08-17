@@ -20,8 +20,8 @@ class EditMemberIn extends Component {
             member: {
                 project: props.project_id,
                 user: props.username,
-                role: props.,
-                premissions: '1'
+                role: props.role,
+                premissions: props.premissions
             },
         }
 

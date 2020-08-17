@@ -73,7 +73,7 @@ class TeamTable extends Component {
                                     <td className="team-table-column">{ record.role }</td>
                                     <td className="team-table-column">{ record.join_date }</td>
                                     <td className="team-table-column">
-                                        <button className="btn btn-outline-primary table-button" >onClick={ () => this.update_user(project.user) }>
+                                        <button className="btn btn-outline-primary table-button" onClick={ () => this.update_user(project.user) }>
                                             edit
                                         </button> 
                                         &nbsp;
