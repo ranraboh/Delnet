@@ -5,6 +5,7 @@ import DataSetsUser from './usersets';
 import BuildDataset from './create';
 import DatasetsItemsGraph from './items-graph';
 import ViewDatasets from './view'
+import FollowingDatasets from './follow'
 
 class DataSetsMain extends Component {
     constructor(props) {
@@ -17,17 +18,18 @@ class DataSetsMain extends Component {
         this.toggle_table = this.toggle_table.bind(this);
         this.toggle_create = this.toggle_create.bind(this);
         this.toggle_search = this.toggle_search.bind(this);
+        this.toggle_follow = this.toggle_follow.bind(this);
     }
 
     get_section_toggle() {
-        console.log('toggle method')
-        console.log(this.state)
         if (this.state.show_toggle == 'Your Datasets')
             return (<DataSetsUser />);
         else if (this.state.show_toggle == 'Build Dataset')
             return (<BuildDataset />)
         else if (this.state.show_toggle == 'Search Datasets')    
             return (<ViewDatasets />)
+        else if (this.state.show_toggle == 'Followed Datasets')
+            return (<FollowingDatasets/>)
         else
             return '';
     }
@@ -40,6 +42,14 @@ class DataSetsMain extends Component {
         })
     }
     
+    toggle_follow() {
+        this.setState({
+            ...this.state,
+            show_toggle: 'Followed Datasets',
+            description: 'this section contains a list of your data-sets you have followed'
+        })
+    }
+
     toggle_create() {
         this.setState({
             ...this.state,
@@ -79,6 +89,9 @@ class DataSetsMain extends Component {
                     </button>
                     <button className="btn btn-outline-dark btn-datasets" onClick= { this.toggle_search } >
                         <i className="fa fa-search"></i> Search Datasets
+                    </button>
+                    <button className="btn btn-outline-danger btn-datasets" onClick= { this.toggle_follow } >
+                        <i className="fa fa-search"></i> Followed Datasets
                     </button>
                 </div>
                 <DatasetsItemsGraph/>

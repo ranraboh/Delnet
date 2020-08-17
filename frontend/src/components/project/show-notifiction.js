@@ -25,6 +25,21 @@ class ShowNotification extends Component {
     render() {
         if(this.props.show_notification_project==null)
             return ''
+        if (this.props.show_notification_project.length == 0) {
+            return <div className="section-in-main">
+                <div className="header-section-v1 header-v1-blue">
+                    <h1 id="projects-title">
+                        Show Notifications
+                    </h1>
+                    <h2 id="projects-intro">
+                        show project notifications
+                    </h2>
+                </div>
+                <div className="message-text text-blue">
+                    There are no notifications for this project
+                </div>
+            </div>
+        }
         return (
             <div className="section-in-main">
                 <div className="header-section-v1 header-v1-blue">

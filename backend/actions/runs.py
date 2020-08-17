@@ -53,7 +53,6 @@ def confusion_matrix_records(run_code):
 def recall(run_code):
     # read crucial data to compute recall score
     c_matrix = confusion_matrix(run_code)
-    print(c_matrix)
     dataset = dataset_of_run(run_code)
     labels = labels_records(dataset.id)
 
@@ -138,7 +137,6 @@ def accuracy_range(project):
 # get favorite value for given hyper-parameter
 def favorite_parameter(results, category):
     grouped_results = results.values(category).annotate(favorite=Count(category)).order_by('-favorite').first()
-    print(grouped_results)
     return {
         category: grouped_results[category],
         'count': grouped_results['favorite'],

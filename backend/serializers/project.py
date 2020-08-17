@@ -19,6 +19,7 @@ class ExtendedProjectTeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectTeam
         fields = '__all__'
+    
 
 class ProjectFilesSerializer(serializers.ModelSerializer):
     class Meta:

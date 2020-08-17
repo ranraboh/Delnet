@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {CHANGE_TASK_COMPLETE,GET_CHECKLIST_NOT_DONE,GET_CHECKLIST_DONE,ADD_TASK, GET_TASK,GET_NOTIFICTION_PROJECT,ADD_NOTIFICTION_PROJECT,UPDATE_PROJECT , GET_USER_PROJECTS, CREATE_PROJECT, SELECT_PROJECT, GET_PROJECT_TEAM, ADD_MEMBER_TEAM, GET_PROJECT_STATICS, CHECK_LIST_UPDATE_STATE, CHECKLIST_ABORT_UPDATE_STATE, UPDATE_TASK } from './types.js'
+import {GET_PREMISSIONS, CHANGE_TASK_COMPLETE,GET_CHECKLIST_NOT_DONE,GET_CHECKLIST_DONE,ADD_TASK, GET_TASK,GET_NOTIFICTION_PROJECT,ADD_NOTIFICTION_PROJECT,UPDATE_PROJECT , GET_USER_PROJECTS, CREATE_PROJECT, SELECT_PROJECT, GET_PROJECT_TEAM, ADD_MEMBER_TEAM, GET_PROJECT_STATICS, CHECK_LIST_UPDATE_STATE, CHECKLIST_ABORT_UPDATE_STATE, UPDATE_TASK, GET_POPULAR_MODEL, UPDATE_PROJECT_MEMBER, DELETE_MEMBER_TEAM, GET_PROJECT_HEADER } from './types.js'
 
 /**
  * get set of all projects of given user
@@ -78,6 +78,23 @@ export const selectProject = (project_id, callback_function) => dispatch => {
 }
 
 /**
+ * selectProject triggered when user select to view specific project
+ * @param {*} project_id identification number of selected project
+ */
+export const getPremissions = (project_id, username, callback_function) => dispatch => {
+    axios.get('/api/premissions/project/' + project_id + "/user/" + username).then(response => {
+        /* save data in browser storage */
+        console.log(response)
+        window.localStorage.setItem('premissions', response.data.premissions)
+        /* dispatch to store project data */
+        dispatch({
+            type: GET_PREMISSIONS,
+            payload: response.data
+        })
+    }).then(callback_function).catch(err => console.log(err))
+}
+
+/**
  * get a list of the team members working on given project
  * @param {*} project_id identification number of project
  */
@@ -91,16 +108,56 @@ export const getProjectTeam = (project_id) => dispatch => {
 }
 
 /**
+ * get project mapping popular model
+ * @param {*} project_id identification number of project
+ */
+export const getPopularModel = (project_id) => dispatch => {
+    axios.get('/api/project/' + project_id + "/popular").then(result => {
+        dispatch({
+            type: GET_POPULAR_MODEL,
+            payload: result.data
+        })
+    }).catch(err => console.log(err));
+}
+
+/**
+ * get project mapping popular model
+ * @param {*} project_id identification number of project
+ */
+export const getProjectHeader = (project_id) => dispatch => {
+    axios.get('/api/project/' + project_id + "/header").then(result => {
+        dispatch({
+            type: GET_PROJECT_HEADER,
+            payload: result.data
+        })
+    }).catch(err => console.log(err));
+}
+
+/**
  * insert new user\member into the project team
  * @param {*} member_record contains information about newly joined member 
  */
-export const createMember = (member_record) => dispatch => {
+export const createMember = (member_record, callback_function) => dispatch => {
     axios.post('/api/team/projects/', member_record).then(response => {
         dispatch({
             type: ADD_MEMBER_TEAM,
             payload: response.data
         })
-    }).catch(err => console.log(err))
+    }).then(callback_function).catch(err => console.log(err))
+}
+
+
+/**
+ * update team member credentials
+ * @param {*} member_record contains information about member 
+ */
+export const updateProjectMember = (member_record, callback_function) => dispatch => {
+    axios.post('/api/project/member/update', member_record).then(response => {
+        dispatch({
+            type: UPDATE_PROJECT_MEMBER,
+            payload: response.data
+        })
+    }).then(callback_function).catch(err => console.log(err))
 }
 
 /**
@@ -111,7 +168,7 @@ export const deleteMember = (member_record, callback_function) => dispatch => {
     axios.delete('/api/team/projects/' + member_record + '/').then(response => {
         console.log(response);
         return dispatch({
-            type: ADD_MEMBER_TEAM,
+            type: DELETE_MEMBER_TEAM,
             payload: response.data
         })
     }).then(callback_function).catch(err => console.log(err))

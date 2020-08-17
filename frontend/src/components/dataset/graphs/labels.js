@@ -11,6 +11,21 @@ class LabelsDistribution extends Component {
     }
 	
     render() {
+        if (this.props.dataset_data.labels == null)
+            return ''
+        if (this.props.dataset_data.labels.length == 0) {
+            return (<div className="section-in-main">
+            <div className="header-section-v2">
+                <h1 className="dataset-header-title dataset-header-blue">
+                    Labels Distribution
+                </h1>
+            </div>
+            <h4 className="dataset-graph-intro text-purple">
+                you haven't define labels for your dataset yet. <br/>
+                you can insert new label through add label tab
+            </h4>
+            </div>)
+        }
         return (
             <div className="section-in-main">
                 <div className="header-section-v2">

@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { homepage } from '../../appconf.js';
 import { selectFile, getFileContent, updateFileContent } from '../../actions/project/files.js'
- 
+import { hideSection } from '../../actions/project/sections'
+import { loadLayers } from '../../actions/amb/general'
+
 class FileContent extends Component {
     constructor(props) {
         super(props)
@@ -22,14 +24,13 @@ class FileContent extends Component {
     }
 
     update_file_content() {
-        console.log('updating...')
         this.props.updateFileContent(this.state.file, () => {
             alert('the file content update successfully')
+            window.location = homepage + "/project"
         })
     }
 
     model_files() {
-        console.log(this.state)
         let selected_option = this.state.selected_option
         selected_option.current = 0
         this.setState({
@@ -56,12 +57,6 @@ class FileContent extends Component {
             ...this.state,
             file
         })
-    }
-
-    componentWillMount() {
-        console.log(this.props.loggedIn)
-        if (this.props.loggedIn === false || this.props.loggedIn === 'false')
-            window.location = homepage + '/login'
     }
 
     render() {
@@ -97,7 +92,6 @@ class FileContent extends Component {
                         </div>
                         <button type="button" class="btn btn-primary" onClick={ this.update_file_content }>Update</button>&nbsp;	
                         <button type="button" class="btn btn-danger">Reset</button>
-
                     </div>
                 </div>
             </div>
@@ -108,9 +102,9 @@ class FileContent extends Component {
 
 const mapStateToProps = state => {
     return {
-        loggedIn: state.authentication.loggedIn,
         username: state.authentication.user,
-        file_selected: state.projectReducer.file_selected
+        file_selected: state.projectReducer.file_selected,
+        project_data: state.projectReducer.project_selected,
     }
 }
 
@@ -124,6 +118,12 @@ const mapDispatchToProps = dispatch => {
         },
         updateFileContent: (file, callback) => {
             dispatch(updateFileContent(file, callback))
+        },
+        loadLayers: (project_id, callback) => {
+            dispatch(loadLayers(project_id, callback))
+        },
+        hideSection: (section) => {
+            dispatch(hideSection(section))
         }
     }
 }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { datasetsPublicView, getDatasetByName } from '../../actions/dataset/get'
+import { datasetsPublicView, getDatasetByName, getPremissions } from '../../actions/dataset/get'
 import { selectDataset, followDataset, UnfollowDataset } from '../../actions/dataset/manipulation'
 import { homepage } from '../../appconf.js';
 
@@ -27,12 +27,13 @@ class ViewDatasets extends Component {
     }
 
     select_dataset(dataset_id) {
-        console.log('in select')
-        console.log(dataset_id)
-        this.props.selectDataset(dataset_id, (response) => {
-            window.location = homepage + '/dataset';
+        this.props.selectDataset(dataset_id, () => {
+            this.props.getPremissions(dataset_id, this.props.username, () => {
+                window.location = homepage + '/dataset';
+            })
         });
     }
+
 
 
     search_operation() {
@@ -186,6 +187,9 @@ const mapDispatchToProps = dispatch => {
         },
         UnfollowDataset: (follow_id, callback) => {
             dispatch(UnfollowDataset(follow_id, callback))
+        },
+        getPremissions: (dataset_id, username, callback) => {
+            dispatch(getPremissions(dataset_id, username, callback))
         }
     }
 }

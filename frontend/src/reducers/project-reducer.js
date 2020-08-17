@@ -1,4 +1,4 @@
-import { GET_PROJECT_ANALYSIS, GET_ACCURACY_RANGE, GET_SEARCH_DATASETS, GET_DATASETS_PUBLIC, GET_DATASET_OFFERS, GET_UNLABLED_SMAPLES ,CHANGE_TASK_COMPLETE,GET_CHECKLIST_DONE,GET_CHECKLIST_NOT_DONE,GET_TASK,GET_NOTIFICTION_PROJECT, GET_FILE_CONTENT, UPDATE_PROJECT, GET_PROJECT_FILES ,GET_USER_PROJECTS, CREATE_PROJECT, DELETE_PROJECT, SELECT_PROJECT, GET_PROJECT_TEAM, ADD_MEMBER_TEAM, DELETE_MEMBER_TEAM, SELECT_FILE, GET_PROJECT_STATICS } from '../actions/types.js'
+import { GET_PROJECT_ANALYSIS, GET_ACCURACY_RANGE, GET_SEARCH_DATASETS, GET_DATASETS_PUBLIC, GET_DATASET_OFFERS, GET_UNLABLED_SMAPLES ,CHANGE_TASK_COMPLETE,GET_CHECKLIST_DONE,GET_CHECKLIST_NOT_DONE,GET_TASK,GET_NOTIFICTION_PROJECT, GET_FILE_CONTENT, UPDATE_PROJECT, GET_PROJECT_FILES ,GET_USER_PROJECTS, CREATE_PROJECT, DELETE_PROJECT, SELECT_PROJECT, GET_PROJECT_TEAM, ADD_MEMBER_TEAM, DELETE_MEMBER_TEAM, SELECT_FILE, GET_PROJECT_STATICS, GET_PREMISSIONS, GET_KNOWN_MODELS, GET_POPULAR_MODEL, GET_PROJECT_HEADER, RUN_MODEL } from '../actions/types.js'
 import { ADD_NOTIFICTION_PROJECT, ADD_TASK, CHECKLIST_ABORT_UPDATE_STATE, CHECK_LIST_UPDATE_STATE } from '../actions/types'
  
 const initialState = {
@@ -26,6 +26,7 @@ const initialState = {
       train_percentage: window.localStorage.getItem('train_percentage'),
       dev_percentage: window.localStorage.getItem('dev_percentage'),
       test_percentage: window.localStorage.getItem('test_percentage'),
+      premissions: window.localStorage.getItem('premissions'),
       files: [],
       files_quantity: -1,
       statics: null,
@@ -33,7 +34,8 @@ const initialState = {
       accuracy_range: null,
       offers: null,
       unlabled: null,
-      team: null
+      team: null,
+      header: null
     },
     public_datasets: null,
     search_datasets: null,
@@ -52,20 +54,41 @@ export function projectReducer(state = initialState, action) {
         ...state,
         taskComplete: action.payload
       };
-      case ADD_MEMBER_TEAM:
-        return {
-          ...state,
-          member_added: action.payload,
-          project_selected: {
-            ...state.project_selected,
-            team: state.team.concat([action.payload])
-          }
-        };
     case GET_CHECKLIST_NOT_DONE:
         return {
           ...state,
           taskNotComplete: action.payload
         }; 
+    case ADD_MEMBER_TEAM:
+      return {
+        ...state,
+        project_selected: {
+          ...state.project_selected,
+          header: {
+            ...state.project_selected.header,
+            members: state.project_selected.header.members + 1
+          }
+        }
+      }
+    case RUN_MODEL:
+      return {
+        ...state,
+        project_selected: {
+          ...state.project_selected,
+          header: {
+            ...state.project_selected.header,
+            runs: state.project_selected.header.runs + 1
+          }
+        }
+      }
+    case GET_PROJECT_HEADER:
+      return {
+        ...state,
+        project_selected: {
+          ...state.project_selected,
+          header: action.payload
+        }
+      }
     case CHANGE_TASK_COMPLETE:
         return {
           ...state,
@@ -91,6 +114,22 @@ export function projectReducer(state = initialState, action) {
         ...state,
         user_projects: action.payload
       };
+    case GET_PREMISSIONS:
+      return {
+        ...state, 
+        project_selected: {
+          ...state.project_selected,
+          premissions: action.payload.premissions
+        }
+      }
+    case GET_POPULAR_MODEL:
+      return {
+        ...state,
+        project_selected: {
+          ...state.project_selected,
+          known_model: action.payload,
+        }
+      }
     case CREATE_PROJECT: 
     return {
         ...state,
@@ -170,7 +209,14 @@ export function projectReducer(state = initialState, action) {
         case DELETE_MEMBER_TEAM:
           return {
             ...state,
-            member_deleted: action.payload
+            member_deleted: action.payload,
+            project_selected: {
+              ...state.project_selected,
+              header: {
+                ...state.project_selected.header,
+                members: state.project_selected.header.members - 1
+              }
+            }
         }
         case GET_PROJECT_STATICS:
           return {

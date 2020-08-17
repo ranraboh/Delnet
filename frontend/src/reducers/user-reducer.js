@@ -1,5 +1,5 @@
 import { ADD_MESSAGES,GET_USER_DETAILS, USER_LOOKUP_SUCCESS, USER_LOOKUP_FAIL, UPLOAD_IMAGE, UPDATE_USER,
-   UPDATE_USER_IMAGE,SENDER_MESSAGES,RECEIVER_MESSAGES,CONTENT_MESSAGES,MESSAGES_HEADER, NOTIFICATIONS_HEADER} from '../actions/types.js'
+   UPDATE_USER_IMAGE,SENDER_MESSAGES,RECEIVER_MESSAGES,CONTENT_MESSAGES,MESSAGES_HEADER, NOTIFICATIONS_HEADER, GET_USER_ACTIVENESS, UPDATE_PASSWORD, AUTHENTICATE} from '../actions/types.js'
 import { media } from '../appconf.js'
 
 const initialState = {
@@ -16,18 +16,33 @@ const initialState = {
     contentMessages:null,
     messagesHeader:null,
     add_message:null,
-    notifications_header:null
-    
+    notifications_header:null,
+    activeness: null,
+    password_update: null,
+    authenticate: null
 }
 export function userReducer(state = initialState, action) {
     switch (action.type) {
     case ADD_MESSAGES:
-      console.log("action----16")
-      console.log(action.payload)
       return {
         ...state,
         add_message: action.payload
       };
+    case AUTHENTICATE:
+      return {
+        ...state,
+        authenticate: action.payload
+      }
+    case GET_USER_ACTIVENESS:
+      return {
+        ...state,
+        activeness: action.payload
+      }
+    case UPDATE_PASSWORD: 
+     return {
+       ...state,
+       password_update: action.payload
+     }
     case GET_USER_DETAILS:
       return {
         ...state,

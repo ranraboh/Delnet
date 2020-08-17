@@ -45,7 +45,10 @@ class ProjectTeam extends Component {
                     </h2>
                 </div>
                 { toggle_section }
-                <button type="button" class="btn btn-primary btn-new-project" onClick={ this.create_toggle }>{ button_caption }</button>
+                {
+                    (this.props.premissions < 4)?'':
+                    <button type="button" class="btn btn-primary btn-new-project" onClick={ this.create_toggle }>{ button_caption }</button>
+                }
             </div>
         )
     }
@@ -55,7 +58,8 @@ class ProjectTeam extends Component {
 const mapStateToProps = state => {
     return {
         loggedIn: state.authentication.loggedIn,
-        username: state.authentication.user
+        username: state.authentication.user,
+        premissions: state.projectReducer.project_selected.premissions
     }
 }
 

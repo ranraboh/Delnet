@@ -45,16 +45,21 @@ class RunningSection extends Component {
                     this.state.runs.map((recored) =>
                         <div>
                             <h2 className="text-agency text-small text-bold">Run Code: { recored.id }</h2>
-                            <h2 className="text-agency text-small"><span className="underline">Date:</span> { recored.date + " " + recored.time }</h2>
                             <h2 className="text-agency text-small"><span className="underline">In Epoch:</span> { parseInt((recored.progress / (100 / recored.epochs)) + 1) + '/' + recored.epochs }</h2>
                             <h2 className="text-agency text-small"><span className="underline">Ran By:</span> { recored.user.firstname + ' ' + recored.user.lastname }</h2>
-                            <h2 className="text-agency text-small"><span className="underline">Hyper Parameters:</span> watch</h2>
+                            <h2 className="text-agency text-small"><span className="underline">Date:</span> { recored.date + " - " + recored.time.substring(0, 5) }</h2>
                             <ProgressBar value={ recored.progress } />
                             <hr/>
                         </div>
                     )
                 }
             </div>
+            {
+                (this.props.runs.length == 0)?
+                <div className="message-text text-aqua">
+                    There are no models in training process
+                </div>:''
+            }
             <p/>
         </div>
         );

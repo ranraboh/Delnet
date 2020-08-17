@@ -26,11 +26,24 @@ class ShowNotification extends Component {
     render() {
         if(this.props.show_notification_datasets==null)
             return ''
+        if (this.props.show_notification_datasets.length == 0) {
+            return (<div className="section-in-main">
+            <div className="header-section-v2">
+                <h1 className="dataset-header-title dataset-header-blue">
+                    Notifications
+                </h1>
+            </div>
+            <p/>
+            <h4 className="dataset-graph-intro text-purple">
+                there are no notifications to display.  
+            </h4>
+            </div>)
+        }
         return (
             <div className="section-in-main">
                 <div className="header-section-v2">
                     <h1 className="dataset-header-title dataset-header-blue">
-                        Show Notifications
+                        Notifications
                     </h1>
                 </div>
             <div  class="container">              

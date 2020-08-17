@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { getUnlabeledSamples, getDatasetLabels } from '../../actions/dataset/get'
+import { getUnlabeledSamples, getDatasetLabels, getNotificationDataset, getDataItems } from '../../actions/dataset/get'
 import { addDataItem, deleteUnlabeled } from '../../actions/dataset/manipulation';
 import { homepage } from '../../appconf';
 
@@ -17,7 +17,10 @@ class TagSamples extends Component {
                 item: [],
                 label: null,
                 insert_by: this.props.username,
-                dataset: this.props.dataset_data.id
+                dataset: this.props.dataset_data.id,
+                username: this.props.username,
+                tag: true,
+                offer: false
             }
         }
 
@@ -27,10 +30,17 @@ class TagSamples extends Component {
         this.label_selection_handler = this.label_selection_handler.bind(this);
         this.add_item = this.add_item.bind(this);
         this.image_url = this.image_url.bind(this);
+        this.update_data = this.update_data.bind(this);
 
         /* get unlabled data from the server */
         this.props.getUnlabeledSamples(this.props.dataset_data.id)
         this.props.getDatasetLabels(this.props.dataset_data.id)
+    }
+
+    update_data() {
+        this.props.getUnlabeledSamples(this.props.dataset_data.id)
+        this.props.getNotificationDataset(this.props.dataset_data.id)
+        this.props.getDataItems(1, this.props.dataset_data.id)
     }
 
     next_handler() {
@@ -48,6 +58,10 @@ class TagSamples extends Component {
     }
 
     add_item() {
+        if (this.props.premissions < 3) {
+            alert("you are not authorized to add new items")
+            return;
+        }
         this.setState({
             ...this.state,
             item: {
@@ -57,7 +71,7 @@ class TagSamples extends Component {
         }, () =>
             this.props.addDataItem(this.state.item, () => {
                 this.props.deleteUnlabeled(this.props.unlabeled[this.state.status].id, () => {
-                    this.props.getUnlabeledSamples(this.props.dataset_data.id)
+                    this.update_data()
                     alert('the item was added successfully')
                 })
             })
@@ -142,7 +156,7 @@ class TagSamples extends Component {
                         </div>
                         <div className="col-8">
                             <img className="unlabeled-image" src={ this.image_url() } />
-                            <div class="value label-options">
+                            <div class="value label-options-tag">
                             <div class="col-sm-6">
                                 {
                                     this.props.dataset_data.labels.map((label, index) =>
@@ -173,7 +187,8 @@ const mapStateToProps = state => {
     return {
         dataset_data: state.datasetsReducer.dataset_selected,
         username: state.authentication.user,
-        unlabeled: state.datasetsReducer.dataset_selected.unlabeled
+        unlabeled: state.datasetsReducer.dataset_selected.unlabeled,
+        premissions: state.datasetsReducer.dataset_selected.premissions,
     }
 }
 
@@ -190,7 +205,13 @@ const mapDispatchToProps = dispatch => {
         },
         deleteUnlabeled: (item, callback) => {
             dispatch(deleteUnlabeled(item, callback))
-        }
+        },
+        getNotificationDataset: (dataset) => {
+            dispatch(getNotificationDataset(dataset));
+        },
+        getDataItems: (page_id, dataset_id) => {
+            dispatch(getDataItems(page_id, dataset_id));
+        },
 	}
 }
 

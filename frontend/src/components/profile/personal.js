@@ -49,9 +49,7 @@ class PersonalDetails extends Component {
         errors['email'] = ''
     }
     update_profile(e) {
-        console.log("enter to update profile ")
         e.preventDefault();
-        console.log('register')
         let errors = this.state.errors
         let user = this.state.user;
         this.restartErrors(errors);
@@ -102,19 +100,18 @@ class PersonalDetails extends Component {
        
     
         if(bool){
-            console.log("shiran1937-----------------------------------------------------------------------------------")
             return
         }
 
        
         this.props.updateUser(this.state.user, () => {
+            this.props.getUserDetails(this.props.username)
             alert('your details successfully updated')
             window.location = homepage + '/profile';
         })
     }
 
     on_change(field, value) {
-        console.log('on change')
         let user = this.state.user;
         user[field] = value;
 

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { ValidateEmail, allLetter, typeOfNaN, lengthOfString,check_itsnot_empty } from "../../actions/validation";
-
+import { lengthOfString,check_itsnot_empty } from "../../actions/validation";
+import { getNotificationDataset } from '../../actions/dataset/get'
 import { updateDataset }from "../../actions/dataset/manipulation"
 
 
@@ -10,12 +10,10 @@ import { updateDataset }from "../../actions/dataset/manipulation"
 class DatasetDetailsForm extends Component {
     constructor(props) {
         super(props)
-        console.log('constructor')
-        console.log(this.props.dataset_data)
         this.state = {
             errors: {
                 datasetName: '',
-                description: ''                
+                description: ''               
             },
             dataset: this.props.dataset_data
         }
@@ -26,8 +24,31 @@ class DatasetDetailsForm extends Component {
         this.reset_handler = this.reset_handler.bind(this);
         this.update_profile = this.update_profile.bind(this);
         this.restartErrors=this.restartErrors.bind(this);
+        this.public_view_handler = this.public_view_handler.bind(this);
+        this.enable_offer_handler = this.enable_offer_handler.bind(this);
 
     }
+
+    enable_offer_handler() {
+        this.setState({
+            ...this.state,
+            dataset: {
+                ...this.state.dataset,
+                enable_offer: !this.state.dataset.enable_offer
+            }
+        })
+    } 
+
+    public_view_handler() {
+        this.setState({
+            ...this.state,
+            dataset: {
+                ...this.state.dataset,
+                public_view: !this.state.dataset.public_view
+            }
+        })
+    } 
+
     restartErrors(errors){
         errors['datasetName'] =''
         errors['description'] =''
@@ -36,45 +57,36 @@ class DatasetDetailsForm extends Component {
     update_profile(e) {
         e.preventDefault();
         let errors = this.state.errors
-       // let user = this.state.dataset;
         let componentDataset = this.state.dataset
+        componentDataset.username = this.props.username
         this.restartErrors(errors);
-        var bool=false
-        console.log(componentDataset['name'])
+        var bool = false
         if ((!check_itsnot_empty(componentDataset['name']))) {
             errors['datasetName'] ="Please fill in the dataset name  "
-            console.log(errors['datasetName'])
             bool=true
         }
-            if(!lengthOfString(componentDataset['name'],50)){
-                errors['datasetName'] ="It is possible to write up to 50 words, please be careful "
-                console.log(errors['datasetName'])
-                bool=true
-
-            }
-        
+        if(!lengthOfString(componentDataset['name'],50)){
+            errors['datasetName'] ="It is possible to write up to 50 words, please be careful "
+            bool=true
+        }
         if ((!check_itsnot_empty(componentDataset['description']))) {
             errors['description'] ="Please fill in the description."
             console.log(errors['description'])
             bool=true
 
         }
-         if(!lengthOfString(componentDataset['description'],300)){
+        if (!lengthOfString(componentDataset['description'],300)) {
                 errors['description'] ="It is possible to write up to 300 words, please be careful"
-                console.log(errors['description'])
                 bool=true
-
-            }
-            this.setState({
-                ...this.state,
-                errors
-            })
-            if(bool){
-                console.log("the bool is true , you have errors")
-                return
-            }
-            //?addLable ?
-        this.props.updateDataset(this.state.dataset, () => {
+        }
+        this.setState({
+            ...this.state,
+            errors
+        })
+        if(bool)
+            return
+        this.props.updateDataset(componentDataset, () => {
+            this.props.getNotificationDataset(this.state.dataset.id)
             alert('dataset update successfully')
         })
     }
@@ -153,24 +165,49 @@ class DatasetDetailsForm extends Component {
                         </div>
                     </div>
                 </div>
+                <div className="row row-form">
+                    <div className="col-2">
+                        <p className="project-form-field">Public View</p>
+                    </div>
+                    <div className="col-6">
+                        <p className="project-form-field">select whether you are willing to let other users to view your dataset contents or not</p>
+                        <div class="value">
+                        <input type="checkbox" name="group" className="radio-button-v1 radio-button-v1-purple" checked={ this.state.dataset.public_view == true || this.state.dataset.public_view == 'true' } />
+                                <label className="radio-button-v1-label" onClick={ this.public_view_handler }> Public View</label>
+                        </div>
+                    </div>
+                </div>
+                <div className="row row-form">
+                    <div className="col-2">
+                        <p className="project-form-field">Enable Offers</p>
+                    </div>
+                    <div className="col-6">
+                        <p className="project-form-field">select whether you are willing to let the system to offer your samples to another dataset owners</p>
+                        <div class="value">
+                        <input type="checkbox" name="group" className="radio-button-v1 radio-button-v1-purple" checked={ this.state.dataset.enable_offer == true || this.state.dataset.enable_offer == 'true' } />
+                                <label className="radio-button-v1-label" onClick={ this.enable_offer_handler }> Enable Offers</label>
+                        </div>
+                    </div>
+                </div>
             </div>
-            
-            <div id="dataset-details-operations">
-                <button type="button" className="button-v1 button-v1-blue button-v1-small"
-                    onClick={ this.update_profile }>Update</button>
-                <button type="button" className="button-v1 button-v1-purple button-v1-small">Reset</button>
-            </div>
+            {  
+                (this.props.premissions < 5)?'':
+                <div id="dataset-details-operations">
+                    <button type="button" className="button-v1 button-v1-blue button-v1-small"
+                        onClick={ this.update_profile }>Update</button>
+                    <button type="button" className="button-v1 button-v1-purple button-v1-small">Reset</button>
+                </div>
+            }
         </div>
         );
     }
 }
 
 const mapStateToProps = state => {
-    console.log('map')
-    console.log(state.datasetsReducer.dataset_selected)
     return {
         username: state.authentication.user,
         dataset_data: state.datasetsReducer.dataset_selected,
+        premissions: state.datasetsReducer.dataset_selected.premissions,
     }
 }
 //get fun
@@ -178,7 +215,10 @@ const mapDispatchToProps = dispatch => {
     return {
         updateDataset: (dataset, callback) => {
             dispatch(updateDataset(dataset, callback));
-        }
+        },
+        getNotificationDataset: (dataset) => {
+            dispatch(getNotificationDataset(dataset));
+        },
     }
 }
 

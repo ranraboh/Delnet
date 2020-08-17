@@ -1,14 +1,26 @@
 import React, { Component } from 'react'
 import ProgressBar from './progressbar.js';
 import { connect } from 'react-redux'
-import { getUserProjects } from '../../actions/projects.js';
+import { getUserProjects, getPremissions, selectProject } from '../../actions/projects.js';
+import { homepage } from '../../appconf.js';
 
 class Projects extends Component {
     constructor(props) {
         super(props)
         this.props.getUserProjects(this.props.username) 
         this.projects_handler = this.projects_handler.bind(this);
+        this.select_project = this.select_project.bind(this);
     } 
+
+    
+    select_project(project_id) {
+        this.props.selectProject(project_id, () => {
+            this.props.getPremissions(project_id, this.props.username, () => {
+                window.location = homepage + '/project';
+            })
+        });
+    }
+
 
     projects_handler() {
         window.location = '../projects';
@@ -33,7 +45,7 @@ class Projects extends Component {
                             <h4 className="project_name">{ user.project_name }</h4>
                             <h5>{ user.description }</h5>
                             <ProgressBar value={ user.result } />
-                            <h5 className="project-chose-link"> Continue work on project </h5>
+                            <h5 className="project-chose-link"  onClick={ () => this.select_project(user.id) }> Continue work on project </h5>
                         </li>) 
                     }
                     <a id="projects_button" className="button-v2" onClick={ this.projects_handler }>
@@ -72,7 +84,13 @@ const mapDispatchToProps = dispatch => {
     return {
         getUserProjects: (username) => {
             dispatch(getUserProjects(username));
-        }
+        },
+        selectProject: (id, callback) => {
+            dispatch(selectProject(id, callback))
+        },
+        getPremissions: (id, username, callback) => {
+            dispatch(getPremissions(id, username, callback))
+        },
     }
 }
 

@@ -1,4 +1,4 @@
-import { CREATE_AMB_PROJECT, GET_PROJECT_LAYERS, UPDATE_LAYERS, GET_KNOWN_MODELS } from '../types'
+import { CREATE_AMB_PROJECT, GET_PROJECT_LAYERS, UPDATE_LAYERS, GET_KNOWN_MODELS, SELECT_KNOWN_MODEL } from '../types'
 import axios from 'axios'
 
 
@@ -21,13 +21,14 @@ export const createAutomatedModel = (data, callback_function) => dispatch => {
  * return the layers list of praticular project
  * @param {*} project_id identification number of specific project
  */
-export const loadLayers = (project_id) => dispatch => {
+export const loadLayers = (project_id, callback_function) => dispatch => {
+    console.log("loading layers...")
     axios.get('/api/project/' + project_id + "/layers").then(result => {
         dispatch({
             type: GET_PROJECT_LAYERS,
             payload: result.data
         })
-    })
+    }).then(callback_function).catch(err => console.log(err));
 }
 
 /**
@@ -39,7 +40,7 @@ export const saveLayers = (request, callback_function) => dispatch => {
             type: UPDATE_LAYERS,
             payload: result.data
         })
-    }).then(callback_function)
+    }).then(callback_function).catch(err => console.log(err));
 }
 
 /**
@@ -54,4 +55,16 @@ export const getKnownModels = () => dispatch => {
             payload: result.data
         })
     }).catch(err => console.log(err));
+}
+
+/**
+ * get known models
+ */
+export const selectKnownModels = (record, callback_function) => dispatch => {
+    axios.post('/api/project/popular', record).then(result => {
+        dispatch({
+            type: SELECT_KNOWN_MODEL,
+            payload: result.data
+        })
+    }).then(callback_function).catch(err => console.log(err));
 }

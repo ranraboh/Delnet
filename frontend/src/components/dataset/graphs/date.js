@@ -16,8 +16,24 @@ class DateDistributionGraph extends Component {
     }
 
     render() {
-        if (this.props.date_distribution == null)
+        if (this.props.date_distribution == null || this.props.date_distribution == undefined)
             return ''
+        if (this.props.date_distribution.length == 0) {
+            return <div className="section-in-main">
+            <h1 className="dataset-header-title dataset-header-blue">
+                Date Distribution
+            </h1>
+            <p/>
+            <h4 className="dataset-graph-intro">
+                this section shows the activity across time <br/> 
+                that is, the amount of samples that has been uploaded to the dataset for any date <br/>
+            </h4>
+            <h4 className="dataset-graph-intro text-blue">
+                dataset is empty and doesn't contains any samples. <br/>
+            </h4>
+        </div>
+        }
+        
         let max_value = 0
         this.props.date_distribution.map((record) =>{
             if (record.items_quantity > max_value)

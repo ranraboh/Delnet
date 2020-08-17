@@ -33,11 +33,11 @@ class AutomatedModelMain extends Component {
             )
         } else if (this.props.stage == MODEL_BUILDUP && this.props.model_type == KNOWN_MODEL) {
             return (
-                <Prebuild />
+                <Prebuild  />
             )
         } else if (this.props.stage == MODEL_BUILDUP && this.props.model_type == CUSTOMIZABLE_MODEL) {
             return (<div>
-                <AmbModelGenerator />
+                <AmbModelGenerator enable_modifications={true} />
                 <AmbArchitercture />
             </div>)
         }

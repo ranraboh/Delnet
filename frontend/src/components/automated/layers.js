@@ -7,6 +7,7 @@ import { selectLayer, addLayer, dispatchLayers } from '../../actions/amb/state.j
 import { display_size } from '../automated/actions/display.js';
 import { invalid_layers_configuraition, detech_errors, delete_layer, insert_layer } from "./actions/computations";
 import ErrorBox from '../general/error'
+import layers from '../project/layers.js';
 
 class ModelLayers extends Component {
     constructor(props) {
@@ -18,7 +19,9 @@ class ModelLayers extends Component {
                 save: { id:'btn-save', icon: 'fa fa-floppy-o', text: 'Save', hover:false }
             },
             error: '',
-            layer_error: -1
+            layer_error: -1,
+            page: 1,
+            page_size: 10
         }
 
         /* bind internal methods */
@@ -31,16 +34,19 @@ class ModelLayers extends Component {
         this.save_click = this.save_click.bind(this);
         this.delete_click = this.delete_click.bind(this);
         this.insert_click = this.insert_click.bind(this);
+        this.more_handler = this.more_handler.bind(this);
     }
 
     handle_errors() {
-        console.log('handle errors')
+        if (this.props.model_type == 'k')
+            return
         let error = detech_errors(this.state.layers)
         if (error != '') {
             this.setState({
                 ...this.state,
                 error: error.error,
-                layer_error: error.layer
+                layer_error: error.layer,
+                is_error: error.is_error
             })
         }
     }
@@ -51,6 +57,13 @@ class ModelLayers extends Component {
             layers: nextProps.layers
         }, () => {
             this.handle_errors()
+        })
+    }
+
+    more_handler() {
+        this.setState({
+            ...this.state,
+            page: this.state.page + 1
         })
     }
 
@@ -85,7 +98,7 @@ class ModelLayers extends Component {
     }
 
     add_layer() {
-        this.props.addLayer()
+        this.props.addLayer(this.props.details.height, this.props.details.width)
     }
 
     add_hover_abort() {
@@ -144,6 +157,10 @@ class ModelLayers extends Component {
     }
 
     render() {
+        let layers = this.state.layers
+        if (layers == null) return ''
+        if (this.props.project_update)
+            layers = layers.slice(0, this.state.page * this.state.page_size)
         return (
             <div id="amb-model-internal">
                 { this.display_selected_layer() }
@@ -153,13 +170,35 @@ class ModelLayers extends Component {
                 <p />
                 <div className="container">
                         {
-                            this.state.layers.map((layer) => 
-                                <LayerItem id={ layer.id } error={ this.state.layer_error == layer.id } layer={ layer } type={ layer.type } input={ display_size(layer.input) } on_select={ this.props.selectLayer } 
+                            layers.map((layer) => 
+                                <LayerItem id={ layer.id } error={ this.state.layer_error == layer.id && this.state.is_error == true } concern={ this.state.layer_error == layer.id && this.state.is_error == false } layer={ layer } type={ layer.type } input={ display_size(layer.input) } on_select={ this.props.selectLayer } 
                                     on_delete={ this.delete_click } on_insert={ this.insert_click } enable_modifications={ this.props.enable_modifications }
                                     output={ display_size(layer.output) } activation={ layer.actisvation } params={ layer.params_form } />
                             ) 
                         }
                 </div>
+                {
+                    (this.props.project_update == true && this.state.page * this.state.page_size < this.state.layers.length)?
+                    <div id="more_button_wrapper">
+                        <a id="projects_button" className="button-v2" onClick={ this.more_handler }>
+                        <svg class="icon-arrow before">
+                            <use href="#arrow"></use>
+                        </svg>
+                        <span class="label">More</span>
+                        <svg class="icon-arrow after">
+                            <use href="#arrow"></use>
+                        </svg>
+                    </a>
+                    <svg>
+                    <defs>
+                        <symbol id="arrow" viewBox="0 0 35 15">
+                        <title>Arrow</title>
+                        <path d="M27.172 5L25 2.828 27.828 0 34.9 7.071l-7.07 7.071L25 11.314 27.314 9H0V5h27.172z "/>
+                        </symbol>
+                    </defs>
+                    </svg>
+                    </div>:''
+                }
                 {
                 (this.props.enable_modifications == true)?
                     <div id="layers-operations">
@@ -199,8 +238,8 @@ const mapDispatchToProps = dispatch => {
         selectLayer: (layer) => {
             dispatch(selectLayer(layer))
         },
-        addLayer: () => {
-            dispatch(addLayer())
+        addLayer: (height, width) => {
+            dispatch(addLayer(height, width))
         },
         dispatchLayers: (layers) => {
             dispatch(dispatchLayers(layers))

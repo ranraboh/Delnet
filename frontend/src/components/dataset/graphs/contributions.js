@@ -18,11 +18,28 @@ class UserContribution extends Component {
     render() {
         if (this.props.user_contribution == null)
             return ''
+        if (this.props.user_contribution.length == 0) {
+            return <div className="section-in-main">
+            <h1 className="dataset-header-title dataset-header-blue">
+                Collectors Contribution
+            </h1>
+            <p/>
+            <h4 className="dataset-graph-intro">
+                the graph shows team members activity or contribution <br/> 
+                it shows how many items or samples each user have uploaded <br/> 
+            </h4>
+            <p/>
+            <h4 className="dataset-graph-intro text-blue">
+                dataset is empty and doesn't contains any samples. <br/>
+                therefore the contribution of any member team is nil.
+            </h4>
+        </div>
+        }
         return (
             <div className="section-in-main">
                 <div className="header-section-v2">
                     <h1 className="dataset-header-title dataset-header-blue">
-                        Team Members Contribution
+                        Collectors Contribution
                     </h1>
                 </div>
                 <h4 className="dataset-graph-intro">

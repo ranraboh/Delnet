@@ -5,11 +5,12 @@ from rest_framework.response import Response
 from django.http import HttpResponse
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from backend.submodels.user import *
-from backend.submodels.project import ProjectNotifcation
-from backend.submodels.dataset import DatesetNotifcation
+from backend.submodels.post import Post
+from backend.submodels.project import ProjectNotifcation, ProjectTeam
+from backend.submodels.dataset import DatesetNotifcation, DatasetCollectors
 from ..serializers.user import *
 from backend.actions.user import*
-
+from backend.tasks import run_model, celery_test
 import json
 
 
@@ -20,11 +21,35 @@ class UserViewSet(viewsets.ModelViewSet):
     }
     serializer_class = UserSerializer
 
+    @action(detail=False)
+    def user_activeness(self, request, *args, **kwargs):
+        user = get_user(kwargs['username'])
+        posts_amount = Post.objects.filter(user=user).count()
+        datasets_amount = DatasetCollectors.objects.filter(user=user).count()
+        projects_amount = ProjectTeam.objects.filter(user=user).count()
+        messages_amount = Message.objects.filter(receiver=user).count()
+        return Response({ 'posts': posts_amount, 'datasets': datasets_amount, 'projects': projects_amount, 'messages': messages_amount })
+
+    @action(detail=True, methods=['get'], name='Celery Test')
+    def celery_test(self, request, pk=None):
+        print('celery test')
+        celery_test.delay()
+        return Response({'status': 'celery test set'})
+
+    @action(detail=True, methods=['post'], name='Send Email')
+    def send_email(self, request, pk=None):
+        content = request.data['content']
+        topic = request.data['topic']
+        name = request.data['name']
+        email = request.data['email']
+        send_email(topic=topic, content=content, name=name, email=email)
+        return Response({'status': 'email have sent'})
+
     # action which update the user credentials
     # /api/users/update
     @action(detail=True, methods=['put'], name='Update Details')
     def update_user(self, request, pk=None):
-        update_user(user=request.data)
+        update_user(user_details=request.data)
         return Response({'status': 'user credentails set'})
 
     # action which update the user image
@@ -33,15 +58,35 @@ class UserViewSet(viewsets.ModelViewSet):
     def update_user_image(self, request, pk=None):
         username = request.data['username']
         image_url = request.data['image']
-        update_user_image(username, image_url)
+        update_image(username, image_url)
         return Response({'status': 'user image set'})
     
+
+    # action which update the user image
+    # /api/users/update
+    @action(detail=True, methods=['put'], name='Update Image')
+    def update_user_password(self, request, pk=None):
+        success = update_password(request.data)
+        if success == False:
+            return Response({'success': False, 'error_message': 'your old password is incorrect'})
+        return Response({'success': True, 'error_message': 'your password changed successfully'})
+
+    # action which update the user image
+    # /api/authentication/
+    @action(detail=True, methods=['post'], name='Authentication')
+    def authentication(self, request, pk=None):
+        success = authentication(username=request.data['username'], password=request.data['password'])
+        if success:
+            return Response({'success': True, 'error_message': 'welcome to delnet'})    
+        return Response({'success': False, 'error_message': 'your username or password is incorrect'})
+
+
     @action(detail=False)
     def notifications_header(self, request,  *args, **kwargs):
         query = []
         user = self.kwargs['username']
-        projects = ProjectNotifcation.objects.filter(user=user)[:2]     
-        datasets = DatesetNotifcation.objects.filter(user=user)[:2]     
+        projects = ProjectNotifcation.objects.filter(user=user).order_by('-id')[:2]     
+        datasets = DatesetNotifcation.objects.filter(user=user).order_by('-id')[:2]     
         for notification in projects:
             query.append({
                 'image': notification.user.image, 'content': notification.content, 'topic': notification.topic, 'project': notification.project.project_name, 'date': notification.date
@@ -50,7 +95,8 @@ class UserViewSet(viewsets.ModelViewSet):
             query.append({
                 'image': notification.user.image, 'content': notification.content, 'topic': notification.topic, 'project': notification.dataset.name, 'date': notification.date
             })
-        sorted_query = sorted(query, key = lambda i: i['date']) 
+        sorted_query = sorted(query, key = lambda i: i['date'], reverse=True) 
+        print (sorted_query)
         return Response(sorted_query[0:2])
 
     # action which returns the number users in the system
@@ -63,7 +109,6 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(detail=False)
     def user_exist(self, request,  *args, **kwargs):
         user = self.kwargs['username']
-        
         return Response({
             "is_exist":user_is_exist(user)
         })

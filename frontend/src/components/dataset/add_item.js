@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { addDataItem, uploadItems } from '../../actions/dataset/manipulation';
-import { getDatasetLabels } from '../../actions/dataset/get';
-import { ValidateEmail, allLetter, typeOfNaN, lengthOfString,check_itsnot_empty,is_url,imageExists } from "../../actions/validation";
+import { getDatasetLabels, getNotificationDataset, getDataItems } from '../../actions/dataset/get';
+import { check_itsnot_empty, imageExists } from "../../actions/validation";
 
 
 class AddItem extends Component {
@@ -18,7 +18,10 @@ class AddItem extends Component {
                 item: [],
                 label: null,
                 insert_by: this.props.username,
-                dataset: this.props.dataset_data.id
+                dataset: this.props.dataset_data.id,
+                username: this.props.username,
+                tag: false,
+                offer: false
             },
             colors: ['red', 'yellow', 'green', 'blue', 'purple', 'pink'],
             colors_amount: 6,
@@ -37,10 +40,16 @@ class AddItem extends Component {
         /* get dataset labels */
         this.props.getDatasetLabels(this.state.item.dataset)
         this.restartErrors=this.restartErrors.bind(this);
-
+        this.update_data = this.update_data.bind(this);
     }
+
+    update_data() {
+        this.props.getNotificationDataset(this.state.dataset.id)
+        this.props.getDataItems(1, this.state.dataset.id)
+    }
+
     restartErrors(errors){
-        errors['item'] =''
+        errors['item'] = ''
     }
 
     update_image_list = (event) => {
@@ -82,8 +91,6 @@ class AddItem extends Component {
         if (nextProps.dataset_data.labels_quantity == 0 ||
             nextProps.dataset_data.labels_quantity == null)
             return
-
-        console.log(nextProps.dataset_data.labels[0].id)
         this.setState({
             ...this.state,
             dataset: nextProps.dataset_data,
@@ -105,22 +112,18 @@ class AddItem extends Component {
     }
 
     add_item_handler(e) {
-        console.log("shiran00")
         e.preventDefault();
+        if (this.props.premissions < 3) {
+            alert("you are not authorized to add new items")
+            return;
+        }
         let errors = this.state.errors
-        
         let stateItem = this.state.item;
         this.restartErrors(errors);
-        if(!imageExists(stateItem['item'])){
-            console.log("shiran00")
+        if(!imageExists(stateItem['item']))
             errors['item'] ="The URL is invalid"
-            console.log(errors['item'])
-        }
-        if(!check_itsnot_empty(stateItem['item'])){
-            console.log("shiran00")
+        if(!check_itsnot_empty(stateItem['item']))
             errors['item'] ="the Image url is empty"
-            console.log(errors['item'])
-        }
         this.setState({
             ...this.state,
             errors
@@ -129,11 +132,13 @@ class AddItem extends Component {
         if (this.state.option == 0) {
             console.log(this.state.item)
             this.props.uploadItems(this.state.item, () => {
+                this.update_data()
                 alert('the items were added successfully')
                 this.reset_handler()
             })
         } else {
             this.props.addDataItem(this.state.item, () => {
+                this.update_data()
                 alert('the item was added successfully')
                 this.reset_handler()
             })
@@ -147,7 +152,8 @@ class AddItem extends Component {
                 item: '',
                 label: this.props.dataset_data.labels[0].id,
                 insert_by: this.props.username,
-                dataset: this.props.dataset_data.id
+                dataset: this.props.dataset_data.id,
+                username: this.props.username
             }
         })
     }
@@ -254,7 +260,8 @@ const mapStateToProps = state => {
     return {
         username: state.authentication.user,
         dataset_data: state.datasetsReducer.dataset_selected,
-        labels_quantity: state.datasetsReducer.dataset_selected.labels_quantity
+        labels_quantity: state.datasetsReducer.dataset_selected.labels_quantity,
+        premissions: state.datasetsReducer.dataset_selected.premissions,
     }
 }
 
@@ -268,7 +275,13 @@ const mapDispatchToProps = dispatch => {
         },
         getDatasetLabels: (dataset_id) => {
             dispatch(getDatasetLabels(dataset_id));
-        }
+        },
+        getNotificationDataset: (dataset) => {
+            dispatch(getNotificationDataset(dataset));
+        },
+        getDataItems: (page_id, dataset_id) => {
+            dispatch(getDataItems(page_id, dataset_id));
+        },
     }
 }
 

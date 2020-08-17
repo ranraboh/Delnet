@@ -86,7 +86,11 @@ class DatasetAnalyzer():
         # of samples of this label is radical or not.
         for label in self.labels:
             standard_score = (label.items_quantity - mean) / std
-            if standard_score < StandardSize.BALANCE.value:
+            if label.items_quantity == 0:
+                standard_category = StandardSize.NO_ITEMS
+            elif label.items_quantity < 10:
+                standard_category = StandardSize.FEW_ITEMS
+            elif standard_score < StandardSize.BALANCE.value:
                 standard_category = StandardSize.BALANCE
             elif standard_score < StandardSize.SOMEWHAT_REDICAL.value:
                 standard_category = StandardSize.SOMEWHAT_REDICAL
@@ -137,7 +141,11 @@ class DatasetAnalyzer():
         return text[size_category]
 
     def description(self, standard_category):
-        if standard_category == StandardSize.TIGHTLY_BALANCE:
+        if standard_category == StandardSize.NO_ITEMS:
+            return 'there are no samples labeled as this class'
+        elif standard_category == StandardSize.FEW_ITEMS:
+            return 'number of items labeled as this class is too small'
+        elif standard_category == StandardSize.TIGHTLY_BALANCE:
             return 'number of items of this label is extermely close to the mean'
         elif standard_category == StandardSize.BALANCE:
             return 'number of items of this label is relatively close to the mean'
@@ -149,6 +157,8 @@ class DatasetAnalyzer():
             return 'number of items of this label is extremely redical, the model might tend too much toward predicting this label'
 
     def offer(self, standard_category, standard_score, name):
+        if standard_category == StandardSize.NO_ITEMS or standard_category == StandardSize.FEW_ITEMS:
+            return 'it is strongly recommended to add more samples of this class'
         if standard_category == StandardSize.SOMEWHAT_REDICAL:
             if standard_score < 0:
                 return 'adding more samples of ' + name + ' will balance the dataset'

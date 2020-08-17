@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { getDatasetLabels, getLabelsCount } from '../../actions/dataset/get';
+import PieChart from '../graph/pie';
 
 class LabelsSection extends Component {
     constructor(props) {
@@ -18,7 +19,7 @@ class LabelsSection extends Component {
                 labels_quantity: props.dataset_data.labels_quantity
             }
         }
-        if (!this.state.dataset.labels) {
+        if (this.state.dataset.labels == null) {
             this.props.getDatasetLabels(this.state.dataset.id);
             this.props.getLabelsCount(this.state.dataset.id)
         }
@@ -31,10 +32,20 @@ class LabelsSection extends Component {
     }
 
     render() {
-        console.log('render')
-        console.log(this.state)
-        if (!this.state.dataset || !this.state.dataset.labels) {
-            return <h2>No labels</h2>
+        if (!this.state.dataset || this.state.dataset.labels == null || this.state.dataset.labels == undefined)
+            return ''
+        if (this.state.dataset.labels.length == 0) {
+            return (<div className="section-in-main">
+            <div className="header-section-v2">
+                <h1 className="dataset-header-title dataset-header-blue">
+                    Labels Section
+                </h1>
+            </div>
+            <h4 className="dataset-graph-intro text-purple">
+                you haven't define labels for your dataset yet. <br/>
+                you can insert new label through add label tab
+            </h4>
+            </div>)
         }
         return (
             <div className="section-in-main">
@@ -70,6 +81,8 @@ class LabelsSection extends Component {
                     } 
                     </tbody>
                     </table>
+                    <p/><p/>
+                    <PieChart height="240px" data={ this.state.dataset.labels } display="name" value="count" />
             </div>
         );
     }

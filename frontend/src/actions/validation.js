@@ -25,6 +25,11 @@ return true;
     return !isNaN(inputtxt)
  }
 
+ export function isNumber(inputtxt)
+ {
+    return !isNaN(inputtxt)
+ }
+
 
   export function lengthOfString(str, length){
     var strLength=str.length

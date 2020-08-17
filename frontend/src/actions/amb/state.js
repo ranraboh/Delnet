@@ -29,10 +29,10 @@ export const updateGeneralDetails = (layer) => dispatch => {
     });
 }
 
-export const addLayer = () => dispatch => {
+export const addLayer = (height, width) => dispatch => {
     dispatch({ 
         type: ADD_LAYER,
-        payload: null
+        payload: { 'height': height, 'width': width }
     });
 }
 

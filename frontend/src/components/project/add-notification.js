@@ -53,6 +53,10 @@ class AddNotification extends Component {
     }
 
     send_action(e) {
+        if (this.props.premissions < 2) {
+            alert("you are not authorized to add new notifications")
+            return
+        }
         e.preventDefault();
        
         let errors = this.state.errors
@@ -92,6 +96,7 @@ class AddNotification extends Component {
 
 
 
+      
       
         this.props.addNotificationpProject(this.state.notification, () => {
             this.setState({
@@ -165,6 +170,7 @@ const mapStateToProps = state => {
         username: state.authentication.user,
         image: state.userReducer.image,
         project_id: state.projectReducer.project_selected,
+        premissions: state.projectReducer.project_selected.premissions
     }
 }
 

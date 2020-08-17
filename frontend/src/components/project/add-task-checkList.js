@@ -135,6 +135,7 @@ class AddTask extends Component {
         task.username = this.props.username
         if (this.props.update == null) {
             this.props.addTask(task, () => {
+                this.props.getTask(this.props.project_id.id)
                 alert('task has been inserted successfully')
             })
         } else {

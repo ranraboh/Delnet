@@ -1,101 +1,60 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { getDatasetTeam } from '../../actions/dataset/get';
-
+import { homepage } from '../../appconf.js';
+import DatasetTeamTable from './team-table';
+import AddMember from './add-member'
+ 
 class DatasetTeam extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            dataset: {
-                user: props.username,
-                id: props.dataset_data.id,
-                name: props.dataset_data.name,
-                description: props.dataset_data.description,
-                user: props.dataset_data.user,
-                team: props.dataset_data.team
-            }
+            username: this.props.user,
+            create_toggle: false
         }
-        if (!this.state.dataset.team)
-            this.props.getDatasetTeam(this.state.dataset.id);
+        this.create_toggle = this.create_toggle.bind(this);
     }
 
-    componentWillReceiveProps(nextProps) {
-        console.log('receive props');
+    create_toggle() {
         this.setState({
-            dataset: nextProps.dataset_data
+            create_toggle: !this.state.create_toggle
         })
-        console.log(this.state);
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        return true;
     }
 
     render() {
-        console.log('render')
-        console.log(this.state)
-        if (!this.state.dataset || !this.state.dataset.team) {
-            return <h2>No Team</h2>
+        let toggle_section = <DatasetTeamTable />;
+        let button_caption = 'Add New Member'
+        if (this.state.create_toggle) {
+            toggle_section = <AddMember />
+            button_caption = 'Show Members'
         }
         return (
-            <div id="dataset-team-section" className="section-in-main">
+            <div id="project-team-section" className="section-in-main">
                 <div className="header-section-v2">
                     <h1 className="dataset-header-title dataset-header-blue">
-                        Collectors Team
+                        Dataset Collectors
                     </h1>
                 </div>
-                <div id="table">
-                    <table class="table">
-                        <thead>
-                            <tr className="table-primary table-text">
-                                <th scope="col">User</th>
-                                <th scope="col">Role</th>
-                                <th scope="col">Join Date</th>
-                                <th scope="col">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                this.state.dataset.team.map((record) => 
-                                    <tr className="table-text">
-                                        <td className="main-field">{ record.user }</td>
-                                        <td>{ record.role }</td>
-                                        <td>{ record.join_date }</td>
-                                        <td>
-                                            <button className="btn btn-outline-primary table-button" >
-                                                edit
-                                            </button> 
-                                            &nbsp;
-                                            <button className="btn btn-outline-warning table-button">
-                                                delete
-                                            </button>
-                                        </td>
-                                    </tr>)
-                            } 
-                        </tbody>
-                    </table>
-                </div>
+                { toggle_section }
+                {
+                    (this.props.premissions < 4)?'':
+                    <button type="button" class="btn btn-primary btn-new-project" onClick={ this.create_toggle }>{ button_caption }</button>
+                }
             </div>
-        );
+        )
     }
 }
+
 
 const mapStateToProps = state => {
     return {
-        dataset_data: state.datasetsReducer.dataset_selected,
-        username: state.authentication.user
+        username: state.authentication.user,
+        premissions: state.datasetsReducer.dataset_selected.premissions
     }
 }
 
-
 const mapDispatchToProps = dispatch => {
     return {
-        getDatasetTeam: (id) => {
-            dispatch(getDatasetTeam(id))
-        }
     }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DatasetTeam);
-

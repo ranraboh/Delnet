@@ -1,11 +1,13 @@
-export function init_new_layer(state) {
+export function init_new_layer(state, height, width) {
     let new_layer = {
         id: state.customizable.layers_quantity + 1,
         type: 'None',
-        input: (state.customizable.layers_quantity > 0)? state.customizable.layers[state.customizable.layers_quantity - 1].output : [ 3, 64, 64],
+        input: (state.customizable.layers_quantity > 0)? state.customizable.layers[state.customizable.layers_quantity - 1].output : [ 3, height, width],
         output: '--',
         activation: 'None',
-        params_form: []
+        params_form: [],
+        height: height,
+        width: width
     }
     return new_layer;
 }
@@ -16,7 +18,7 @@ export function init_middle_layer(layers, index) {
         input: layers[index - 1].output,
         output: '--',
         activation: 'None',
-        params_form: []
+        params_form: [],
     }
     return new_layer;
 }
@@ -27,7 +29,7 @@ export function init_linear_layer(state) {
             id: state.layer.id,
             type: 'Linear',
             activation: state.layer.activation,
-            input: (state.layer.id == 1)? [3, 64, 64 ] : [ state.layer.input ],
+            input: [ state.layer.input ],
             output: [ '--' ],
             bias: '0',
             params_form: [ { id: 'input', name: 'Input Features', type: 'text',  dimensions: 1, description: 'Enter size of input vector', disable: true },
@@ -39,13 +41,15 @@ export function init_linear_layer(state) {
 }
 
 export function init_convolution_layer(state) {
+    console.log('convolution input')
+    console.log(state)
     return ({
         id: state.layer.id,
         type: 'Convolution',
         activation: state.layer.activation,
         input_dimension: 3,
         output_dimension: 3,
-        input: (state.layer.id == 1)? [3, 64, 64 ] : state.layer.input,
+        input: (state.layer.id == 1)? [ 3, state.layer.height, state.layer.width ] : state.layer.input,
         output: '--',
         in_channels: state.layer.input[0],
         out_channels: '',
@@ -67,7 +71,7 @@ export function init_flatten_layer(state) {
             id: state.layer.id,
             type: 'Flatten',
             activation: state.layer.activation,
-            input: (state.layer.id == 1)? [3, 64, 64 ] : state.layer.input,
+            input: (state.layer.id == 1)? [3, state.height, state.width ] : state.layer.input,
             output: [ output_dimension ],
             params_form: []        
         }
@@ -94,7 +98,7 @@ export function init_dropout(state) {
         input: state.layer.input,
         output: state.layer.input,
         params_form: [
-            { id: 'dropout_constant', name: 'dropout constant', type: 'text', description: 'enter dropout constant'} ]
+            { id: 'dropout_constant', name: 'dropout constant', dimensions:0, type: 'text', description: 'enter dropout constant'} ]
     })
 }
 
@@ -103,7 +107,7 @@ export function init_pool(state) {
         id: state.layer.id,
         type: 'Pooling',
         activation: state.layer.activation,
-        input: (state.layer.id == 1)? [3, 64, 64 ] : state.layer.input,
+        input: (state.layer.id == 1)? [3, state.height, state.width ] : state.layer.input,
         output: '--',
         window: ['' , ''],
         pooling_type: 0,

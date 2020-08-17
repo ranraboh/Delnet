@@ -27,8 +27,8 @@ def run_model(request):
     dataset_id = get_project_dataset(request['project'])
     items = items_records(dataset_id)
     labels = labels_dictionary(dataset_id) 
-    dataset = load_dataset(items, labels)
-    train_set, dev_set, test_set = divide_dataset(dataset)
+    dataset = load_dataset(items, labels,  project.height, project.width)
+    train_set, dev_set, test_set = divide_dataset(dataset, project.train_percentage, project.dev_percentage)
     model = create_model_instance(project, len(labels))
 
     # create train object and use it to train user model
@@ -103,13 +103,15 @@ def project_best_result(project, run_accuracy):
         project.best_model_saved = run_accuracy
     project.save()
 
-def divide_dataset(dataset):
+def divide_dataset(dataset, train_size, dev_size):
     # shuffle dataset before division
     dataset_size = len(dataset)
     random.shuffle(dataset)
+    train_percentage = train_size / 100
+    dev_percentage = dev_size / 100 + train_percentage
 
     # divide dataset into three subsets train, validation and test
-    partitions = [ int(dataset_size * 0.7), int(dataset_size * 0.8), dataset_size] 
+    partitions = [ int(dataset_size * train_percentage), int(dataset_size * dev_percentage), dataset_size] 
     return dataset[0 : partitions[0]], dataset[partitions[0] + 1: partitions[1]], dataset[partitions[1] + 1: partitions[2]] 
 
 def deploy_model(project, state, images, images_quantity):
@@ -123,7 +125,7 @@ def deploy_model(project, state, images, images_quantity):
     results = []
     for i in range(int(images_quantity)):
         image = images[str(i)]
-        sample = image_to_sample(image)
+        sample = image_to_sample(image, project.height, project.width)
         output_vector = model(sample)
         prediction = torch.argmax(output_vector)
         current_prediction = {
@@ -141,7 +143,7 @@ def load_parameters(model, path):
     model.load_state_dict(torch.load(path))
 
 def extract_layers(project):
-    exratctor = LayersExtractor()
+    exratctor = LayersExtractor(project)
     labels_quantity = compute_labels_quantity(project.dataset)
     model = create_model_instance(project, labels_quantity)
     file_path = get_project_model_file(project)

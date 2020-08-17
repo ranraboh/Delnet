@@ -29,14 +29,6 @@ class ProjectFeatures extends Component {
                         button_type="danger" icon="fa-file" activate={ this.props.activateSection } hide={ this.props.hideSection } />
                 <DatasetMenuItem name="Statics" description="display project statics" state={ this.props.sections_status.statics_active } 
                         button_type="warning" icon="fa-sticky-note" activate={ this.props.activateSection } hide={ this.props.hideSection } />
-                    <tr className="dataset-menu-row">
-                        <td>
-                            <button type="button" class="btn btn-outline-warning button-dataset-menu">
-                                <i className="fa fa-edit"></i>
-                            </button>
-                        </td>
-                        <td className="dataset-links">Diagrams</td>
-                    </tr>
                 </tbody>
                 </table>
             </div>

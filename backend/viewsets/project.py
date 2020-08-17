@@ -5,10 +5,12 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.http import HttpResponse
 import json
+from django.conf import settings
+import os
 
 # import data objects/models
 from backend.submodels.project import *
-from backend.submodels.dataset import Dataset
+from backend.submodels.dataset import Dataset, DataItem
 from backend.serializers.project import *
 
 # import actions
@@ -35,11 +37,41 @@ class ProjectViewSet(viewsets.ModelViewSet):
     }
     serializer_class = ProjectSerializer
 
+
+    @action(detail=False)
+    def project_header(self, request, *args, **kwargs):
+        project = get_project(kwargs['id'])
+        runs_amount = ProjectRuns.objects.filter(project=project).count()
+        if project.dataset == None:
+            items_amount = 0
+        else:
+            items_amount = DataItem.objects.filter(dataset=project.dataset).count()
+        team_amount = ProjectTeam.objects.filter(project=project).count()
+        return Response({ 'items': items_amount, 'runs': runs_amount, 'members': team_amount, 'create_date': project.project_date , 'creator': project.user.username})
+
     # action which update the projects credentials
     # /api/projects/update
     @action(detail=True, methods=['put'], name='Update Project')
     def update_project(self, request, pk=None):
+        project = Project.objects.get(pk=request.data['id'])
+        name = project.project_name
+        description = project.description
+        print (project.dataset)
+        if project.dataset == None:
+            old_dataset = None
+        else:
+            old_dataset = project.dataset.id
+        old_type = project.model_type
+        size = [project.height, project.width]
+        division_rule = [ project.train_percentage, project.dev_percentage, project.test_percentage ]
         update_project(project_data=request.data)
+        project = Project.objects.get(pk=request.data['id'])
+        notify_project_settings_change(project_id=request.data['id'], username=request.data['username'],
+            project_name=name, description=description)
+        notify_dataset_changed(project=project, username=request.data['username'], dataset=project.dataset, dataset_old=old_dataset)
+        notify_project_type(project=project, username=request.data['username'], old_type=old_type)
+        notify_size_change(project=project, username=request.data['username'], height=size[0], width=size[1])
+        notify_division_rule_change(project=project, username=request.data['username'], train_percentage=division_rule[0], dev_percentage=division_rule[1], test_percentage=division_rule[2])
         return Response({'status': 'user credentails set'})
 
     # action which returns the number of projects in the system
@@ -59,8 +91,9 @@ class ProjectViewSet(viewsets.ModelViewSet):
         type = request.data['type'][0].lower()
 
         # store automated project data in database
-        project = Project.objects.create(project_name=details['project_name'], description=details['description'], result=0, user=user, dataset=dataset, model_type=type)
-        ProjectTeam.objects.create(user=user, project=project, role="Project Manager", presmissions=5)
+        project = Project.objects.create(project_name=details['project_name'], description=details['description'], result=0,
+            width=details['width'], height=details['height'], train_percentage=details['train_percentage'], dev_percentage=details['dev_percentage'], test_percentage=details['test_percentage'], user=user, dataset=dataset, model_type=type)
+        ProjectTeam.objects.create(user=user, project=project, role="Project Manager", presmissions=4)
         if type == 'c':
             layers = request.data['layers']
             layers_file = get_file_layers(project.id)
@@ -129,6 +162,8 @@ class ProjectTeamViewSet(viewsets.ModelViewSet):
     serializer_class = ProjectTeamSerializer
 
     def create(self, request, *args, **kwargs):
+        if ProjectTeam.objects.filter(project=get_project(request.data['project']), user=get_user(request.data['user'])).count() >= 1:
+            return Response({ 'status': 'member is already in team' })
         notify_new_member(project_id=request.data['project'], username=request.data['user'], role=request.data['role'])
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -142,6 +177,26 @@ class ProjectTeamViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=True, methods=['get'], name='Get Premissions')
+    def get_premissions(self, request, *args, **kwargs):
+        project_id = self.kwargs['id']
+        username = self.kwargs['username']
+        project = Project.objects.get(pk=project_id)
+        user = User.objects.get(pk=username)
+        permissions = ProjectTeam.objects.filter(project=project, user=user)[0]
+        return Response({'premissions': permissions.presmissions})
+    
+    @action(detail=True, methods=['post'], name='Update Member')
+    def update_member(self, request, *args, **kwargs):
+        id = request.data['id']
+        role = request.data['role']
+        premissions = request.data['premissions']
+        member_record = ProjectTeam.objects.get(pk=id)
+        member_record.role = role
+        member_record.presmissions = premissions
+        member_record.save()
+        return Response({'status': 'member has been updated'})
 
 class ProjectFilesViewSet(viewsets.ModelViewSet):
     queryset = ProjectFiles.objects.all()
@@ -161,6 +216,8 @@ class ProjectFilesViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         user = User.objects.get(username=kwargs['username'])
         instance = self.get_object()
+        url = instance.file.url[instance.file.url.index('media') + 6:]
+        os.remove(os.path.join(settings.MEDIA_ROOT, url))
         notify_file_delete(instance.project, user.username, instance.name)
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)

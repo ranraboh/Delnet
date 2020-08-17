@@ -6,10 +6,9 @@ import PersonalDetails from './personal';
 import ChangePassword from './change-password.js';
 import ChangeImage from './change-image.js';
 import MessagesWrapper from './messages-wrapper';
-
 import RecieverMessage from './recieverMessage.js';
 import SenderMessage from './senderMessage.js';
-import Cotent from './write-message.js';
+import WriteMessage from './write-message.js';
 
 
 
@@ -40,7 +39,7 @@ class MainProfileContent extends Component {
         
         let change_sender_massages = this.section(<RecieverMessage/>, 'Received Messages ', this.props.active_sender_message)
         let change_reciver_massages = this.section(<SenderMessage/>, 'Messages Sent', this.props.active_reciever_message)
-        let change_content_massages = this.section(<Cotent/>, 'Sending Messages', this.props.active_content_message)
+        let change_content_massages = this.section(<WriteMessage/>, 'Sending Messages', this.props.active_content_message)
 
 
         return (

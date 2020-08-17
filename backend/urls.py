@@ -37,6 +37,7 @@ pages_url = [
 updates_url = [
     path('api/users/update', UserViewSet.as_view({"put": "update_user"})),
     path('api/users/image/update', UserViewSet.as_view({"put": "update_user_image"})),
+    path('api/users/password/update', UserViewSet.as_view({"put": "update_user_password"})),
     path('api/projects/update', ProjectViewSet.as_view({"put": "update_project"}))
 ]
 
@@ -59,7 +60,7 @@ router.register('api/loss/types', LossTypeViewSet, 'loss types')
 router.register('api/results/labels', LabelsMetricsViewSet, 'labels metrics')
 router.register('api/known', KnownModelsViewSet, 'known models')
 router.register('api/projects/known', ProjectKnownModelsViewSet, 'project known models mapper')
-router.register('api/dataset/Notification', DateSateNotificationViewSet, 'datasrt notification viewSet')
+router.register('api/dataset/Notification', DataSetNotificationViewSet, 'datasrt notification viewSet')
 router.register('api/notifications/projects', ProjectNotificationViewSet, 'project notification viewSet')
 router.register('api/unlabled', UnlabeledSamplesViewSet, 'unlabeled samples')
 router.register('api/followers/datasets', DatasetFollowersViewSet, 'dataset followers')
@@ -74,16 +75,23 @@ router.register('api/postsgroups', PostsGroupViewSet, 'postsgroups')
 
 # routing for filters and queries
 queries_url = [
+    path('api/send/email', UserViewSet.as_view({ 'post' : 'send_email'})),
+    path('api/celery/test', UserViewSet.as_view({ 'get' : 'celery_test'})),
     path('api/projects/user/<slug:username>', ProjectsByUserFilter.as_view(), name='login'),
     path('api/messages/sender/<slug:sender>', MessageSenderFilter.as_view(), name='sender'),
+    path('api/authentication', UserViewSet.as_view({"post": "authentication"})),
     path('api/projectCheckList/complete/<slug:id>', AllTheTaskDone.as_view(), name='id'),
     path('api/projectCheckList/notComplete/<slug:id>', AllTheTaskNotDone.as_view(), name='id'),
     path('api/messages/receiver/<slug:receiver>', MessageReceiverFilter.as_view(), name='receiver'),
     path('api/project/<int:id>/statics', ProjectViewSet.as_view({ "get": "project_statics" })),
+    path('api/user/<slug:username>/activeness', UserViewSet.as_view({ "get": "user_activeness" })),
+    path('api/project/<int:id>/header', ProjectViewSet.as_view({ "get": "project_header" })),
+    path('api/dataset/<int:id>/header', DatasetViewSet.as_view({ "get": "dataset_header" })),
     path('api/project/<int:id>/test', ProjectViewSet.as_view({ "get": "project_tester" })),
     path('api/project/<int:id>/recommendations', ProjectViewSet.as_view({ "get": "get_recommendations" })),
     path('api/project/<int:id>/analysis/model', ProjectViewSet.as_view({ "get": "model_analysis" })),
     path('api/team/project/<int:id>', ProjectTeamFilter.as_view(), name='project_team'),
+    path('api/team/dataset/<int:id>', DatasetTeamFilter.as_view(), name='dataset_team'),
     path('api/runs/project/<int:id>', ProjectRunsFilter.as_view(), name='project_runs'),
     path('api/datasets/user/<slug:username>', DataSetUserFilter.as_view(), name='datasets_user'),
     path('api/datasets/user/<slug:username>/quantity', DatasetViewSet.as_view({"get": "user_quantity"})),
@@ -99,7 +107,7 @@ queries_url = [
     path('api/project/<int:id>/layers', ProjectViewSet.as_view({ 'get' : 'get_layers'})),
     path('api/layers/save', ProjectViewSet.as_view({ 'post' : 'save_layers' })),
     path('api/dataset/update', DatasetViewSet.as_view({ 'post' : 'update_dataset' })),
-
+    path('api/datasets/followers/user/<slug:username>', DatasetFollowersFilter.as_view()),
     path('api/file/<int:id>/content', ProjectFilesViewSet.as_view({ 'get' : 'file_content'})),
     path('api/file/content', ProjectFilesViewSet.as_view({ 'put' : 'update_file_content'})),
     path('api/run/model', ProjectRunsViewSet.as_view({ 'post' : 'run_model' })),
@@ -109,15 +117,19 @@ queries_url = [
     path('api/run/<int:id>/results/train', RunsTrainResultsFilter.as_view()),
     path('api/run/<int:id>/results/dev', RunsDevResultsFilter.as_view()),
     path('api/projects/files/<int:pk>/user/<slug:username>', ProjectFilesViewSet.as_view({ 'delete' : 'destroy'})),
+    path('api/items/<int:pk>/user/<slug:username>', DataItemViewSet.as_view({ 'delete' : 'destroy'})),
     path('api/project/<int:id>/runs', RunsProjectFilter.as_view()),
     path('api/items/add', DataItemViewSet.as_view({ 'post': 'add_item' }) ),
     path('api/items/upload', DataItemViewSet.as_view({ 'post': 'upload_items' }) ),
+    path('api/premissions/project/<int:id>/user/<slug:username>', ProjectTeamViewSet.as_view({ "get" : "get_premissions"})),
+    path('api/premissions/dataset/<int:id>/user/<slug:username>', DatasetCollectorsViewSet.as_view({ "get" : "get_premissions"})),
     path('api/amb/create', ProjectViewSet.as_view({ 'post' : 'amb_create'})),
     path('api/checkList/changeComplete', CheckListViewSet.as_view({ 'post' : 'changeComplete'})),
     path('api/checkList/task/update', CheckListViewSet.as_view({ 'post' : 'update_task'})),
     path('api/project/<int:id>/accuracy/range', ProjectViewSet.as_view({ "get" : "accuracy_range" })),
     path('api/runs/<int:id>/full', RunRecordFilter.as_view()),
     path('api/project/<int:id>/runs/unfinished', UnfinishedRunsFilter.as_view()),
+    path('api/user/<slug:username>/runs/unfinished', UnfinishedRunsUserFilter.as_view()),
     path('api/run/<int:id>/results/confusionmatrix', LabelsMetricsViewSet.as_view({ 'get' : 'confusion_matrix'})),
     path('api/run/<int:id>/results/recall', LabelsMetricsViewSet.as_view({ 'get' : 'recall'})),
     path('api/run/<int:id>/results/precision', LabelsMetricsViewSet.as_view({ 'get' : 'precision'})),
@@ -131,10 +143,10 @@ queries_url = [
     path('api/notifications/header/<slug:username>', UserViewSet.as_view({ 'get' : 'notifications_header'})),
     path('api/messages/addMessage', MessageViewSet.as_view({ 'post' : 'messageAdd' })),
     path('api/projects/header/<int:id>', ProjectNotificationViewSet.as_view({ 'get' : 'notification_headerProject'})),
-    path('api/dataset/header/<int:id>', DateSateNotificationViewSet.as_view({ 'get' : 'notification_headerDataset'})),
+    path('api/dataset/header/<int:id>', DataSetNotificationViewSet.as_view({ 'get' : 'notification_headerDataset'})),
     path('api/project/<int:id>/checkList', CheckListViewSet.as_view({ 'get' : 'checkList_header'})),
     path('api/user/<slug:username>/exist', UserViewSet.as_view({ 'get' : 'user_exist'})),
-
+    path('api/project/<int:project>/popular', ProjectKnownModelsViewSet.as_view({ 'get' : 'get_popular_model'})),
     path('api/datasets/public/view/<slug:username>', PublicDataSetFilter.as_view()),
     path('api/dataset/<int:id>/unlabeled', UnlabeledDatasetFilter.as_view()),
     path('api/datasets/search/<slug:name>/user/<slug:username>', DatasetNameFilter.as_view()),
@@ -142,7 +154,10 @@ queries_url = [
     path('api/posts/user/<slug:username>/page/<int:page>', PostsViewSet.as_view({ 'get' : 'user_posts' })),
     path('api/questions/user/<slug:username>/page/<int:page>', PostsViewSet.as_view({ 'get' : 'user_questions' })),
     path('api/post/update', PostsViewSet.as_view({ 'post' : 'update_post' })),
+    path('api/project/member/update', ProjectTeamViewSet.as_view({ 'post' : 'update_member' })),
+    path('api/dataset/member/update', DatasetCollectorsViewSet.as_view({ 'post' : 'update_member' })),
     path('api/comment/update', CommentsViewSet.as_view({ 'post' : 'update_comment' })),
+    path('api/project/popular', ProjectKnownModelsViewSet.as_view({ 'post' : 'project_popular_model' })),
     path('api/posts/feed/user/<slug:username>/page/<int:page>', PostsViewSet.as_view({ 'get' : 'posts_feed' })),
     path('api/questions/feed/user/<slug:username>/page/<int:page>', PostsViewSet.as_view({ 'get' : 'questions_feed' })),
     path('api/videos/feed/user/<slug:username>/page/<int:page>', PostsViewSet.as_view({ 'get' : 'videos_feed' })),

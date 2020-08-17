@@ -13,6 +13,7 @@ from .serializers.model import *
 from django.core.paginator import Paginator
 from .actions.model import *
 from backend.actions.dataset import *
+from itertools import chain
 
 
 class ProjectsByUserFilter(generics.ListAPIView):
@@ -42,6 +43,20 @@ class ProjectTeamFilter(generics.ListAPIView):
             member.image = member.user.image
         return project_team
 
+class DatasetTeamFilter(generics.ListAPIView):
+    serializer_class = DatasetCollectorsExtendedSerializer
+
+    # action which returns team members for a preticular dataset (by its id)
+    # url: /api/team/dataset/[id] (id of project)
+    def get_queryset(self):
+        dataset_id = self.kwargs['id']
+        dataset_team = DatasetCollectors.objects.filter(dataset=dataset_id)
+        for member in dataset_team:
+            member.firstname = member.user.firstname
+            member.lastname = member.user.lastname
+            member.image = member.user.image
+        return dataset_team
+
 class ProjectRunsFilter(generics.ListAPIView):
     serializer_class = ProjectRunsSerializer
 
@@ -58,15 +73,11 @@ class DataSetUserFilter(generics.ListAPIView):
     # url: /api/datasets/user/[username]
     def get_queryset(self):
         username = self.kwargs['username']
-        return Dataset.objects.filter(user=username)
-
-class DatasetTeamFilter(generics.ListAPIView):
-    serializer_class = DatasetCollectorsSerializer
-    # action which returns team members for a preticular dataset (by its id)
-    # url: /api/team/dataset/[id] 
-    def get_queryset(self):
-        dataset_id = self.kwargs['id']
-        return DatasetCollectors.objects.filter(dataset_id=dataset_id)    
+        query = DatasetCollectors.objects.filter(user=username)
+        datasets = []
+        for record in query:
+            datasets.append(record.dataset)
+        return datasets
 
 class ProjectFilesFilter(generics.ListAPIView):
     serializer_class = ExtendedProjectFilesSerializer
@@ -100,7 +111,7 @@ class DatasetItemFilter(generics.ListAPIView):
     def get_queryset(self):
         dataset_id = self.kwargs['id']
         page_number = self.kwargs['page']
-        items = DataItem.objects.filter(dataset_id=dataset_id)
+        items = DataItem.objects.filter(dataset_id=dataset_id).order_by('-date', '-time')
         paginated_item_list = Paginator(items, 10)
         return paginated_item_list.page(page_number)
 
@@ -110,7 +121,22 @@ class UnfinishedRunsFilter(generics.ListAPIView):
     # url: /api/project/[id]/runs/unfinished
     def get_queryset(self):
         project_id = self.kwargs['id']
-        return ProjectRuns.objects.filter(project=project_id, progress__lt=100).order_by('-date', '-time')
+        return ProjectRuns.objects.filter(project=project_id, progress__lt=100).order_by('-date', '-time')[:3]
+
+class UnfinishedRunsUserFilter(generics.ListAPIView):
+    serializer_class = ProjectRunsDepthSerializer
+    # action which returns all run records of specific project that didn't finished yet 
+    # url: /api/project/[id]/runs/unfinished
+    def get_queryset(self):
+        user = User.objects.get(pk=self.kwargs['username'])
+        records = ProjectTeam.objects.filter(user=user)
+        runs = []
+        for record in records:
+            runs.append(ProjectRuns.objects.filter(project=record.project, progress__lt=100).order_by('-date', '-time'))
+        return sorted(chain(*runs), key=lambda obj: (obj.date, obj.time),reverse=True)[:3]
+
+
+            
 
 class RunsProjectFilter(generics.ListAPIView):
     serializer_class = ProjectRunsDepthSerializer
@@ -160,6 +186,7 @@ class MessageReceiverFilter(generics.ListAPIView):
     def get_queryset(self):
         receiver = self.kwargs['receiver']
         return Message.objects.filter(receiver=receiver)
+
 class MessageSenderFilter(generics.ListAPIView):
     serializer_class = MessageSerializer
     def get_queryset(self):
@@ -202,14 +229,32 @@ class DatasetNameFilter(generics.ListAPIView):
         return follow_record(dataset_by_name(dataset_name), user)
 
 class DatasetOffersFilter(generics.ListAPIView):
-    serializer_class = DataItemSerializer
+    serializer_class = DataIteExtendedSerializer
 
     def get_queryset(self):
         dataset_id = self.kwargs['id']
         return dataset_labels_offers(dataset_id)    
 
+class PublicDataSetFilter(generics.ListAPIView):
+    serializer_class = DataSetFollowSerializer
 
+    def get_queryset(self):
+        user = self.kwargs['username']
+        public = public_dataset()
+        return follow_record(public, user)
 
+class DatasetFollowersFilter(generics.ListAPIView):
+    serializer_class = DataSetFollowSerializer
 
+    def get_queryset(self):
+        datasets = []
+        user = self.kwargs['username']
+        followers = DatasetFollowers.objects.filter(user=user)
+        for record in followers:
+            dataset = record.dataset
+            dataset.follow = True
+            dataset.follow_id = record.id
+            datasets.append(record.dataset)
+        return datasets
 
 

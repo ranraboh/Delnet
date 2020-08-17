@@ -33,7 +33,7 @@ export function ambReducer(state = initialState, action) {
                 }
             }
         case ADD_LAYER:
-            let new_layer = init_new_layer(state)
+            let new_layer = init_new_layer(state, action.payload.height, action.payload.width)
             return {
                 ...state,
                 customizable: {

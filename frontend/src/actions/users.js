@@ -1,6 +1,6 @@
 import axios from 'axios'
-import {ADD_MESSAGES, LOGIN_SUCCESS, LOGOUT, GET_USER_DETAILS, USER_LOOKUP_SUCCESS, USER_LOOKUP_FAIL,
-    NOTIFICATIONS_HEADER, UPDATE_USER, UPLOAD_IMAGE, UPDATE_USER_IMAGE, SENDER_MESSAGES, RECEIVER_MESSAGES,MESSAGES_HEADER } from './types.js'
+import {SEND_EMAIL, ADD_MESSAGES, LOGIN_SUCCESS, LOGOUT, GET_USER_DETAILS, USER_LOOKUP_SUCCESS, USER_LOOKUP_FAIL,
+    NOTIFICATIONS_HEADER, UPDATE_USER, UPLOAD_IMAGE, UPDATE_USER_IMAGE, SENDER_MESSAGES, RECEIVER_MESSAGES,MESSAGES_HEADER, GET_USER_ACTIVENESS, UPDATE_PASSWORD, AUTHENTICATE } from './types.js'
 import { useReducer } from 'react';
 import { homepage } from '../appconf.js';
 
@@ -8,6 +8,14 @@ export const getUserDetails = (username) => dispatch => {
     axios.get('/api/users/' + username).then(result => {
         dispatch({
             type: GET_USER_DETAILS,
+            payload: result.data
+        })
+    }).catch(err => console.log(err));
+}
+export const getUserActiveness = (username) => dispatch => {
+    axios.get('/api/user/' + username + "/activeness").then(result => {
+        dispatch({
+            type: GET_USER_ACTIVENESS,
             payload: result.data
         })
     }).catch(err => console.log(err));
@@ -60,8 +68,6 @@ export const uploadImage = (image) => dispatch => {
     formData.append('image', image.image, image.name);
     formData.append('user', image.user)
     axios.post('/upload/', formData).then(result => {
-        console.log('inside action')
-        console.log(image)
         result.request = image
         dispatch({
             type: UPLOAD_IMAGE,
@@ -80,8 +86,6 @@ export const loginAction = (username) => dispatch => {
 }
 export const addMessages = (messages, callback_function) => dispatch => {
     axios.post('/api/messages/', messages).then(response => {
-        console.log("addMessages")
-        console.log(response)
         dispatch({
             type: ADD_MESSAGES,
             payload: response.data
@@ -101,11 +105,26 @@ export const createUser = (user, callback_function) => {
     .catch(err => console.log(err))
 }
 export const updateUser = (user, callback_function) => dispatch => {
-    console.log("shiran5\888888888888888888888888888888888888888")
     axios.put('/api/users/update', user).then(result => {
         result.request = user
         dispatch({
             type: UPDATE_USER,
+            payload: result.data
+        })
+    }).then(callback_function).catch(err => console.log(err));
+}
+export const updatePassword = (credentials, callback_function) => dispatch => {
+    axios.put('/api/users/password/update', credentials).then(result => {
+        dispatch({
+            type: UPDATE_PASSWORD,
+            payload: result.data
+        })
+    }).then(callback_function).catch(err => console.log(err));
+}
+export const authenticate = (credentials, callback_function) => dispatch => {
+    axios.post('/api/authentication', credentials).then(result => {
+        dispatch({
+            type: AUTHENTICATE,
             payload: result.data
         })
     }).then(callback_function).catch(err => console.log(err));
@@ -132,6 +151,18 @@ export const isUserExists = (username) => dispatch => {
             payload: { username, err }
         })    
     });
+}
+
+export const sendMail = (email, callback_function) => dispatch => {
+    console.log("about to send email")
+    console.log(email)
+    axios.post('/api/send/email', email).then(response => {
+        console.log(response)
+        dispatch({
+            type: SEND_EMAIL,
+            payload: response.data
+        })
+    }).then(callback_function).catch(err => console.log(err))
 }
 
 /*

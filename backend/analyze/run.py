@@ -122,17 +122,17 @@ class RunAnalysis():
     def earlystopping(self):
         max_epoch = 0
         max_value = 0
-        last_epoch = len(self.train_results) - 1
+        last_epoch = len(self.dev_results) - 1
         stop = ParameterModify.KEEP_VALUE
         
         # get max accuracy rate among epochs results
-        for epoch, record in self.train_results.items():
+        for epoch, record in self.dev_results.items():
             if record.accuracy_rate > max_value:
                 max_value = record.accuracy_rate 
                 max_epoch = epoch
 
         # if max value epoch is greater of the final epoch, the model should stop earlier
-        difference = max_value - self.train_results[last_epoch - 1].accuracy_rate
+        difference = max_value - self.dev_results[last_epoch - 1].accuracy_rate
         factor = EpochFactor.REASONABLE_VALUE
         if difference >= 0.5:
             stop = ParameterModify.DECREASE_VALUE_HR

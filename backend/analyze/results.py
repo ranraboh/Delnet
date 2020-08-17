@@ -29,6 +29,8 @@ class ResultsAnalysis():
     # report texutally the selected hyper-parameters imperfections 
     def report_imperfections(self):
         # if model analysis didn't triggered yet
+        if len(self.run_records) == 0:
+            return None
         if not self.runs_analysis_data:
             self.analyze()
         
@@ -56,6 +58,9 @@ class ResultsAnalysis():
         return run_analysis.analyze()
 
     def analyze_runs(self):
+        if len(self.run_records) == 0:
+            return None
+
         runs = {}
         last_runs = {}
         last_runs_amount = 6

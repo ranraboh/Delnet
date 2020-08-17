@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { ADD_RUN_RECORD, RUN_MODEL, DEPLOY_MODEL, GET_ACCURACY_RANGE, TEST_MODEL, GET_KNOWN_MODELS } from '../types.js';
 import { GET_PROJECT_ANALYSIS, GET_OPTIMIZER_TYPES, GET_LOSS_TYPES, GET_UNFINISHED_RUNS, GET_CONFUSION_MATRIX, GET_RECALL_RESULT, GET_PRECISION_RESULT, GET_F1_RESULT } from '../types.js';
-import { GET_PROJECT_RUNS, GET_RUN_RESULT_TRAIN, GET_RUN_RESULT_DEV, SELECT_RUN, CLEAR_RUN } from '../types.js';
+import { RESET_TEST_RESULTS, GET_PROJECT_RUNS, GET_RUN_RESULT_TRAIN, GET_RUN_RESULT_DEV, SELECT_RUN, CLEAR_RUN } from '../types.js';
 
 /**
  * run the model on server side and when the running is completed, update it's results
@@ -92,6 +92,18 @@ export const getProjectRuns = (project_id) => dispatch => {
  */
 export const getUnfinishedRuns = (project_id) => dispatch => {
     axios.get('/api/project/' + project_id + "/runs/unfinished").then(result => {
+        dispatch({
+            type: GET_UNFINISHED_RUNS,
+            payload: result.data
+        })
+    }).catch(err => console.log(err));
+}
+
+/**
+ * get unfinished runs of any project associated with given user
+ */
+export const getUnfinishedUserRuns = (username) => dispatch => {
+    axios.get('/api/user/' + username + "/runs/unfinished").then(result => {
         dispatch({
             type: GET_UNFINISHED_RUNS,
             payload: result.data
@@ -218,7 +230,6 @@ export const getConfusionMatrix = (run_code) => dispatch => {
  * test your model
  */
 export const testModel = (project_id, callback_function) => dispatch => {
-    console.log('testing')
     axios.get('/api/project/' + project_id + "/test").then(result => {
         dispatch({
             type: TEST_MODEL,
@@ -228,13 +239,19 @@ export const testModel = (project_id, callback_function) => dispatch => {
     }).then(callback_function).catch(err => console.log(err));
 }
 
+export const resetTest = () => dispatch => {
+    dispatch({
+        type: RESET_TEST_RESULTS,
+        payload: null
+    })
+}
+
 function c_matrix_dictionary(data) {
     let dict = {}
     var key;
     data.map((record) => {
         key = [record.label, record.prediction].join('#');
         dict[key] = record.value
-        console.log(dict)
     })
     return dict;
 }

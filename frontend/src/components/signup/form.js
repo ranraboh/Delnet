@@ -36,6 +36,7 @@ class RegisterForm extends Component {
                 image: ''
             }
         }
+        alert('sadassa')
         this.register_action = this.register_action.bind(this);
         this.on_change = this.on_change.bind(this);
         this.male_button_change = this.male_button_change.bind(this);

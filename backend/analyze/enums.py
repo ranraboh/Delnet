@@ -14,6 +14,8 @@ class StandardSize(Enum):
     SOMEWHAT_REDICAL = 1.2
     RADICAL = 1.5
     EXTREMLY_RADICAL = 2
+    NO_ITEMS = -1
+    FEW_ITEMS = -2
 
 class AccuracyClass(Enum):
     EXCELLENT = 0.95

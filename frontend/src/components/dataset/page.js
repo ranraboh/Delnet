@@ -24,7 +24,7 @@ class DataSetPage extends Component {
             <div>
                 <Menu active="datasets" />
                 <Upper />    
-                <DataSetSidebar/>
+                <DataSetSidebar premissions={ this.props.premissions } />
                 <DatasetMain />
             </div>
         )
@@ -35,7 +35,8 @@ class DataSetPage extends Component {
 const mapStateToProps = state => {
     return {
         loggedIn: state.authentication.loggedIn,
-        username: state.authentication.user
+        username: state.authentication.user,
+        premissions: state.datasetsReducer.dataset_selected.premissions,
     }
 }
 

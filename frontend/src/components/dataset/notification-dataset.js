@@ -45,6 +45,10 @@ class AddNotification extends Component {
 
     send_action(e) {
         e.preventDefault();
+        if (this.props.premissions < 2) {
+            alert("you are not authorized to send notifications")
+            return;
+        }
         this.props.addNotificationDataset(this.state.dataset, () => {
             this.setState({
                 ...this.state,
@@ -101,6 +105,7 @@ const mapStateToProps = state => {
         username: state.authentication.user,
         dataset_data: state.datasetsReducer.dataset_selected,
         image: state.userReducer.image,
+        premissions: state.datasetsReducer.dataset_selected.premissions,
     }
 }
 

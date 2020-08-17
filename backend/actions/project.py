@@ -8,7 +8,7 @@ import matplotlib.image as mpimg
 from PIL import Image as pil
 import matplotlib.pyplot as plt
 from django.core.files.images import get_image_dimensions
-
+import re
 
 def get_project(project_id):
     return Project.objects.get(pk=project_id)
@@ -18,6 +18,17 @@ def get_project_model_file(project):
         return settings.MEDIA_ROOT + "/projects/" + str(project.id) + "/model.py"
     id = get_project_known_model(project).id
     return settings.MEDIA_ROOT + "/known/" + str(id) + ".txt"
+
+def check_class_validation(project):
+    if not project.user_upload():
+        return True
+    model_file = get_project_model_file(project)
+    file = open(model_file, 'r')
+    for line in file:
+        found = re.search(".*class Model.*", line)
+        if found:
+            return True
+    return False
 
 def save_deploy_image(project_id, image):
     path = settings.MEDIA_ROOT + "/projects/" + str(project_id) + "/deploy/"
@@ -41,7 +52,13 @@ def update_project(project_data):
     project.test_percentage = project_data['test_percentage']
     project.width =  project_data['width']
     project.height =  project_data['height']
-    project.dataset = Dataset.objects.filter(id=project_data['dataset'])[0]
+    project.model_type =  project_data['type']
+    dataset_id = project_data['dataset']
+    print (dataset_id)
+    if dataset_id == None or dataset_id == "null" or int(dataset_id) < 1:
+        project.dataset = None
+    else:
+        project.dataset = Dataset.objects.filter(id=project_data['dataset'])[0]
     project.save()
 
 def project_files_quantity(project_id):

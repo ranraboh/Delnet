@@ -373,9 +373,11 @@ Radio-Button v1
 }
 .radio-button-v1-label {
 	font-family: "Agency FB";
-    position: relative;
-	left: 3px;
-	color: black;
+  position: relative;
+  left: 3px;
+  line-height: 80%;
+  color: black;
+  display: block;
 }
 
 /***************************************************

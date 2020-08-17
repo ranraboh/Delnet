@@ -7,10 +7,9 @@ import { ValidateEmail, allLetter, typeOfNaN, lengthOfString,check_itsnot_empty 
 
 
 /*getContentMessages*/
-class writeMessage extends Component {
+class WriteMessage extends Component {
     constructor(props) {
         super(props)
-        console.log(props.username)
           /* initialize user details */
           this.state = {
             errors: {
@@ -74,12 +73,10 @@ class writeMessage extends Component {
             window.location = profilePage;
         })
     }
-    on_change(field, value) {
-        console.log('on change')
-        let message = this.state.message;
-       
-        message[field] = value;
 
+    on_change(field, value) {
+        let message = this.state.message;
+        message[field] = value;
         this.setState({
             message
         })
@@ -132,12 +129,6 @@ const mapStateToProps = state => {
     }
 }
 
-
-
-
-
-
-
 const mapDispatchToProps = disaptch => {
     return {
         getContentMessages: (content) => {
@@ -150,4 +141,4 @@ const mapDispatchToProps = disaptch => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(writeMessage);
+export default connect(mapStateToProps, mapDispatchToProps)(WriteMessage);

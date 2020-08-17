@@ -46,7 +46,7 @@ export function valid_layer_configuration(layer) {
         return !isNaN(parseInt(layer.output[0]))
     } else if (layer.type == 'Convolution') {
         return !isNaN(parseInt(layer.out_channels)) && !isNaN(parseInt(layer.kernel_size[0])) && 
-            !isNaN(parseInt(layer.kernel_size[1])) && !isNaN(parseInt(layer.strides)) 
+            !isNaN(parseInt(layer.kernel_size[1])) && !isNaN(parseInt(layer.strides))
     } else if (layer.type == 'Dropout') {
         return !isNaN(parseFloat(layer.dropout_constant))
     } else if (layer.type == 'Pooling') {
@@ -57,7 +57,6 @@ export function valid_layer_configuration(layer) {
 
 export function invalid_layers_configuraition(layers) {
     var invalid_string = ''
-    console.log("checking invalid")
     for (var i = 0; i < layers.length; i++) {
         if (!valid_layer_configuration(layers[i]))
             invalid_string = invalid_string + (i + 1)+ ", "
@@ -75,11 +74,18 @@ export function is_valid_input(input) {
     return true
 }
 
+export function product_list(list) {
+    let product = 1;
+    for (var i = 0; i < list.length; i++)
+        product = product * list[i]
+    return product
+}
+
 /* check for errors after ction of edit or remove */
 export function detech_errors(layers) {
     let layer;
     if (layers.length > 0 && layers[0].type == 'Linear')
-        return { layer: 1, error: 'Linear module cannot be the first layer of your model architecture since the layer expeced a vector as input while the model receive an image represented by 3 dimesional matrix' }
+        return { layer: 1, error: 'Linear module cannot be the first layer of your model architecture since the layer expeced a vector as input while the model receive an image represented by 3 dimesional matrix',is_error:true }
     for (var i = 0; i < layers.length; i++) {        
         /* renew layers list */
         layer = layers[i]
@@ -90,17 +96,22 @@ export function detech_errors(layers) {
         /* check for errors */
         let input_dimension = layer.input.length;
         if (!is_valid_input(layer.input))  
-            return { layer: layer.id, error: 'Input for layer ' + layer.id + ' is invalid, get rid of any configuration error above ' }
-        if (layer.reshape)
+            return { layer: layer.id, error: 'Input for layer ' + layer.id + ' is invalid, get rid of any configuration error above ', is_error:true }
+        if (layer.reshape) {
+            if (layer.type == 'Linear' && input_dimension > 1  && product_list(layer.input) != layer.parameters.in_features)
+                return { layer: layer.id, error:'your code might have a mismatch, the concern arises since the number of features in the output of prev layer differs from the number of features in the input of current layer. you can check if you have any mismatches in tests section', is_error:false, input_size: product_list(layer.input), in_features: layer.parameters.in_features }
             continue
+        }
         if (layer.type === 'Linear' && input_dimension != 1) 
-            return { layer: layer.id, error:'Input for linear module in layer ' + layer.id + ' should be vector, try to insert a flatten module before to convert the data into one-dimesional vector as linear module supposed to receive ' }
+            return { layer: layer.id, error:'Input for linear module in layer ' + layer.id + ' should be vector, try to insert a flatten module before to convert the data into one-dimesional vector as linear module supposed to receive ', is_error:true }
         if (layer.type == 'Convolution' && input_dimension != 3) 
-            return { layer: layer.id, error:'Input for convolution module in layer ' + layer.id + '  should be 3 dimesional matrix' }
+            return { layer: layer.id, error:'Input for convolution module in layer ' + layer.id + '  should be 3 dimesional matrix', is_error:true }
+        if (layer.type == 'Convolution' && layer.input[0] != layer.in_channels)
+            return { layer:layer.id, error: 'Input for convolution module in layer ' + layer.id + ' supposed to have ' + layer.in_channels + " channels but got " + layer.input[0] + " channels instead", is_error:true }    
         if (layer.type == 'Pooling' && input_dimension != 3) 
-            return { layer: layer.id, error:'Input for pooling module in layer ' + layer.id + '  should be 3 dimesional matrix' }
+            return { layer: layer.id, error:'Input for pooling module in layer ' + layer.id + '  should be 3 dimesional matrix', is_error:true }
     }
-    return { layer: -1, error: '' }
+    return { layer: -1, error: '', is_error:false }
 }
 
 /* update output according to layer defined parameters */
@@ -112,9 +123,18 @@ export function update_output(layer) {
         layer.output[1] = Math.ceil(((layer.input[1] - layer.kernel_size[0]) / layer.strides) - 1) + 1;
         layer.output[2] = Math.ceil(((layer.input[2] - layer.kernel_size[1]) / layer.strides) - 1) + 1;
     } else if (layer.type == 'Pooling') {
+        console.log(layer)
         layer.output = [ layer.input[0], 0, 0 ]
-        layer.output[1] = Math.ceil(layer.input[1] / layer.window[0])
-        layer.output[2] = Math.ceil(layer.input[2] / layer.window[1])
+        if (layer['parameters'] != undefined && layer.parameters['output_size'] != undefined) {
+            layer['output'][1] = layer.parameters['output_size'][0]
+            layer['output'][2] = layer.parameters['output_size'][1]
+        } else if (layer['parameters'] != undefined && layer.parameters['padding'] != undefined && layer.parameters['dilation'] != undefined) {
+            layer['output'][1] = Math.floor((layer['input'][1] + 2 * layer.parameters['padding'] - layer.parameters['dilation'] * (layer.parameters['kernel_size'] - 1) -1) / layer.parameters['stride']) + 1
+            layer['output'][2] = Math.floor((layer['input'][2] + 2 * layer.parameters['padding'] - layer.parameters['dilation'] * (layer.parameters['kernel_size'] - 1) -1) / layer.parameters['stride']) + 1
+        } else {
+            layer.output[1] = Math.floor(layer.input[1] / layer.window[0])
+            layer.output[2] = Math.floor(layer.input[2] / layer.window[1])
+        }
     } else if (layer.type == 'Flatten') {
         let flatten = 1
         for (var i = 0; i < layer.input.length; i++) 

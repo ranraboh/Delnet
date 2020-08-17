@@ -34,9 +34,13 @@ class Recommendations():
         self.project_analysis['status'] = project_status
 
         # examinations of project 
-        self.model_analyzer = ModelAnalyzer(self.project, project_status ,runs)
-        model = self.model_analyzer.analyze()
-        self.project_analysis['model'] = model
+        try:
+            self.model_analyzer = ModelAnalyzer(self.project, project_status ,runs)
+            model = self.model_analyzer.analyze()
+            self.project_analysis['model'] = model
+        except: 
+            self.project_analysis['model'] = None
+            self.model_analyzer = None
 
         # imperfections
         imperfections = self.report_imperfections()
@@ -45,6 +49,12 @@ class Recommendations():
 
     # evaluate the project situation based on the analysis 
     def project_status(self):
+        if self.project_analysis['runs'] == None:
+           return {
+            'status': 'Unknown',
+            'text': 'you havent train your neural network yet so your model performence is unknown and cannot be fully evaluated and analyzed',
+        }
+
         # evalaute project status according to six last runs
         labels_quantity = self.project_analysis['dataset']['labels_quantity']
         best_result = self.project_analysis['runs']['best_result']        
@@ -78,7 +88,10 @@ class Recommendations():
 
     def report_imperfections(self):
         dataset = self.dataset_analyzer.report_imperfections()
-        model = self.model_analyzer.report_imperfections()
+        if self.model_analyzer == None:
+            model = { 'critical': '', 'warnings': '' }
+        else:
+            model = self.model_analyzer.report_imperfections()
         results = self.runs_analyzer.report_imperfections()
         return {
             'critical': {
