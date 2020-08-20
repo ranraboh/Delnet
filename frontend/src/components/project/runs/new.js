@@ -59,12 +59,7 @@ class RunModel extends Component {
 
     on_change(field, value, type) {
         let parameters = this.state.parameters;
-        if (type == 'float')
-            parameters[field] = value;
-        else if (type == 'int')
-            parameters[field] = value;
-        else 
-            parameters[field] = value
+        parameters[field] = value
         this.setState({
             ...this.state,
             parameters
@@ -98,14 +93,11 @@ class RunModel extends Component {
             })
             return
         }
-        if (this.state.parameters.batch_size)
-        console.log("continue")
         this.setState({
             ...this.state,
             start_test: true
         })
         this.props.testModel(this.state.project, (response) => {
-            console.log(response.model.run_model.is_error)
             this.setState({
                 ...this.state,
                 is_error: response.model.run_model.is_error,
@@ -115,25 +107,36 @@ class RunModel extends Component {
                 return
             this.setState({
                 ...this.state,
-                run_start: true
-            })
-            this.props.addRunRecord({
-                user: this.state.user,
-                project: this.state.project,
-                batch_size: this.state.parameters.batch_size,
-                optimizer: this.state.parameters.optimizer.optimizer,
-                epochs: this.state.parameters.epochs,
-                learning_rate: this.state.parameters.optimizer.learning_rate,
-                weight_decay: this.state.parameters.optimizer.weight_decay,
-                loss_type: this.state.parameters.loss_type,
-                progress: 0
+                run_start: true,
+                parameters: {
+                    batch_size: parseInt(this.state.parameters.batch_size),
+                    epochs: parseInt(this.state.parameters.epochs),
+                    loss_type: parseInt(this.state.parameters.loss_type),
+                    optimizer: {
+                        optimizer: this.state.parameters.optimizer.optimizer,
+                        learning_rate: parseFloat(this.state.parameters.optimizer.learning_rate),
+                        weight_decay: parseFloat(this.state.parameters.optimizer.weight_decay)
+                    }
+                }
             }, () => {
-                this.setState({
-                    ...this.state,
-                    run: this.props.run_added.id
-                }, () =>{
-                    this.props.runModel(this.state, () => {
-                        alert('your model is currently running on server, wait for it to finish')
+                this.props.addRunRecord({
+                    user: this.state.user,
+                    project: this.state.project,
+                    batch_size: this.state.parameters.batch_size,
+                    optimizer: this.state.parameters.optimizer.optimizer,
+                    epochs: this.state.parameters.epochs,
+                    learning_rate: this.state.parameters.optimizer.learning_rate,
+                    weight_decay: this.state.parameters.optimizer.weight_decay,
+                    loss_type: this.state.parameters.loss_type,
+                    progress: 0
+                }, () => {
+                    this.setState({
+                        ...this.state,
+                        run: this.props.run_added.id
+                    }, () =>{
+                        this.props.runModel(this.state, () => {
+                            alert('your model is currently running on server, wait for it to finish')
+                        })
                     })
                 })
             })
@@ -180,11 +183,15 @@ class RunModel extends Component {
     render() {
         let optimizer_options = '';
         let loss_type_options = '';
+        if (this.props.optimizers == null)
+            return ''
+        console.log(this.state.parameters)
+        console.log(this.state.parameters.optimizer.optimizer)
         if (this.props.optimizers != null && this.props.optimizers != undefined)
             optimizer_options = (
                 this.props.optimizers.map((optimizer) =>
                     <option value={ optimizer.id } selected={ this.state.parameters.optimizer.optimizer == optimizer.id } >{ optimizer.optimizer }</option>
-                )
+                , this)
             )
         if (this.props.loss_types != null && this.props.loss_types != undefined)
             loss_type_options = (

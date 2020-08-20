@@ -203,7 +203,7 @@ class DatasetAnalyzer():
 class DatasetSize(Enum):
     EXTRA_SMALL = 500
     SMALL = 5000
-    MEDIOCRE = 10000
+    MEDIOCRE = 15000
     BIG = 30000
     HUGE = 50000
 

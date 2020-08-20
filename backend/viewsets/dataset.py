@@ -22,6 +22,15 @@ class DatasetViewSet(viewsets.ModelViewSet):
     }
     serializer_class = DataSetSerializer
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        dataset = Dataset.objects.order_by('-id')[0]
+        DatasetCollectors.objects.create(dataset=dataset, user=get_user('ranraboh'), role="Dataset Manager", presmissions=5)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
     # action which returns the number of datasets in the system
     # url: /api/datasets/quantity
     @action(detail=False)
@@ -194,7 +203,6 @@ class DataItemViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'], name='upload items')
     def upload_items(self, request, *args, **kwargs):
         # extract request data
-        print(request.data)
         label = request.data['label']
         user = request.data['insert_by']
         dataset = request.data['dataset']

@@ -116,9 +116,9 @@ class ProjectViewSet(viewsets.ModelViewSet):
     
     @action(detail=True, methods=['post'], name='Save Layers')
     def save_layers(self, request, *args, **kwargs):
-        project = request.data['project']
+        project = Project.objects.filter(id=request.data['project'])[0]
         layers = request.data['layers']
-        layers_file = get_file_layers(project['id'])
+        layers_file = get_file_layers(project.id)
         save_layers(layers, layers_file)
         return Response({'status': 'information about layers updated'})
 

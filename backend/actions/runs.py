@@ -178,7 +178,7 @@ def lossSlightlyDecrease(train_results):
 
     # count the number of epochs the loss has dropped at minimal rate 
     for epoch in range(epochs - 1):
-        if abs(train_results[epoch + 1].loss - train_results[epoch].loss) <= 0.05:
+        if abs(train_results[epoch + 1].loss - train_results[epoch].loss) <= 0.01:
             slight_decrease = slight_decrease + 1
     
     # if the loss dropped slightly in 70% of the epoches return true

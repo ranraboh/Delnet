@@ -82,8 +82,6 @@ class ModelArchitercture extends Component {
         let first_shape = this.draw_first_shape()
         let error = detech_errors(this.props.layers)
         let error_shape = this.draw_error_shape(error)
-        console.log("layers state in architecture")
-        console.log(this.props.layers)
         return (
             <div className="container architecture-chart">
                     { first_shape }                       

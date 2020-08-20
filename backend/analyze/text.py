@@ -75,7 +75,8 @@ class BatchSizeFactor(Enum):
 
 class OptimizerFactor(Enum):
     REASONABLE_VALUE = """
-    optimizer value you have chosen seems reasonable and fits your model,
+    optimizer algorithm you have chosen seems reasonable and fits your model since your model
+    learns well on your train set,
     trying out different optimizers is essential but it doesn't seem to make a significant change
     """
     ADAM = """
@@ -99,6 +100,10 @@ class OptimizerFactor(Enum):
     since you acheived high performence,
     it seems that using this optimizer fits your model
     """
+    DIFFERENT_OPTIONS = """
+    since your model isn't learn well your train set, 
+    try out different types of optimizers is an option
+    """
 
 class LossTypeFactor(Enum):
     REASONABLE_VALUE = """
@@ -117,6 +122,10 @@ class LossTypeFactor(Enum):
     SUCCESS = """
     since you acheived high performence,
     it seems that using this loss function fits your model
+    """
+    DIFFERENT_OPTIONS = """
+    since your model isn't learn well your train set, 
+    try out different types of loss is an option
     """
 
 class ProjectStatus(Enum):

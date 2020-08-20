@@ -23,16 +23,16 @@ def batchnormn_exists(layers):
 
 def activations_used(layers):
     activations = {}
+    quantity = 0
     for layer in layers:
         activation = layer['activation']
         if activation != None and activation != 'None':
-
-            print (activation)
+            quantity = quantity + 1
             if activation not in activations:
                 activations[activation] = 0
             activations[activation] = activations[activation] + 1
             print (activations[activation])
-    return activations
+    return activations, quantity
     
 def module_used(layers):
     modules = {}
@@ -80,7 +80,7 @@ def parameters_quantity(layers):
     parameters = 0
     for layer in layers:
         if layer['type'] == 'Linear':
-            parameters += (layer['input'][0] * int(layer['output'][0]))
+            parameters += (int(layer['input'][0]) * int(layer['output'][0]))
         elif layer['type'] == 'Convolution':
             kernel_size = layer['kernel_size']
             out_channels = int(layer['out_channels'])

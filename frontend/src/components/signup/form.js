@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { createUser } from '../../actions/users.js'
 import { homepage } from '../../appconf.js';
-
-import {validateEmail,checkURL,isFileImage,check_passward_theSame, check_password ,
-     allLetter, typeOfNaN, lengthOfString,check_itsnot_empty } from "../../actions/validation";
+import {validateEmail,checkURL,check_passward_theSame, check_password ,allLetter, check_itsnot_empty } from "../../actions/validation";
 
 class RegisterForm extends Component {
     constructor(props) {
@@ -36,25 +34,14 @@ class RegisterForm extends Component {
                 image: ''
             }
         }
-        alert('sadassa')
         this.register_action = this.register_action.bind(this);
         this.on_change = this.on_change.bind(this);
         this.male_button_change = this.male_button_change.bind(this);
         this.female_button_change = this.female_button_change.bind(this);
-        /* this.check_Password = this.check_Password.bind(this); */
-         //this.ValidateEmail=this.ValidateEmail.bind(this);
-         //this.allLetter=this.allLetter.bind(this);
-         //this.check_password=this.check_password.bind(this);
-         //this.check_passward_theSame=this.check_passward_theSame.bind(this);
-        // this.check_itsnot_empty=this.check_itsnot_empty.bind(this);
-        // this.isFileImage=this.isFileImage.bind(this);
-         this.restartErrors=this.restartErrors.bind(this);
-
+        this.restartErrors=this.restartErrors.bind(this);
     }
-  
 
     on_change(field, value) {
-        console.log('on change')
         let user = this.state.user;
         user[field] = value;
 
@@ -62,7 +49,6 @@ class RegisterForm extends Component {
             user
         })
     }
-
 
     male_button_change = (e) => {
         let user = this.state.user
@@ -124,7 +110,6 @@ class RegisterForm extends Component {
             if(!check_passward_theSame(user['password'],user['confirm_password'])){
                 errors['confirm_password']="Password mismatch, fix it. "
                 bool=true
-
             }
         }
         if(!check_itsnot_empty(user['occupation'])){
@@ -138,51 +123,36 @@ class RegisterForm extends Component {
         if(!validateEmail(user['email'])){
             errors['email']="There is an error in the email address,fix it please."
             bool=true
-
         }
         if(!check_itsnot_empty(user['email'])){
             errors['email']="your email is empy ,enter email."
             bool=true
         }
-
-
         if(!checkURL(user['image'])){
             errors['image']="Please enter a suitable image."
             console.log("shiranIMAGE")
             bool=true
-
         }
         if(!check_itsnot_empty(user['image'])){
             errors['image']="Please enter a suitable image."
-            console.log("shiran1937")
             bool=true
-
         }
         this.setState({
             ...this.state,
             errors
         })
-       
-    
         if(bool){
-            console.log("shiran1937-----------------------------------------------------------------------------------")
             return
         }
-
-        //    window.location = homepage + '/login';
-            this.props.createUser(this.state.user, () => {
-                alert(' shiran the user added successfully, you are able to log in');
-                window.location = homepage + '/login';
-            })
-        
-
-        
+        this.props.createUser(this.state.user, () => {
+            alert('the user added successfully, you are able to log in');
+            window.location = homepage + '/login';
+        })
     }
 
     render() {
-        console.log(this.state.errors)
         return (
-            <div class="card-body">
+            <div class="card-body card-register">
                 <h1 className="register-title">Sign Up</h1>
                 <form method="POST">
                     <div class="form-row m-b-55">
@@ -229,7 +199,7 @@ class RegisterForm extends Component {
                     <div className="name">Password</div>
                         <div class="value">
                             <input class={(this.state.errors.password == '')? 'input--style-5' : 'input--style-5 form-control is-invalid'}
-                              type="text" name="password" value={ this.state.user.password }
+                              type="password" name="password" value={ this.state.user.password }
                                 onChange={ (e) => this.on_change('password', e.target.value) } />
                                  <div class="invalid-feedback">
                                     { this.state.errors.password }
@@ -240,7 +210,7 @@ class RegisterForm extends Component {
                     <div className="name">Confirm Password</div>
                         <div class="value">
                         <input class={(this.state.errors.confirm_password == '')? 'input--style-5' : 'input--style-5 form-control is-invalid'}
-                              type="text" name="confirm_password" value={ this.state.user.confirm_password }
+                              type="password" name="confirm_password" value={ this.state.user.confirm_password }
                                 onChange={ (e) => this.on_change('confirm_password', e.target.value) } />
                                   <div class="invalid-feedback">
                                     { this.state.errors.confirm_password }

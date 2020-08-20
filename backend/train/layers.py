@@ -41,9 +41,12 @@ def Pool(layer):
     return Averagepool(layer)
 
 def BatchNorm(layer):
-    modules_vec = [ torch.nn.BatchNorm1d, torch.nn.BatchNorm2d, torch.nn.BatchNorm3d ] 
-    batch_module = modules_vec [ len(layer['input']) - 2 ]
-    return batch_module(num_features=layer['input'])
+    modules_vec = [ torch.nn.BatchNorm1d, torch.nn.BatchNorm2d ] 
+    index = len(layer['input']) - 2
+    if index < 0:
+        index = 0
+    batch_module = modules_vec[ index ]
+    return batch_module(num_features=layer['input'], track_running_stats=False, affine=False)
 
 def FlattenLayer(layer):
     return Flatten()

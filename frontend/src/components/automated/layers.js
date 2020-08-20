@@ -79,7 +79,6 @@ class ModelLayers extends Component {
 
     insert_click(layer_id) {
         let layers = insert_layer(this.state.layers, layer_id)
-        console.log(layers)
         this.props.dispatchLayers(layers)
         this.handle_errors()
         this.props.selectLayer(this.state.layers[layer_id])

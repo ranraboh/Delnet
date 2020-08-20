@@ -120,8 +120,12 @@ export function update_output(layer) {
         if (layer.computed)
             return layer
         layer.output = [ layer.out_channels, 0, 0 ];
-        layer.output[1] = Math.ceil(((layer.input[1] - layer.kernel_size[0]) / layer.strides) - 1) + 1;
-        layer.output[2] = Math.ceil(((layer.input[2] - layer.kernel_size[1]) / layer.strides) - 1) + 1;
+        console.log("Convolution")
+        console.log(layer)
+        console.log(layer.input)
+        layer['output'][1] = Math.floor((layer.input[1] - (layer['kernel_size'][0] - 1) -1) / layer['strides']) + 1
+        layer['output'][2] = Math.floor((layer.input[2] - (layer['kernel_size'][1] - 1) -1) / layer['strides']) + 1
+        console.log(layer.output)
     } else if (layer.type == 'Pooling') {
         console.log(layer)
         layer.output = [ layer.input[0], 0, 0 ]
@@ -140,7 +144,7 @@ export function update_output(layer) {
         for (var i = 0; i < layer.input.length; i++) 
             flatten = flatten * layer.input[i]
         layer.output = [ flatten ]
-    } else if (layer.type == 'Dropout' || layer.type == 'BatchNorm') {
+    } else if (layer.type == 'Dropout' || layer.type == 'BatchNorm' || layer.type == 'Batch Norm') {
         layer.output = layer.input
     }
     return layer;

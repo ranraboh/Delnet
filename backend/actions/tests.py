@@ -30,8 +30,6 @@ class Tester():
     def file_conventions(self):
         if self.project.model_type == 'u':  
             files = ProjectFiles.objects.filter(project=self.project)
-            print (files.count())
-            print (files)
             if files.count() == 0:
                 return True, ModelError.NO_FILES.value
             elif files.filter(name="model.py").count() == 0:
@@ -150,7 +148,7 @@ class Tester():
 
     def run_model(self):
         # try to run the model for one epoch
-        batch_size = min(self.items_quantity, 32)
+        batch_size = min(self.items_quantity, 64)
         epoch = 1
         
         # try out feed forward process

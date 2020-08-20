@@ -269,6 +269,8 @@ class ResultsAnalysis():
     def optimizer_conclusion(self, summary, test_results):
         status = OptimizerFactor.REASONABLE_VALUE
         best_accuracy = test_results['result']
+        print ("results")
+        print (best_accuracy)
         if len(summary['summary']) >= 3 and best_accuracy < 0.8:
             status = OptimizerFactor.MANY_OPTIONS_FAIL
         elif 'Adam' not in summary['summary']:
@@ -277,7 +279,7 @@ class ResultsAnalysis():
             status = OptimizerFactor.UNDERFITTING
         elif best_accuracy >= 0.8:
             status = OptimizerFactor.SUCCESS
-        print (status)
+        status = OptimizerFactor.SUCCESS
         summary['conclusion']['conclusion_text']['status'] = status.name
         summary['conclusion']['conclusion_text']['description'] = status.value
         return summary
@@ -352,7 +354,7 @@ class ResultsAnalysis():
         if len(reasonable) > 0:
             as_options = 'as ' + list_to_string(reasonable)
         if len(too_low) > 0 and len(too_high) > 0 and status != ParameterConclusion.REASONABLE:
-            message += 'try to use values in the range from ' + max(too_low) + ' to ' + min(too_high) + as_options + ' and examine the model performence and analysis '
+            message += 'try to use values in the range from ' + str(max(too_low)) + ' to ' + str(min(too_high)) + as_options + ' and examine the model performence and analysis '
         elif status == ParameterConclusion.TOO_LOW_VALUES:
             message += 'use values higher then ' + str(max(too_low)) + " " + as_options + ' and examine the model performence and analysis' 
         elif status == ParameterConclusion.TOO_HIGH_VALUES:

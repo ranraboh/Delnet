@@ -1,5 +1,6 @@
 import { GET_PROJECT_LAYERS, SELECT_LAYER, UPDATE_LAYER, UPDATE_MODEL_DETAILS, ADD_LAYER, BUILDING_STAGE, KNOWN_MODEL_SELECT, BUILD_TYPE, ABORT_LAYER_SELECTION, DISPATCH_LAYERS, DELETE_LAYER, GET_KNOWN_MODELS } from '../actions/types.js';
 import { init_new_layer } from '../components/automated/actions/init.js'
+import { renew_layers } from '../components/automated/actions/computations'
 import { INTRO_STAGE, MODEL_TYPE_STAGE ,MODEL_BUILDUP, CUSTOMIZABLE_MODEL } from '../components/automated/actions/enums.js';
 
 const initialState = {
@@ -105,14 +106,20 @@ export function ambReducer(state = initialState, action) {
                 known_models: action.payload
             }
         case GET_PROJECT_LAYERS:
-            console.log(action.payload)
+            let height = window.localStorage.getItem('height')
+            let width = window.localStorage.getItem('width')
+            let architecture = action.payload.layers
+            if (architecture[0].input[0] != height | architecture[0].input[0] != width) {
+                architecture[0].input = [ 3, height, width ]
+                architecture = renew_layers(architecture)
+            }
             if (action.payload.valid == true) {
                 return {
                     ...state,
                     customizable: {
                         ...state.customizable,
-                        layers: action.payload.layers,
-                        layers_quantity: action.payload.layers.length
+                        layers: architecture,
+                        layers_quantity: architecture.length
                     }
                 }
             } else {

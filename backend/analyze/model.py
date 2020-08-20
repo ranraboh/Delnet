@@ -99,19 +99,10 @@ class ModelAnalyzer():
         layers_status = ParameterModify.KEEP_VALUE
         
         # in case the model in good state
-        if layers_quantity < 5:
+        if layers_quantity < 20:
             layers_status = ParameterModify.INCREASE_VALUE_HR
-        elif layers_quantity < 10:
+        elif layers_quantity < 35:
             layers_status = ParameterModify.INCREASE_VALUE
-
-        # in case the model in underfitting state
-        if self.project_status in [ ProjectStatus.UNDERFITTING, ProjectStatus.NOT_LEARN ]:            
-            # as underfitting rate grews, the limit of layers quantity between INCREASE_VALUE
-            # to INCREASE_VALUE_HR rise
-            if layers_quantity < 40 * self.underfitting_rate:
-                layers_status = ParameterModify.INCREASE_VALUE_HR
-            elif layers_quantity < 70 * self.underfitting_rate:
-                layers_status = ParameterModify.INCREASE_VALUE
         dimension_status = layers_status
 
         # evaluate model structure status
@@ -227,12 +218,11 @@ class ModelAnalyzer():
         }
     
     def activations(self):
-        activations = activations_used(self.layers)
+        activations, activations_quantity = activations_used(self.layers)
         status = ParameterModify.KEEP_VALUE
         factor = ActivationsFactor.REASONABLE_TYPE
 
         # analyze activation frequency usage
-        activations_quantity = len(activations)
         size_factor = ActivationsFactor.REASONABLE_USAGE
 
         # in case model in good state

@@ -18,8 +18,8 @@ class ModelTrain(tnn.Module,):
 
         # init hyper-parameters
         parameters = run_request['parameters']
-        self.epochs = parameters['epochs']
-        self.batch_size = parameters['batch_size']
+        self.epochs = int(parameters['epochs'])
+        self.batch_size = int(parameters['batch_size'])
         self.optimizer, self.schdular = self.init_optimizer(parameters['optimizer'])
         self.loss_function = self.init_criterion(parameters['loss_type'])
 
@@ -36,8 +36,8 @@ class ModelTrain(tnn.Module,):
     def init_optimizer(self, optimizer_params):
         # extract optimizer parameters
         optimizer_id = optimizer_params['optimizer']
-        learning_rate = optimizer_params['learning_rate']
-        weight_decay = optimizer_params['weight_decay']
+        learning_rate = float(optimizer_params['learning_rate'])
+        weight_decay = float(optimizer_params['weight_decay'])
 
         # create optimizer and schedular module objects
         optimizer_obj = optimizer.modules[str(optimizer_id)](params=self.model.parameters(), lr=learning_rate, weight_decay=weight_decay)

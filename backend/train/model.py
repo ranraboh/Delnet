@@ -18,6 +18,8 @@ class Model(tnn.Module,):
 
         # for each layer element create a corresponding module 
         for layer in layers:
+            layer['input'] = self.convertToInt(layer['input'])
+            layer['output'] = self.convertToInt(layer['output'])
             layer_module = ObtainLayerModule(layer)
             layers_modules.append(layer_module)
             # insert activation module
@@ -32,8 +34,11 @@ class Model(tnn.Module,):
     def forward(self, *input):
         cur_input = input[0]
         for module in self.layers_modules:
-            print (cur_input.shape)
-            print (module)
             cur_input = module(cur_input)
         return cur_input
 
+    def convertToInt(self, array):
+        int_array = []
+        for element in array:
+            int_array.append(int(element))
+        return int_array

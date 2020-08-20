@@ -38,8 +38,8 @@ const toggleInitialState = {
     dataset_display: {
         dataset_details: false,
         collectors_team: false,
-        labels_section: false,
-        items_section: false, 
+        labels_section: true,
+        items_section: true, 
         add_label: false,
         add_item: false,
         analyze: false,

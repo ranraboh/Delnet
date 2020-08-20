@@ -48,7 +48,6 @@ class ProjectTeam(models.Model):
 def nameFile(instance, filename):
     return '/'.join(['projects', str(instance.project.id) , filename])
 
-
 class ProjectNotifcation(models.Model):
     topic=models.TextField(unique=False, blank=True, default='')
     user = models.ForeignKey(User, default=None, on_delete=models.CASCADE)

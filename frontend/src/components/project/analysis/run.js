@@ -100,10 +100,10 @@ class RunAnalysis extends Component {
                     Tip: { this.display_status(analysis.parameters.batch_size.status) } <br/>
                     { analysis.parameters.batch_size.text } <p/>
                     <span className="text-bold">Weight Decay: </span>{ analysis.parameters.weight_decay.value } <br/>
-                    Tip: { this.display_status(analysis.parameters.optimizer.status) } <br/>
+                    Tip: { this.display_status(analysis.parameters.weight_decay.status) } <br/>
                     { analysis.parameters.weight_decay.text } <p/>
                     <span className="text-bold">Optimizer: </span>{ analysis.parameters.optimizer.value } <br/>
-                    Tip: { this.display_status(analysis.parameters.epoch.status) } <br/>
+                    Tip: { this.display_status(analysis.parameters.optimizer.status) } <br/>
                     { analysis.parameters.optimizer.text } <p/>
                     <span className="text-bold">Loss Function: </span>{ analysis.parameters.loss_type.value } <br/>
                     Tip: { this.display_status(analysis.parameters.loss_type.status) } <br/>

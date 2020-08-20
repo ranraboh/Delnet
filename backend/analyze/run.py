@@ -55,7 +55,7 @@ class RunAnalysis():
         }
 
         # conditions which indicate states to increase or decrease epochs quantity 
-        if epochs_quantity < 3 and self.train_results[epochs_quantity - 1].accuracy_rate < 0.9:
+        if epochs_quantity < 3 and self.dev_results[epochs_quantity - 1].accuracy_rate < 0.9:
             analysis['status'] = ParameterModify.INCREASE_VALUE_HR
             analysis['factor'] = EpochFactor.VALUE_TOO_SMALL
         elif self.overfitting:
@@ -65,7 +65,7 @@ class RunAnalysis():
             elif epochs_quantity > 10:
                 analysis['status'] = ParameterModify.DECREASE_VALUE
                 analysis['factor'] = EpochFactor.OVERFITTING
-        elif not effectiveTrainingStopped(self.train_results)['etStopped']:
+        elif not effectiveTrainingStopped(self.dev_results)['etStopped']:
             if epochs_quantity <= 5:
                 analysis['status'] = ParameterModify.INCREASE_VALUE_HR
                 analysis['factor'] = EpochFactor.EFFECTIVE_TRAINNING_HR
@@ -89,13 +89,13 @@ class RunAnalysis():
         }
 
         # conditions which indicate states to increase or decrease leaning rate value 
-        if trainLossIncrease(self.train_results):
+        if trainLossIncrease(self.dev_results):
             analysis['status'] = ParameterModify.DECREASE_VALUE_HR
             analysis['factor'] =  LearningRateFactor.TRAIN_LOSS_INCREASE
-        elif effectiveTrainingStopped(self.train_results)['etStopped']:
+        elif effectiveTrainingStopped(self.dev_results)['etStopped']:
             analysis['status'] = ParameterModify.DECREASE_VALUE
             analysis['factor'] = LearningRateFactor.EFFECTIVE_TRAINNING
-        elif lossSlightlyDecrease(self.train_results):
+        elif lossSlightlyDecrease(self.dev_results):
             analysis['status'] = ParameterModify.INCREASE_VALUE
             analysis['factor'] = LearningRateFactor.LOSS_TAKES_LONG_TO_CONVERGE
         return analysis
@@ -110,10 +110,10 @@ class RunAnalysis():
             'text': ''
         }
         # conditions which indicate states to increase or decrease weight decay value 
-        train_analysis = effectiveTrainingStopped(self.train_results)
+        train_analysis = effectiveTrainingStopped(self.dev_results)
         if train_analysis['etStopped'] and train_analysis['epochStopped'] >= 3:
             analysis['status'] = ParameterModify.INCREASE_VALUE
-        elif lossSlightlyDecrease(self.train_results):
+        elif lossSlightlyDecrease(self.dev_results):
             analysis['status'] = ParameterModify.DECREASE_VALUE
             analysis['factor'] = WeightDecayFactor.LOSS_TAKES_LONG_TO_CONVERGE
         return analysis
@@ -172,9 +172,12 @@ class RunAnalysis():
         optimizer = self.run_record.optimizer
         status = ParameterModify.KEEP_VALUE
         factor = OptimizerFactor.REASONABLE_VALUE
-        if optimizer != 1 and self.underfitting:
+        if self.underfitting:
             status = ParameterModify.CHANGE_VALUE
-            factor = OptimizerFactor.ADAM
+            if optimizer.optimizer != 1:
+                factor = OptimizerFactor.DIFFERENT_OPTIONS
+            else:
+                factor = OptimizerFactor.ADAM
         analysis =  {
             'value': self.optimizers[self.run_record.optimizer.id],
             'status': status,
@@ -190,7 +193,10 @@ class RunAnalysis():
         factor = LossTypeFactor.REASONABLE_VALUE
         if self.underfitting and loss_type != 1:
             status = ParameterModify.CHANGE_VALUE
-            factor = LossTypeFactor.CROSS_ENTROPY
+            if loss_type.loss_type != 1:
+                factor = LossTypeFactor.DIFFERENT_OPTIONS
+            else:
+                factor = LossTypeFactor.CROSS_ENTROPY
         analysis =  {
             'value': self.loss_types[self.run_record.loss_type.id],
             'status': status,

@@ -38,7 +38,7 @@ class Recommendations():
             self.model_analyzer = ModelAnalyzer(self.project, project_status ,runs)
             model = self.model_analyzer.analyze()
             self.project_analysis['model'] = model
-        except: 
+        except Exception:  
             self.project_analysis['model'] = None
             self.model_analyzer = None
 
