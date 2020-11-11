@@ -1,4 +1,4 @@
-#Delnet Description:
+##Delnet Description:<br />
 Delnet is web application of supportive control environment for machine-learning developers.<br /> 
 The application's main goal is to help developers design and construct machine learning projects and to make the laborious process easier and<br /> faster.<br />
 The application provides a plethora of features and tools which simplify the build-up process, promote the project and help the project managers to achieve their goals to design an optimal model for their tasks.<br />
@@ -59,7 +59,7 @@ o	The posts are arranged by subdomains in organized manner.
 5. Automated model build-up: provides a tool that making deep learning more accessible and enables users to build deep learning models without requiring expertise in coding.
 Users who are not well-versed with coding can build up their own model.<br />
 
-**The technologies we used to build the site are:<br />
+##The technologies we used to build the site are:<br />
 
 Frontend technologies:React,
 Redux,Bootstrap,
