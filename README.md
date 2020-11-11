@@ -60,7 +60,7 @@ o	The posts are arranged by subdomains in organized manner.
 5. Automated model build-up: provides a tool that making deep learning more accessible and enables users to build deep learning models without requiring expertise in coding.
 Users who are not well-versed with coding can build up their own model.<br />
 
-**The technologies we used to build the site are:**<br />
+**The technologies we used to build the web application:**<br />
 
 Frontend technologies:React,
 Redux,Bootstrap,
