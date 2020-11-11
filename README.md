@@ -1,4 +1,4 @@
-##Delnet Description:<br />
+# Delnet Description:
 Delnet is web application of supportive control environment for machine-learning developers.<br /> 
 The application's main goal is to help developers design and construct machine learning projects and to make the laborious process easier and<br /> faster.<br />
 The application provides a plethora of features and tools which simplify the build-up process, promote the project and help the project managers to achieve their goals to design an optimal model for their tasks.<br />
@@ -8,7 +8,7 @@ Delnet is community based application which provides ongoing community supports 
 The users encouraged to help each other in project development<br />
 They are able to publish their dataset, share knowledge, get answers for their questions, brush up their ml-knowledge and stay aligned with the<br /> latest trends or ideas.<br />
 This collaborative procedure can help users to work more effectively.<br /><br />
-**Target clients:<br />
+**Target clients:**<br />
 
 The clients are machine-learning developers and students who are interested in friendly and supportive environment or just people that want to<br /> enrich and share their knowledge through articles, videos and posts on this topic.<br />
 
@@ -19,7 +19,8 @@ Delnet web application is innovative and different from other applications of ma
 The application combines many features that brought together to serve deep-learning developers and used as helping hand and enable users to build top-notch models.<br />
 Through presentation of model results with charts and diagrams, analysis of the project components, automated machine-learning model builder and<br /> ability to build high-scale datasets.<br />
 This combination provides an advanced and community-based supportive and friendly environment that does not exist in other.<br />
-**Project Scope:
+
+**Project Scope**:
 The application composed of multiple components:
 
 1. Collection of features which provides a helping hand in design and construction of ml project such as:
@@ -59,7 +60,7 @@ o	The posts are arranged by subdomains in organized manner.
 5. Automated model build-up: provides a tool that making deep learning more accessible and enables users to build deep learning models without requiring expertise in coding.
 Users who are not well-versed with coding can build up their own model.<br />
 
-##The technologies we used to build the site are:<br />
+**The technologies we used to build the site are:**<br />
 
 Frontend technologies:React,
 Redux,Bootstrap,
@@ -74,7 +75,7 @@ RabbitMQ,
 Pytorch,
 Torchvision,
 API.<br />
-**Languages:<br />
+**Languages:**<br />
 
 Server-side language is python using machine-learning libraries such as
 pytorch and torchvision.<br />
