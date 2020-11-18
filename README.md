@@ -80,3 +80,5 @@ Rest API.<br />
 Server-side language: Python using machine-learning libraries such as
 pytorch and torchvision.<br />
 Client-side languages: java-script, css, html and more.
+
+In this project we placed emphasis on the user experience such as usability - that the existing functions on the site were as easy to operate as possible, the overall appearance of the user interface is aesthetic. We maintained reliability, conveying reliable information to the user and avoiding mistakes or deceptions. In addition it was important for us to create an information architecture appropriate to the way the user thinks or searches for information on the site and give the user a natural flow and cognitive indications of what happened on the screen.
